@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>--- TODO ---</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- Leave those next 4 lines if you care about users using IE8 -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+    body {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #eee;
+}
+
+.form-signin {
+  max-width: 330px;
+  padding: 15px;
+  margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+  margin-bottom: 10px;
+}
+.form-signin .checkbox {
+  font-weight: normal;
+}
+.form-signin .form-control {
+  position: relative;
+  height: auto;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 10px;
+  font-size: 16px;
+}
+.form-signin .form-control:focus {
+  z-index: 2;
+}
+.form-signin input[type="name"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+.form-signin input[type="api"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+</style>
+  </head>
+  <body>
+
+
+    <div class="container">
+
+        <form class="form-horizontal">
+        <fieldset>
+
+        <!-- Form Name -->
+        <legend>Api Tester</legend>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="Username">Username</label>  
+          <div class="col-md-4">
+          <input id="Username" name="Username" type="text" placeholder="SuperHunk85" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="apiKey">Api Key</label>  
+          <div class="col-md-4">
+          <input id="apiKey" name="apiKey" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block">You can find this under 'user settings &gt; api keys'</span>  
+          </div>
+        </div>
+
+<hr>
+      <h3>Api Tester</h3>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">Site Id</label>  
+          <div class="col-md-4">
+          <input id="textinput" name="textinput" type="text" placeholder="" class="form-control input-md" required="">
+          <span class="help-block">You can find this in the response from the 'sites' api labeld 'sid' for each site</span>  
+          </div>
+        </div>
+
+        <!-- Text input-->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="textinput">Url</label>  
+          <div class="col-md-4">
+          <input id="textinput" name="textinput" type="text" placeholder="http://www.example.com" class="form-control input-md" required="">
+            
+          </div>
+        </div>
+
+        <!-- Button Drop Down -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="buttondropdown">Endpoint</label>
+          <div class="col-md-4">
+            <div class="input-group">
+              <input id="buttondropdown" name="buttondropdown" class="form-control" placeholder="site" type="text" required="">
+              <div class="input-group-btn">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                  Endpoint
+                  <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu pull-right">
+                  <li><a href="#">site</a></li>
+                  <li><a href="#">sites</a></li>
+                  <li><a href="#">page</a></li>
+                  <li><a href="#">links</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="singlebutton"></label>
+          <div class="col-md-4">
+            <button id="singlebutton" name="singlebutton" class="btn btn-primary">Try It!</button>
+          </div>
+        </div>
+
+        </fieldset>
+        </form>
+
+
+    </div> <!-- /container -->
+
+
+    <!-- Including Bootstrap JS (with its jQuery dependency) so that dynamic components work -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

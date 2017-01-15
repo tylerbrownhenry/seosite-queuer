@@ -1,0 +1,87 @@
+{
+  "name": "broken-link-checker",
+  "description": "API Service for scanning webpages, websites and links",
+  "version": "0.7.4",
+  "license": "MIT",
+  "homepage": "https://bitbucket.org/TylerHenry/seadoc-blc/overview",
+  "author": {
+    "name": "Tyler Henry",
+    "email": "tyler@milmerry.com",
+    "url": "http://www.tylerbrownhenry.com/"
+  },
+  "main": "lib",
+  "bin": {
+    "blc": "bin/blc",
+    "broken-link-checker": "bin/blc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://TylerHenry@bitbucket.org/TylerHenry/seadoc-blc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stevenvachon/broken-link-checker/issues"
+  },
+  "dependencies": {
+    "q": "^1.4.1",
+    "mongoose": "^4.7.0",
+    "socket.io": "^1.0.6",
+    "ejs": "^1.0.0",
+    "underscore" : "^ 1.7.0",  
+    "express-partials": "^0.3.0",
+    "express": "^3.13.0",
+    "bhttp": "^1.2.1",
+    "calmcard": "~0.1.1",
+    "chalk": "^1.1.3",
+    "char-spinner": "^1.0.1",
+    "condense-whitespace": "^1.0.0",
+    "default-user-agent": "^1.0.0",
+    "errno": "~0.1.4",
+    "extend": "^3.0.0",
+    "humanize-duration": "^3.9.1",
+    "http-equiv-refresh": "^1.0.0",
+    "is-stream": "^1.0.1",
+    "is-string": "^1.0.4",
+    "limited-request-queue": "^2.0.0",
+    "link-types": "^1.1.0",
+    "maybe-callback": "^2.1.0",
+    "nopter": "~0.3.0",
+    "parse5": "^3.0.1",
+    "robot-directives": "~0.3.0",
+    "robots-txt-guard": "~0.1.0",
+    "robots-txt-parse": "~0.0.4",
+    "urlcache": "~0.6.0",
+    "urlobj": "0.0.10"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "chai-as-promised": "^5.3.0",
+    "chai-like": "~0.1.9",
+    "chai-things": "~0.2.0",
+    "es6-promise": "^3.2.1",
+    "mocha": "^3.0.2",
+    "object.assign": "^4.0.4",
+    "slashes": "^1.0.5",
+    "st": "^1.2.0"
+  },
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "mocha test/ --reporter spec --check-leaks --bail",
+    "test-watch": "mocha test/ --reporter spec --check-leaks --bail -w"
+  },
+  "files": [
+    "bin",
+    "lib",
+    "license"
+  ],
+  "keywords": [
+    "404",
+    "html",
+    "hyperlink",
+    "links",
+    "seo",
+    "url"
+  ]
+}
