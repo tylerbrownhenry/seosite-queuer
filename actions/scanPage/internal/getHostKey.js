@@ -19,7 +19,7 @@ else
 
 function getHostKey(url, options)
 {
-    console.log('do we need \'hostname\' url',url);
+    // console.log('do we need \'hostname\' url',url);
     var domainObj,port,protocol,urlObj;
     var key = "";
     
@@ -31,7 +31,7 @@ function getHostKey(url, options)
     {
         urlObj = url;
     }
-    console.log('urlObj',urlObj);
+    // console.log('urlObj',urlObj);
     
     protocol = urlObj.protocol;
     

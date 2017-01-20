@@ -12,11 +12,13 @@ function linkObj(url){
 		url:{
 			original: url,      // The URL as it was inputted
 			resolved: null,     // The URL, resolved as a browser would do so
-			redirected: null    // The URL, after its last redirection, if any
+			redirected: null,    // The URL, after its last redirection, if any
+            parsed: null
 		},
 		base:{
 			original: null,     // The base URL as it was inputted
-			resolved: null      // The base URL, resolved as a browser would do so
+			resolved: null,      // The base URL, resolved as a browser would do so
+            parsed: null
 		},
 		html:{
 			index: null,        // The order in which the link appeared in its document -- using max-level tag filter
@@ -45,11 +47,7 @@ function linkObj(url){
         broken_link_checker: true,
 		resolved: false
 	};
-	
-	// Not enumerable -- hidden from `JSON.stringify()`
-	Object.defineProperty(link.base, "parsed", { value:null, writable:true });  // Same as `link.base.resolved`, but is an Object
-	Object.defineProperty(link.url,  "parsed", { value:null, writable:true });  // Same as `link.url.resolved`, but is an Object
-	return link;
+    return link;
 }
 
 /*
@@ -91,11 +89,10 @@ linkObj.relation = function(link, url_parsed){
 // TODO :: make similar to `url.resolve(from,to)` ?
 
 linkObj.resolve = function(link, base, options){
-    // console.log('link in!',link,base,options);
-	if (link.resolved === true){
+    if (link.resolved === true){
         return;
     } 
-	
+    
 	// Parity with core `url.resolve()`
 	var parseOptions = { 
         slashesDenoteHost : true
@@ -105,13 +102,12 @@ linkObj.resolve = function(link, base, options){
 	var base_parsed = base == null ? "" : base;
 	base_parsed = urlobj.normalize( urlobj.parse(base_parsed, parseOptions) );
 	
-	var htmlBase_parsed = link.html.base==null ? "" : link.html.base;
+	var htmlBase_parsed = link.html.base == null ? "" : link.html.base;
 	htmlBase_parsed = urlobj.normalize( urlobj.parse(htmlBase_parsed, parseOptions) );
 	
 	// TODO :: options.normalize=false
 	// TODO :: options.clone=true ?
 	var resolvedBase_parsed = urlobj.resolve(base_parsed, htmlBase_parsed);
-	
 	if (resolvedBase_parsed.hash !== null){
 		// Hashes are useless in a base
 		resolvedBase_parsed.hash = null;
@@ -124,16 +120,13 @@ linkObj.resolve = function(link, base, options){
 		base_parsed.hash = null;
 		base_parsed.href = urllib.format(base_parsed);  // TODO :: use urlobj.format() when available
 	}
-	
 	// `link.url.original` should only ever not have a value within internal tests
 	var linkOrg_parsed = link.url.original == null ? "" : link.url.original;
 	linkOrg_parsed = urlobj.parse(linkOrg_parsed, parseOptions);
 	urlobj.normalize(linkOrg_parsed);
-	
 	// `linkOrg_parsed` is cloned to avoid it being mutated
 	// TODO :: options.clone=true
 	var resolvedUrl_parsed = urlobj.resolve( resolvedBase_parsed, cloneObject(linkOrg_parsed) );
-	
 	if (typeof base !== "undefined"){
 		link.base.original = base;
 	}
@@ -143,14 +136,12 @@ linkObj.resolve = function(link, base, options){
 	}
 	
 	link.base.parsed = base_parsed;
-	
 	// If resolved link has accepted scheme
 	if (options.acceptedSchemes[ resolvedUrl_parsed.extra.protocolTruncated ] === true){
 		link.url.resolved = parity(resolvedUrl_parsed.href);
 		link.url.parsed   = resolvedUrl_parsed; // TODO :: move relation stuff out of this function -- separation of concerns?
 		linkObj.relation(link); // Else could not be properly resolved
     } else {
-        // console.log('@@@@@@',link.url);
 		link.url.parsed = linkOrg_parsed; // If at least resolved to absolute
 		if (resolvedUrl_parsed.extra.type === urlobj.type.ABSOLUTE){
 			// If base is accepted scheme

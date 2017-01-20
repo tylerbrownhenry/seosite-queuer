@@ -2,11 +2,7 @@ var Permission = require('./permissionSchema');
 
 var permission = {
     label: 'free',
-    requests:{
-        type:{
-            site: false,
-            page: true,
-        },
+    limits:{
         monthlyLimit:{
             page: 100,
             site: 0,
@@ -21,6 +17,10 @@ var permission = {
         }
     },
     restrictions:{
+        type:{
+            site: false,
+            page: true,
+        },
         filterLimit: 1,
         digDepthLimit: 0,
         excludeExternalLinks: {
@@ -48,7 +48,7 @@ var permission = {
         },
         acceptedSchemes: {
             http: true,
-            https: false.
+            https: false
         }
     }
 }

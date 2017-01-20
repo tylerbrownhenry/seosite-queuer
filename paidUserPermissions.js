@@ -2,18 +2,14 @@ var Permission = require('./permissionSchema');
 
 var permission = {
     label: 'paid',
-    requests:{
-        type:{
-            site: true,
-            page: true,
-        },
-        monthlyLimit:{
+    limits:{
+        monthly:{
             page: 100000,
             site: 1000,
             requests: 10000,
             links: 1000000
         },
-        dailyLimit:{
+        daily:{
             page: 100000,
             site: 1000,
             requests: 10000,
@@ -21,6 +17,10 @@ var permission = {
         }
     },
     restrictions:{
+      type:{
+            site: true,
+            page: true,
+        },
         filterLimit: 10,
         digDepthLimit: 100,
         excludeExternalLinks: {
@@ -48,7 +48,7 @@ var permission = {
         },
         acceptedSchemes: {
             http: true,
-            https: true.
+            https: true
         }
     }
 }

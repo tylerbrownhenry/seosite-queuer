@@ -4,7 +4,7 @@ var userAgent = require("default-user-agent");
 
 var defaultOptions = 
 {
-	acceptedSchemes: ["http","https"],
+	acceptedSchemes: {"http":true,"https":false},
 	cacheExpiryTime: 3600000,
 	cacheResponses: true,
 	excludedKeywords: [],

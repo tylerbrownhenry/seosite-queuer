@@ -2,17 +2,22 @@
 var errors         = require("./messages").errors,
 simpleResponse = require("./simpleResponse"),
 checkErrors = require("./checkErrors"),
-bhttp = require("bhttp");
+bhttp = require("bhttp"),
+q = require("q");
 
 /*
 Request a URL for its HTML contents and return a stream.
 */
-function streamHtml(url, cache, options){
+
+function stream(url, cache, options){
+    var promise = q.defer();
     var result;
-    
-    var request = bhttp.get(url,{  // TODO :: https://github.com/joepie91/node-bhttp/issues/3   // Always gets the URL because response bodies are never cached
+    console.log('streamhtml...','url',url,'userAgent',options.userAgent);
+    bhttp.get(url,{                                                 // TODO :: https://github.com/joepie91/node-bhttp/issues/3   // Always gets the URL because response bodies are never cached
         discardResponse: true,
-        headers: { "user-agent":options.userAgent },
+        headers: { 
+            "user-agent": options.userAgent 
+        },
         stream: true
     }).then(function(orgResponse){
         var response = simpleResponse(orgResponse);
@@ -22,30 +27,41 @@ function streamHtml(url, cache, options){
             result = {
                 response: response,
                 stream: orgResponse
-            };
-            
+            };   
             if (options.cacheResponses === true && response.url !== url){
                 cache.set(response.url, response);
             }
         }
-        return response;
-    }).catch( function(error){
-        return error;
-    });
-    
-    if (options.cacheResponses === true){
-        cache.set(url, request);
-    }
-    
-    return request.then(function(response){
+        console.log('result',result);
         if (response instanceof Error === true){
             throw response;
         }
         if (result instanceof Error === true){
             throw result;
         } 
-        return result;
+        return promise.resolve(result);
+    }).catch( function(error){
+        console.log('Typeof Error ',typeof error,error);
+        if(typeof error === 'MultipartError'){
+
+        } else if(typeof error === 'bhttpError'){
+
+        } else if(typeof error === 'ConflictingOptionsError'){
+
+        } else if(typeof error === 'UnsupportedProtocolError'){
+
+        } else if(typeof error === 'RedirectError'){
+
+        } else if(typeof error === 'ConnectionTimeoutError'){
+
+        } else if(typeof error === 'ResponseTimeoutError'){
+
+        } else {
+
+        }
+        promise.reject({status:'error',message:error});
     });
+    return promise.promise;
 }
 
-module.exports = streamHtml;
+module.exports = stream;

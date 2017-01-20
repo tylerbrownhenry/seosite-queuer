@@ -1,39 +1,31 @@
-/*
- * Routes handlers
- */
-    var Q = require('q'),
-    defaultOptions = require("./internal/defaultOptions"),
-    UrlChecker = require("./UrlChecker"),
-    linkTypes = require("link-types").map,
-    isString = require("is-string"),
-    _ = require("underscore"),
-    parseHtml    = require("./internal/parseHtml"),
-    streamHtml = require("./internal/streamHtml"),
-    linkObj      = require("./internal/linkObj"),
-    matchUrl     = require("./internal/matchUrl"),
-    scrapeHtml   = require("./internal/scrapeHtml"),
-    maybeCallback   = require("maybe-callback"),
-    RobotDirectives = require("robot-directives"),
-    parseOptions = require("./internal/parseOptions"),
-    excludeLink = require('./internal/excludeLink'),
-    isString = require("is-string");
+var q = require('q'),
+defaultOptions = require("./internal/defaultOptions"),
+UrlChecker = require("./UrlChecker"),
+linkTypes = require("link-types").map,
+isString = require("is-string"),
+_ = require("underscore"),
+parseHtml    = require("./internal/parseHtml"),
+streamHtml = require("./internal/streamHtml"),
+linkObj      = require("./internal/linkObj"),
+matchUrl     = require("./internal/matchUrl"),
+scrapeHtml   = require("./internal/scrapeHtml"),
+maybeCallback   = require("maybe-callback"),
+RobotDirectives = require("robot-directives"),
+parseOptions = require("./internal/parseOptions"),
+excludeLink = require('./internal/excludeLink'),
+isString = require("is-string");
 
-function enqueueLink(link, instance){
-    console.log('link',link,'instance',instance);
-    
-    linkObj.resolve(link, instance.baseUrl, instance.options); /* What this do ?*/
+function enqueueLink(link, instance){    
+
+    linkObj.resolve(link, instance.baseUrl, instance.options); 
     
     var excludedReason = excludeLink(link, instance);
     
     if (excludedReason !== false){
         link.html.offsetIndex = instance.excludedLinks++;
         link.excluded = true;
-        link.excludedReason = excludedReason;
-        
+        link.excludedReason = excludedReason;        
         linkObj.clean(link);
-        console.log('link?????');
-        maybeCallback(instance.handlers.junk)(link);
-        
         return;
     }
     
@@ -42,19 +34,12 @@ function enqueueLink(link, instance){
     
     instance.linkEnqueued = instance.urlChecker.enqueue(link);
     
-    // TODO :: is this redundant? maybe use `linkObj.invalidate()` in `excludeLink()` ?
-    if (instance.linkEnqueued instanceof Error){
+    if (instance.linkEnqueued instanceof Error){  // TODO :: is this redundant? maybe use `linkObj.invalidate()` in `excludeLink()` ?
         link.broken = true;
-        // TODO :: update limited-request-queue to support path-only URLs
-        link.brokenReason = instance.linkEnqueued.message==="Invalid URI" ? "BLC_INVALID" : "BLC_UNKNOWN";
-        
+        link.brokenReason = instance.linkEnqueued.message==="Invalid URI" ? "BLC_INVALID" : "BLC_UNKNOWN";  // TODO :: update limited-request-queue to support path-only URLs
         linkObj.clean(link);
-    
-        maybeCallback(instance.handlers.link)(link);
     }
 }
-
-
 
 function complete(message,instance){
     console.log('complete!!!');
@@ -62,18 +47,6 @@ function complete(message,instance){
     // reset(instance);
     // maybeCallback(instance.handlers.complete)();
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 function HtmlChecker(options, handlers){
     var thisObj = this; 
@@ -86,7 +59,7 @@ function HtmlChecker(options, handlers){
             maybeCallback(thisObj.handlers.link)(result);
         },
         end: function(){
-            console.log('done???');
+            console.log('done??? index');
             // If stream finished
             if (thisObj.parsed === true){
                 console.log('test--->');
@@ -179,7 +152,6 @@ var myHtmlChecker = new HtmlChecker(options,{
         }
     });
 
-
     myHtmlChecker.urlChecker = new UrlChecker(this.options,{
         link: function(result){
             console.log('done!');
@@ -209,80 +181,68 @@ function robotHeaders(instance){
 
 
 function scan(html, baseUrl, robots, instance, scanLinks){
-    console.log('html!!!');
+
+    var promise = q.defer();
     var tree;
     var thisObj = this;
-    
-    if (instance.active === false){
 
-        instance.active = true;
-        instance.baseUrl = baseUrl;
-        instance.robots = robots;
+    instance.baseUrl = baseUrl;
+    instance.robots = robots;
         
-        parseHtml(html).then(function(document){
-            console.log('document!');
-            // return;
-            tree = document;
-            return scrapeHtml(document, robots);
-        }).then( function(links){
-            if(links){
-                console.log('index.js: Number of links on page',links &&links.length);
-            } else {
-                console.log('index.js: Number of links on page',0);
-            }
-            instance.foundLinks = links;
-            maybeCallback(instance.handlers.html)(tree,instance.robots,links);
-            maybeCallback(instance.handlers.links)(links);
-            if(scanLinks !== false){
-                _.each(links,function(link){
-                    enqueueLink(link,instance);
-                });
-            }
-            
-            instance.parsed = true;
-            
-            if (instance.urlChecker.numActiveLinks() === 0 && instance.urlChecker.numQueuedLinks() === 0){
-                // complete(instance);
-                console.log('test--->');
-                finished.cb('done!',instance);
-            }
-        });   
-        return true;
-    }
-    return false;
+    parseHtml(html).then(function(document){
+        tree = document;
+        return scrapeHtml(document, robots);
+    }).then( function(links){
+
+        instance.foundLinks = links;
+        instance._tree = tree;
+
+        if(typeof instance !== 'undefined' || typeof instance.foundLinks === 'undefined' || instance.foundLinks === null || instance.foundLinks.length === 0){
+            return promise.resolve(instance);
+        }
+        
+        _.each(links,function(link){
+            enqueueLink(link,instance);
+        });
+        
+        instance.parsed = true;
+        promise.resolve(instance);
+
+    }).catch(function(err){
+        promise.reject({status:'error',message:err});
+    });
+
+    return promise.promise;
 };
 
-module.exports.init = function processPageRequest(input, callback) {
-    finished.cb = callback;
-    var response = {
-        links: {
-            all:[],
-            broken: [],
-            internal: [],
-            checked:[]
-        }
-    };
-
+module.exports.init = function processPageRequest(input) {
+    console.log('init pageScanner...')
+    var promise = q.defer();
     var url = input.url;
     var cache = {
         set: function(){
 
-        },
-    }; /* URL CACHE */
+        }
+    }; 
     myHtmlChecker.options.cacheResponses = false;
-    
-    streamHtml(url,cache,myHtmlChecker.options).then( function(result){
-        console.log('result!!!');
+    streamHtml(url,cache,myHtmlChecker.options).then(function(result){
+        console.log('streamHtml success...')
         myHtmlChecker.currentResponse = result.response;
-        myHtmlChecker.currentRobots = new RobotDirectives({ /* What is this? */
+        myHtmlChecker.currentRobots = new RobotDirectives({
             userAgent: myHtmlChecker.options.userAgent /* Is default what we want? */
         });      
         robotHeaders(myHtmlChecker);
-        // defaultOptions.userAgent                  
-        // Passes robots instance so that headers are included in robot exclusion checks
-        scan(result.stream, result.response.url, myHtmlChecker.currentRobots,myHtmlChecker,input.scanLinks);
-        // callback(true);
-    }).catch( function(error){
-        callback(false,error);
+        scan(result.stream, result.response.url, myHtmlChecker.currentRobots,myHtmlChecker,input.scanLinks).then(function(data){
+            console.log('scan success...');
+            promise.resolve(data);
+        }).catch(function(err){
+            console.log('scan failure...')
+            promise.reject(err);
+        });
+    }).catch(function(err){
+        console.log('streamHtml failure...')
+        promise.reject(err);
     });
+    return promise.promise;
+
 }

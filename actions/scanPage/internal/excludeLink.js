@@ -1,7 +1,8 @@
     var linkTypes = require("link-types").map,
     maybeCallback   = require("maybe-callback"),
     RobotDirectives = require("robot-directives");
-
+ var matchUrl     = require("../internal/matchUrl");
+  var isString = require("is-string");
 function excludeLink(link, instance){
 
     var attrSupported,externalFilter;
@@ -25,6 +26,7 @@ function excludeLink(link, instance){
     if (instance.options.excludeLinksToSamePage === true && link.samePage === true){
         return "BLC_SAMEPAGE";
     } 
+    console.log('link',link);
     if (instance.options.excludedSchemes[link.url.parsed.extra.protocolTruncated] === true){
         return "BLC_SCHEME";
     } 
