@@ -2,35 +2,31 @@ var http = require('http'),
 querystring = require('querystring');
 
 function callback(data){
+    console.log('postApiCall-->',data);
+    var postData = querystring.stringify({
+        message:data.message,
+        title:data.title,
+        uid: data.uid,
+        page: data.page,
+        eventType: data.eventType,
+        item: data.item,
+        preClass: data.preClass,
+        postClass: data.postClass
+    });
 
-        console.log('postApiCall-->',data);
+    console.log('postData',postData);
 
-        var postData = querystring.stringify({
-            message:data.message,
-            title:data.title,
-            uid: data.uid,
-            page: data.page,
-            eventType: data.eventType,
-            item: data.item,
-            preClass: data.preClass,
-            postClass: data.postClass
-        });
+    var options = {
+      hostname: 'localhost',
+      port: 3000,
+      path: '/callback',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      }
+    };
 
-        console.log('postData',postData);
-
-        var options = {
-          hostname: 'localhost',
-          port: 3000,
-          path: '/callback',
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Content-Length': Buffer.byteLength(postData)
-          }
-        };
-
-
-// console.log('dfdsfs');
     var req = http.request(options, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
@@ -45,6 +41,7 @@ function callback(data){
 
     console.log('dfdsfs');
     req.on('error', (e) => {
+        /* Do sometihng if not responsive? */
       console.log(`problem with request: ${e.message}`);
     });
 
@@ -55,44 +52,3 @@ function callback(data){
 }
 
 module.exports = callback;
-
-
-
-
-
-
-
-
-// var http = require('http');
-// var querystring = require('querystring');
-
-// function requests(socket){
-    
-//     socket.on('queue/page', function (data) {
-//         console.log('test');
-//             // exports.postApiCall = function(_req, _res, next){
-
-//         var req = http.request(options, (res) => {
-//           console.log(`STATUS: ${res.statusCode}`);
-//           console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
-//           res.setEncoding('utf8');
-//           res.on('data', (chunk) => {
-//             console.log(`BODY: ${chunk}`);
-//           });
-//           res.on('end', () => {
-//             console.log('No more data in response.');
-//           });
-//         });
-
-//         req.on('error', (e) => {
-//           console.log(`problem with request: ${e.message}`);
-//         });
-
-//         // write data to request body
-//         req.write(postData);
-//         req.end();
-
-//     });
-// }
-
-// module.exports = requests;

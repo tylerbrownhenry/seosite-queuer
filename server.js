@@ -1,18 +1,21 @@
-var express     = require('express');
-var app         = express();
-var bodyParser  = require('body-parser');
-var morgan      = require('morgan');
-var io      = require('socket.io');
-var q      = require('Q');
-var notify = require('./actions/callback');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var morgan = require('morgan');
+var io = require('socket.io');
+var q = require('Q');
+var _ = require('underscore');
 var mongoose    = require('mongoose');
-var publisher    = require('./amqp-connections/publisher');
-var _    = require('underscore');
-var checkUserPermissions    = require('./settings/checkRequestPermissions');
-var amqpConnection    = require('./amqp-connections/amqp');
-var jwt    = require('jsonwebtoken'); // used to create, sign, and verify tokens
-var User   = require('./schemas/userSchema'); // get our mongoose model
+var jwt    = require('jsonwebtoken');
+var sh = require("shorthash");
+
 require('dotenv').config();
+
+var notify = require('./actions/callback');
+var publisher = require('./amqp-connections/publisher');
+var requests = require('./settings/requests');;
+var amqpConnection = require('./amqp-connections/amqp');
+var User = require('./schemas/userSchema'); 
 
 var permissions = {
     free : require('./permissions/freeUserPermissions'),
@@ -46,27 +49,11 @@ if (cluster.isMaster) {
     app.use(bodyParser.json());
     app.use(morgan('dev'));
 
-    app.get('/setup', function(req, res) {
-        // create a sample user
-        var nick = new User({ 
-            password: 'password',
-            admin: true,
-            email: 'nick@yo.com',
-            profile:{
-                name: 'Nick Cerminara', 
-            }
-        });
-        nick.save(function(err) {
-            if (err){
-                throw err;
-            } 
-            console.log('User saved successfully');
-            res.json({ success: true });
-        });
-    });
-
     var apiRoutes = express.Router(); 
 
+    // ---------------------------------------------------------
+    // authenticated routes
+    // ---------------------------------------------------------
 
     function _authorize(req,res){
         var promise = q.defer();
@@ -79,14 +66,22 @@ if (cluster.isMaster) {
                 promise.reject({
                     success: false,
                     type: 'error',
-                    message: [{parent:'form',title:'Rats... ',message:'Failed to authenticate token.'}]
+                    message: [{
+                        parent:'form',
+                        title:'Rats... ',
+                        message:'Failed to authenticate token.'
+                    }]
                 });
             } else {
                 if (typeof user === 'undefined' || user === null) {
                     promise.reject({ 
                         success: false,
                         type: 'userInput',
-                        message: [{parent:'form',title:'Shucks... ',message:'Invalid user/token combination.'}]
+                        message: [{
+                            parent:'form',
+                            title:'Shucks... ',
+                            message:'Invalid user/token combination.'
+                        }]
                     });
                 } else {
                     promise.resolve(user);
@@ -96,49 +91,6 @@ if (cluster.isMaster) {
         return promise.promise;
     }
 
-    function authorize(req,res,callback){
-        User.findOne({
-            uid: req.body.uid,
-            apiToken: req.body.token
-        }, function(err, user) {
-            var user = user.toJSON();
-            console.log('verify',err, user);
-            console.log('verify',err, user,typeof user,_.keys(user));
-            console.log('verify',_.keys(user));
-            if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });      
-            } else {
-                user = undefined;
-                if (typeof user === 'undefined' || user === null) {
-                    res.json({ success: false, message: 'Authentication failed.' });
-                } else {
-                    callback(res,req,user)
-                }
-            }
-        });
-    }
-
-    // ---------------------------------------------------------
-    // authenticated routes
-    // ---------------------------------------------------------
-    apiRoutes.get('/requestPermissions', function(req, res) {
-        console.log('req',req.body);
-        authorize(req,res,function(res,req,user){
-            // startQueue();
-            // amqpConnection(true)
-
-            /* Check Permissions of User */
-            console.log('success!');
-            res.json({
-                success: true,
-                message: 'Added to Queue'
-            });
-        });
-    });
-
-
-
-
     function checkOptions(req){
         var promise = q.defer();
         var resp = true;
@@ -146,13 +98,11 @@ if (cluster.isMaster) {
             promise.reject({
                 success: false,
                 type: 'userInput',
-                message: [
-                {
+                message: [{
                     parent:'url',
                     title: 'Whoops! ',
                     message: 'Url is required.'
-                },
-                {
+                },{
                     parent:'options',
                     title: 'Doh! ',
                     message: 'Options are required.'
@@ -197,38 +147,111 @@ if (cluster.isMaster) {
     function checkApiCall(req,res,params){   
         var promise = q.defer();     
         checkOptions(req).then(function(){
+            console.log('server.js checkOptions success');
             checkRequirements(params,req.body).then(function(){
+                console.log('server.js checkRequirements success');
                 _authorize(req).then(function(user){
-                    console.log('user',user);
+                    console.log('server.js _authorize success');
                     var options = JSON.parse(req.body.options)
-                    checkUserPermissions(user,options,permissions[user.stripe.plan]).then(function(passed){
-                       promise.resolve(user,options);
+                    requests.validate(user,options,permissions[user.stripe.plan]).then(function(passed){
+                        console.log('server.js checkRequestPermissions success');
+                        promise.resolve(user,options);
                     }).catch(function(err){
-                        console.log('test...2');
+                        console.log('server.js checkApiCall checkRequestPermissions err',err);
                         promise.reject(err);
                     })
                 }).catch(function(err){
-                    console.log('test...23');
+                    console.log('server.js checkApiCall _authorize err',err);
                     promise.reject(err);
                 });
             }).catch(function(err){
-                console.log('test...24');
+                console.log('server.js checkApiCall checkRequirements err',err);
                 promise.reject(err);
             });
         }).catch(function(err){
-            console.log('test...25');
+            console.log('server.js checkApiCall checkOptions err',err);
             promise.reject(err);
         });
         return promise.promise;
     }  
        
+    apiRoutes.post('/queue', function(req, res) {
+        res.json({ message: 'Ok'});
+        checkApiCall(req,res,['options','token','url','uid']).then(function(user,options){
+            console.log('server.js checkApiCall succees');
+                var message = {
+                    date: Date.now(),
+                    user: user.uid,
+                    url:req.body.url,
+                    options:options
+                }
+                var requestId = sh.unique(JSON.stringify(message));
+                message.requestId = requestId;
+            publisher.publish("", "pages", new Buffer(JSON.stringify(message))).then(function(re){
+                console.log('server.js publisher.publish succees');
+                notify({
+                    message:'Starting Scan!',
+                    uid: user.uid,
+                    page: req.body.page,
+                    eventType: 'requestUpdate',
+                    preClass: '',
+                    postClass: 'pending',
+                    item: requestId
+                });
+            }).catch(function(err){
+                console.log('server.js publisher.publish err',err);
+                notify({
+                    message:JSON.stringify(err.message),
+                    uid: user.uid,
+                    page: req.body.page,
+                    title: 'Server Error',
+                    eventType: 'requestError',
+                    preClass: null,
+                    postClass: 'error',
+                    item: req.body.preClass});
+                });
+        }).catch(function(err){
+            console.log('server.js checkApiCall err',err);
+            notify({
+                message:JSON.stringify(err.message),
+                title: 'Validation Error',
+                uid: req.body.uid,
+                page: req.body.page,
+                eventType: 'requestError',
+                preClass: null,
+                postClass: 'error',
+                item: req.body.preClass});
+            });
+    });
 
+    /*
+    Should only be called by a bot
+    */
+
+    function authorize(req,res,callback){
+        User.findOne({
+            uid: req.body.uid,
+            apiToken: req.body.token
+        }, function(err, user) {
+            var user = user.toJSON();
+            console.log('verify',err, user);
+            console.log('verify',err, user,typeof user,_.keys(user));
+            console.log('verify',_.keys(user));
+            if (err) {
+                return res.json({ success: false, message: 'Failed to authenticate token.' });      
+            } else {
+                user = undefined;
+                if (typeof user === 'undefined' || user === null) {
+                    res.json({ success: false, message: 'Authentication failed.' });
+                } else {
+                    callback(res,req,user)
+                }
+            }
+        });
+    }
 
     app.get('/refreshPermissions', function(req, res) {
         authorize(req,res,function(res,req,user){
-            // var freeUser   = require('./freeUserPermissions'); 
-            // var paidUser   = require('./paidUserPermissions');
-
             permissions.free.upsert({label:freeUser.label},function(err) {
                 if (err){
                     res.json({ message: err });
@@ -245,18 +268,6 @@ if (cluster.isMaster) {
         });
     });
 
-    app.get('/testPublish',function(req,res){
-        var publisher = require('./publisher'); 
-        publisher.publish("", "jobs", new Buffer(JSON.stringify({user:'17PmsI',url:'http://mariojacome.com',options:{
-        // publisher.publish("", "jobs", new Buffer(JSON.stringify({user:'17PmsI',url:'https://en.wikipedia.org/wiki/List_of_largest_cities',options:{
-        // publisher.publish("", "jobs", new Buffer(JSON.stringify({user:'17PmsI',url:'https://badssl.com',options:{
-            limit: 1000,
-            filterLevel: 0,
-            scanDepth: 3,
-            date: Date.now()
-        }})));
-    })
-
     app.get('/refreshCounts', function(req, res) {
         /*
         Should only be called by a bot
@@ -267,75 +278,15 @@ if (cluster.isMaster) {
         });
     });
 
-
-
-
-
-
-
-    apiRoutes.post('/queue', function(req, res) {
-
-
-
-        console.log('right back at ya!');
-        res.json({ message: 'Ok'});
-        console.log('req.body.preClass',req.body);
-        console.log('req.body.page',req.body.page);
-        checkApiCall(req,res,['options','token','url','uid']).then(function(user,options){
-            publisher.publish("", "pages", new Buffer(JSON.stringify({
-                user: user.uid,
-                url:req.body.url,
-                options:options
-            }))).then(function(re){
-                console.log('test',re);
-                notify({
-                    message:'Starting Scan!',
-                    uid: user.uid,
-                    page: req.body.page,
-                    eventType: 'requestUpdate',
-                    preClass: '',
-                    postClass: 'pending',
-                    item: 'requestId'});
-
-            }).catch(function(err){
-                console.log('err',err);
-                notify({
-                    message:JSON.stringify(err.message),
-                    uid: user.uid,
-                    page: req.body.page,
-                    title: 'Server Error',
-                    eventType: 'requestError',
-                    preClass: null,
-                    postClass: 'error',
-                    item: req.body.preClass});
-            });
-        }).catch(function(err){
-            console.log('err',err);
-            notify({
-                message:JSON.stringify(err.message),
-                title: 'Validation Error',
-                uid: req.body.uid,
-                page: req.body.page,
-                eventType: 'requestError',
-                preClass: null,
-                postClass: 'error',
-                item: req.body.preClass});
-
-            return;
-        });
-    });
-
     apiRoutes.get('/', function(req, res) {
-        res.json({ message: 'Welcome to the coolest API on earth!' + JSON.stringify(req.body)});
+        res.json({ message: 'Yo!' + JSON.stringify(req.body)});
     });
 
     app.use('/api', apiRoutes);
-    // app.listen(port);
 
     var server = app.listen(port, function() {
         console.log('Express server listening on port ' + server.address().port);
     });
 
-    console.log('Magic happens at http://localhost:' + port);
     amqpConnection();
 }

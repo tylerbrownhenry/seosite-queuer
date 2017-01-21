@@ -32,6 +32,10 @@ var requestSchema = new mongoose.Schema({
     failedReason: {
         type: String,
         default: null
+    },
+    response: {
+        type: Object,
+        default: {}
     }
 });
 

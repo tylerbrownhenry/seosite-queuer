@@ -1,15 +1,7 @@
 var errorHandler = require('../settings/errorHandler');
-var _ = require('underscore');
-var publisher = require('./publisher');
-var sh = require("shorthash");
-var q = require('q');
 var mongoose = require('mongoose');
-var linkSchema = require("../schemas/linkSchema");
+var settings = require("../settings/requests");
 var requestSchema = require("../schemas/requestSchema");
-var pageRequest = require("../requests/pageRequest");
-var linkRequest = require("../requests/linkRequest");
-var User = require("../schemas/userSchema");
-var Link = mongoose.model('Link', linkSchema, 'links ');
 var Request = mongoose.model('Request', requestSchema, 'requests');
 
 module.exports.start = function(amqpConn) {
@@ -62,7 +54,9 @@ module.exports.start = function(amqpConn) {
         });
 
         function processLink(msg) {
-            linkRequest(msg).then(function(ok) {
+            console.log('processLink');
+            var type = 'link';
+            settings.types[type](msg).then(function(ok) {
                 console.log('ackking message');
                 ch.ack(msg);
             }).catch(function(err){
@@ -74,7 +68,8 @@ module.exports.start = function(amqpConn) {
 
         function processPage(msg) {
             console.log('processPage');
-            pageRequest(msg).then(function(response,message,requestId) {
+            var type = 'page';
+            settings.types[type](msg).then(function(response,message,requestId) {
                 console.log('ackking message');
                 ch.ack(msg);                  
             }).catch(function(err){

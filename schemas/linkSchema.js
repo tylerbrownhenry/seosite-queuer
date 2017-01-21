@@ -13,6 +13,9 @@ var linkSchema = new mongoose.Schema({
     found: {
         type: Date
     },
+    _id: {
+        type: String
+    },
     uid: {
         type: String
     },
@@ -29,7 +32,7 @@ var linkSchema = new mongoose.Schema({
     __link: {
         type: Object
     },
-    __scan: {
+    results: {
         type: Object
     }
 });
