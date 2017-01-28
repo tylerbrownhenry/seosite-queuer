@@ -3,7 +3,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var io = require('socket.io');
-var q = require('Q');
+var q = require('q');
 var _ = require('underscore');
 var mongoose    = require('mongoose');
 var jwt    = require('jsonwebtoken');
@@ -175,54 +175,54 @@ if (cluster.isMaster) {
         return promise.promise;
     }  
        
-    apiRoutes.post('/queue', function(req, res) {
-        res.json({ message: 'Ok'});
-        checkApiCall(req,res,['options','token','url','uid']).then(function(user,options){
-            console.log('server.js checkApiCall succees');
-                var message = {
-                    date: Date.now(),
-                    user: user.uid,
-                    url:req.body.url,
-                    options:options
-                }
-                var requestId = sh.unique(JSON.stringify(message));
-                message.requestId = requestId;
-            publisher.publish("", "pages", new Buffer(JSON.stringify(message))).then(function(re){
-                console.log('server.js publisher.publish succees');
-                notify({
-                    message:'Starting Scan!',
-                    uid: user.uid,
-                    page: req.body.page,
-                    eventType: 'requestUpdate',
-                    preClass: '',
-                    postClass: 'pending',
-                    item: requestId
-                });
-            }).catch(function(err){
-                console.log('server.js publisher.publish err',err);
-                notify({
-                    message:JSON.stringify(err.message),
-                    uid: user.uid,
-                    page: req.body.page,
-                    title: 'Server Error',
-                    eventType: 'requestError',
-                    preClass: null,
-                    postClass: 'error',
-                    item: req.body.preClass});
-                });
-        }).catch(function(err){
-            console.log('server.js checkApiCall err',err);
-            notify({
-                message:JSON.stringify(err.message),
-                title: 'Validation Error',
-                uid: req.body.uid,
-                page: req.body.page,
-                eventType: 'requestError',
-                preClass: null,
-                postClass: 'error',
-                item: req.body.preClass});
-            });
-    });
+    // apiRoutes.post('/queue', function(req, res) {
+    //     res.json({ message: 'Ok'});
+    //     checkApiCall(req,res,['options','token','url','uid']).then(function(user,options){
+    //         console.log('server.js checkApiCall succees');
+    //             var message = {
+    //                 date: Date.now(),
+    //                 user: user.uid,
+    //                 url:req.body.url,
+    //                 options:options
+    //             }
+    //             var requestId = sh.unique(JSON.stringify(message));
+    //             message.requestId = requestId;
+    //         publisher.publish("", "pages", new Buffer(JSON.stringify(message))).then(function(re){
+    //             console.log('server.js publisher.publish succees');
+    //             notify({
+    //                 message:'Starting Scan!',
+    //                 uid: user.uid,
+    //                 page: req.body.page,
+    //                 eventType: 'requestUpdate',
+    //                 preClass: '',
+    //                 postClass: 'pending',
+    //                 item: requestId
+    //             });
+    //         }).catch(function(err){
+    //             console.log('server.js publisher.publish err',err);
+    //             notify({
+    //                 message:JSON.stringify(err.message),
+    //                 uid: user.uid,
+    //                 page: req.body.page,
+    //                 title: 'Server Error',
+    //                 eventType: 'requestError',
+    //                 preClass: null,
+    //                 postClass: 'error',
+    //                 item: req.body.preClass});
+    //             });
+    //     }).catch(function(err){
+    //         console.log('server.js checkApiCall err',err);
+    //         notify({
+    //             message:JSON.stringify(err.message),
+    //             title: 'Validation Error',
+    //             uid: req.body.uid,
+    //             page: req.body.page,
+    //             eventType: 'requestError',
+    //             preClass: null,
+    //             postClass: 'error',
+    //             item: req.body.preClass});
+    //         });
+    // });
 
     /*
     Should only be called by a bot
@@ -290,7 +290,6 @@ if (cluster.isMaster) {
 
     amqpConnection();
 
-
     function _preFlight(req,res,needs,callback){
         checkApiCall(req,res,needs).then(function(user,options){
             callback(user,options);
@@ -313,8 +312,6 @@ if (cluster.isMaster) {
             queue.destroy(options)
         });
     });
-
-
 
   apiRoutes.post('/v1/capture', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
@@ -354,10 +351,6 @@ if (cluster.isMaster) {
                 });
         });
     });   
-
-
-
-
 
     apiRoutes.post('/v1/queue', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
