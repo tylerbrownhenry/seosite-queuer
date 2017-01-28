@@ -1,0 +1,433 @@
+var mongoose = require('mongoose');
+var linkSchema = require("../../schemas/linkSchema");
+var requestSchema = require("../../schemas/requestSchema");
+var pageScanner = require("../../actions/scanPage/index");
+var publisher = require("../../amqp-connections/publisher");
+var Link = mongoose.model('Link', linkSchema, 'links ');
+var Request = mongoose.model('Request', requestSchema, 'requests');
+var q = require('q');
+var _ = require('underscore');
+var sh = require("shorthash");
+
+var sniff = require('../../actions/sniff/index');
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+###
+*/
+function updateCount(requestId, updatedCount, response) {
+    console.log('response',response);
+    var promise = q.defer();
+    Request.collection.findOneAndUpdate({
+        requestId: requestId
+    }, {
+        $inc: {
+            processes: updatedCount - 1
+        },
+        $set: {
+            dev_use_only_request: response.currentResponse,
+            response: {
+                resolvedUrl: response.url.resolvedUrl,
+                statusMessage: 'Success',
+                // 'content-type' : response.currentResponse.headers["content-type"],
+                redirects: response.redirects,
+                failedReason: null               
+            }
+        }
+    }, {
+        returnNewDocument: true
+    }, function(err, data) {
+        if(err){
+            promise.reject(err,{system: 'mongo',requestId:requestId,status:'warning',message:'Error occured while updating request count. Error: '+ err.message,requestId:requestId, updatedCount:updatedCount,func:'updateCount'});
+        } else {
+            promise.resolve({requestId:requestId, updatedCount:updatedCount});
+        }
+    });
+    return promise.promise;
+}
+
+function summaryRequest(msg) {
+    var promise = q.defer();
+    var input = JSON.parse(msg.content);
+    var parentLink = input.url;
+    var requestId = input.requestId;
+    
+    var _request = new Request({
+        url: input.url,
+        uid: input.user,
+        options: input.options,
+        requestId: input.requestId,
+        requestDate: Date.now(),
+        processes: 0,
+        status: 'active'
+    });
+
+    console.log('Saving request...');
+    _request.save(function (err, result) {
+        console.log('Request saved...');
+        if (err !== null){
+            promise.reject({
+                requestId:requestId,
+                status:'error',
+                message:'Trouble saving request. Error: '+ err,system: 'mongo'
+            });
+        } else {
+
+            var harOptions = {
+                url: input.url,
+                // bodies:true
+            };
+
+
+
+            sniff.har(harOptions).then(function(res){
+                
+
+                var captureSchema = new mongoose.Schema({
+                    requestId:{
+                        type: String
+                    },
+                    url: {
+                        type: Object
+                    },
+                    captures: {
+                        type: Object
+                    },
+                    status: {
+                        type: String,
+                        default: 'init'
+                    }
+                });
+
+                var Capture = mongoose.model('Capture', captureSchema, 'captures');
+                capture = new Capture({
+                    url:res.url.resolvedUrl,
+                    requestId: requestId
+                });
+                capture.save(function(e){
+                    console.log('capture saved',e);
+                });
+
+                publisher.publish("", "capture", new Buffer(JSON.stringify({ 
+                        url: res.url.resolvedUrl,
+                        requestId:  requestId
+                    })),
+                    {
+                    url: res.url.resolvedUrl,
+                    requestId:requestId
+                }).then(function(err,data){
+                    console.log('Capture published'); 
+                }).catch(function(err){
+                    console.log('Error publishing capture');
+                })
+                /* 
+                Handle Errors!!!
+                Handle Errors!!!
+                Handle Errors!!!
+                Handle Errors!!!
+                Handle Errors!!!
+                Handle Errors!!!
+                Handle Errors!!!
+                */
+                console.log('hardy har har!');
+                var scanSchema = new mongoose.Schema({
+                    requestId:{
+                        type: String
+                    },
+                    meta: {
+                        type: Object
+                    },
+                    resources: {
+                        type: Object
+                    },
+                    emails:{
+                        type: Object
+                    },
+                    linkCount: {
+                        type: Number
+                    },
+                    url: {
+                        type: Object
+                    },
+                    redirects: {
+                        type: Number
+                    }
+                });
+
+                var Scan = mongoose.model('Scan', scanSchema, 'scans');
+                var links = res.links;
+                res.links = undefined;
+                res.linkCount = links.length;
+                var newScan = new Scan(res);
+                newScan.requestId = requestId;
+                var interest = {
+                    "Content-Type": {
+                        "text/css": true,
+                        "text/css; charset=utf-8": true,
+                        "text/javascript": true,
+                        "text/javascript; charset=UTF-8": true,
+                        "application/x-javascript": true,
+                        "application/x-javascript; charset=UTF-8": true,
+                        "application/javascript": true,
+                        "application/javascript; charset=UTF-8": true,
+                    },
+                    "Content-Encoding": {
+                        "gzip": true
+                    },
+                    "Cache-Control": true
+                }
+
+                function Resource(e){
+                    var acceptableGzip = null;
+                    var gZippable = null;
+                    var contentType = null;
+                    var cached = false;
+                    _.each(e.response.headers,function(header){
+                        if(typeof interest[header.name] !== 'undefined'){
+                            if(header.name === "Content-Type"){
+                                gZippable = true;
+                                contentType = header.value;
+                            } else if(header.name === "Content-Encoding"){
+                                acceptableGzip =  (interest[header.name][header.value] === true) ? true : false;
+                            } else if(header.name === 'Cache-Control'){
+                                cached = true;
+                            }
+                        }
+                    });
+
+                    return {
+                        duration: e.time,
+                        start: e.startedDateTime,
+                        timings: e.timings,
+                        url: e.request.url,
+                        // request: {
+                            // url: e.request.url,
+                            // method: e.request.method,
+                            // bodySize: e.request.bodySize
+                        // },
+                        // pageref: e.pageref,
+                        status: e.response.status,
+                        // response: {
+                            // content: e.response.content,
+                            // status: e.response.status,
+                            // statusText: e.response.statusText
+                        // },
+                        // headers: {
+                        gzip: (gZippable) ? acceptableGzip : null,
+                        type: contentType,
+                        cached: cached,
+                        minified: null
+                        // }
+                    }
+                }
+
+                function postProcess(scan){
+                    var response = [];
+                    if(scan && scan.log && scan.log.entries){
+                        _.each(scan.log.entries,function(entry){
+                            response.push(new Resource(entry))
+                        });
+                    }
+                    return response;
+                }
+
+                var resources = postProcess(res);
+                newScan.resources = resources;
+                newScan.emails = newScan.emails;
+                newScan.meta = {
+                    title: {
+                        message: 'No title found',
+                        text: '',
+                        found:false
+                    },
+                    description:{
+                        message: 'No meta description found.',
+                        element: null,
+                        text: '',
+                        found: false
+                    },
+                    h1:{
+                        message: 'No h1 found.',
+                        element: null,
+                        text: '',
+                        found: false
+                    },
+                    h2:{
+                        message: 'No h2 found.',
+                        element: null,
+                        text: '',
+                        found: false
+                    }
+                }
+
+                var links = _.filter(links,function(link){
+                    if(typeof link.specialCase !== 'undefined'){
+                        if(link.specialCase === 'title'){
+                            newScan.meta.title.found = true;
+                            newScan.meta.title.text = link.html.text;
+                            newScan.meta.title.message = 'Found'
+                        } else if(link.specialCase === 'description'){
+                            newScan.meta.description.found = true;
+                            newScan.meta.description.element = link.html.tag;
+                            newScan.meta.description.text = link.html.attrs.content;
+                            newScan.meta.description.message = 'Found'
+                        }  else if(link.specialCase === 'h1'){
+                            newScan.meta.h1.found = true;
+                            newScan.meta.h1.element = link.html.tag;
+                            newScan.meta.h1.text = link.html.attrs.content;
+                            newScan.meta.h1.message = 'Found'
+                        }  else if(link.specialCase === 'h2'){
+                            newScan.meta.h2.found = true;
+                            newScan.meta.h2.element = link.html.tag;
+                            newScan.meta.h2.text = link.html.attrs.content;
+                            newScan.meta.h2.message = 'Found'
+                        }
+                        return false;
+                    }
+                    return true;
+                });
+
+                delete newScan.log;
+                newScan.save(function (err, result) {
+                    /*
+                    Handle an error
+                    */
+
+                    var parentLink = newScan.url.resolvedUrl;
+                    for (var i = 0; i < 100; i++) {
+                        console.log('newScan saved...',parentLink);
+                    }
+
+
+
+                    var counter = 0;
+                    var commands = [];
+
+                    var linkObj = {};
+                    if(typeof links === 'undefined'){
+                        return promise.resolve({status:'success',data:'No links found to add to queue'});
+                    }
+                    _.each(links, function(link) {
+                        var linkId = sh.unique(link.url.original+requestId);
+                        commands.push({
+                            updateOne: {
+                                "filter": {
+                                    "_id": linkId,
+                                    "requestId": requestId
+                                },
+                                "replacement": {
+                                    "resolvedUrl": parentLink, /* REsolved url? */
+                                    "url": link.url.original,
+                                    "_id": linkId,
+                                    "site": parentLink,
+                                    "requestId": requestId,
+                                    "status": 'pending',
+                                    "__scan": {},
+                                    "uid": input.user,
+                                    "found": Date.now(),
+                                    "scanned": null,
+                                    "__link": link
+                                },
+                                "upsert": true
+                            }
+                        });
+                        link._id = linkId;
+                        linkObj[linkId] = link;
+                    });
+
+                    console.log('Error/Success pageScanner...3');
+                    var updatedCount = 0;
+
+                    Link.collection.bulkWrite(commands,{},function(err,e) {
+
+                        if(typeof err === 'BulkWriteError'){
+                            return promise.reject({system: 'mongo',requestId: requestId, status:'error',message: 'Trouble saving link information Error:' + err.message,commands: commands, func:'Link.collection.bulkWrite'});
+                        } else if (typeof err === 'MongoError'){
+                            return promise.reject({system: 'mongo',requestId: requestId, status:'error',message:'Trouble with the database connection. Error: '+ err.message, commands: commands, func:'Link.collection.bulkWrite'});
+                        } else if (e === null){
+                            return promise.reject({system: 'mongo',requestId: requestId, status:'error',message:'Trouble saving found links. Error: ' + e.message,commands: commands, func:'Link.collection.bulkWrite'});
+                        }
+
+                        updatedCount = _.keys(e.upsertedIds).length;
+                        console.log('Error/Success pageScanner...4',updatedCount,e);
+
+                        updateCount(requestId, updatedCount, newScan).then(function(resp){
+                            if(_.keys(e.upsertedIds).length !== 0){
+                                _.each(_.keys(e.upsertedIds), function(_id) {
+                                    var id = e.upsertedIds[_id];
+                                    var buffer = new Buffer(JSON.stringify({ 
+                                        url:        linkObj[id].resolvedUrl,
+                                        requestId:  requestId,
+                                        linkId:     linkObj[id]._id,
+                                        uid:        input.user,
+                                        baseUrl:    parentLink,
+                                        _link:      linkObj[id]
+                                    }));
+                                    publisher.publish("", "links", buffer, {
+                                        type: parentLink,
+                                        messageId: linkObj[id]._id
+                                    }).then(function(err,data){
+                                        console.log('Error/Success pageScanner...7');
+                                        promise.resolve({
+                                            status:'success',
+                                            data:'New links added to queue'});  
+                                    }).catch(function(err){
+                                        console.log('Error/Success pageScanner...6');
+                                        promise.reject(err);
+                                    })
+                                });
+                            } else {
+                                console.log('Error/Success pageScanner...5');
+                                promise.resolve({status:'success',data:'No new links found to add to queue'});
+                            }
+                        }).catch(function(err){
+                            console.log('Error/Success pageScanner...8',err);
+                            /* 
+                            Update count is only thing to fail here 
+                            */
+                            promise.reject(err);
+                        });
+                    })
+                });/*Handle an error here... */
+            });
+        }
+    });
+    return promise.promise;
+}
+
+module.exports = summaryRequest;

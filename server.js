@@ -13,7 +13,7 @@ require('dotenv').config();
 
 var notify = require('./actions/callback');
 var publisher = require('./amqp-connections/publisher');
-var requests = require('./settings/requests');;
+var requests = require('./settings/requests');
 var amqpConnection = require('./amqp-connections/amqp');
 var User = require('./schemas/userSchema'); 
 
@@ -289,4 +289,112 @@ if (cluster.isMaster) {
     });
 
     amqpConnection();
+
+
+    function _preFlight(req,res,needs,callback){
+        checkApiCall(req,res,needs).then(function(user,options){
+            callback(user,options);
+        }).catch(function(err){
+            notify({
+                message:JSON.stringify(err.message),
+                title: 'Validation Error',
+                uid: req.body.uid,
+                page: req.body.page,
+                eventType: 'requestError',
+                preClass: null,
+                postClass: 'error',
+                item: req.body.preClass});
+        });
+    }
+
+    apiRoutes.post('/v1/purge', function(req, res) {
+        res.json({ message: 'Ok we got it from here!'});
+        _preFlight(req,res,['token','uid'],function(user,options){
+            queue.destroy(options)
+        });
+    });
+
+
+
+  apiRoutes.post('/v1/capture', function(req, res) {
+        res.json({ message: 'Ok we got it from here!'});
+        _preFlight(req,res,['options','token','url','uid'],function(user,options){
+                console.log('we is in!');
+                console.log('server.js checkApiCall succees');
+                var message = {
+                    date: Date.now(),
+                    user: user.uid,
+                    url:req.body.url,
+                    options:options
+                }
+                var requestId = sh.unique(JSON.stringify(message));
+                message.requestId = requestId;
+            publisher.publish("", "capture", new Buffer(JSON.stringify(message))).then(function(re){
+                console.log('server.js publisher.publish succees');
+                notify({
+                    message:'Starting Capture!',
+                    uid: user.uid,
+                    page: req.body.page,
+                    eventType: 'requestUpdate',
+                    preClass: '',
+                    postClass: 'pending',
+                    item: requestId
+                });
+            }).catch(function(err){
+                console.log('server.js publisher.publish err',err);
+                notify({
+                    message:JSON.stringify(err.message),
+                    uid: user.uid,
+                    page: req.body.page,
+                    title: 'Server Error',
+                    eventType: 'requestError',
+                    preClass: null,
+                    postClass: 'error',
+                    item: req.body.preClass});
+                });
+        });
+    });   
+
+
+
+
+
+    apiRoutes.post('/v1/queue', function(req, res) {
+        res.json({ message: 'Ok we got it from here!'});
+        _preFlight(req,res,['options','token','url','uid'],function(user,options){
+            console.log('we is in!');
+            console.log('server.js checkApiCall succees');
+                var message = {
+                    date: Date.now(),
+                    user: user.uid,
+                    url:req.body.url,
+                    options:options
+                }
+                var requestId = sh.unique(JSON.stringify(message));
+                message.requestId = requestId;
+            publisher.publish("", "summary", new Buffer(JSON.stringify(message))).then(function(re){
+                console.log('server.js publisher.publish succees');
+                notify({
+                    message:'Starting Scan!',
+                    uid: user.uid,
+                    page: req.body.page,
+                    eventType: 'requestUpdate',
+                    preClass: '',
+                    postClass: 'pending',
+                    item: requestId
+                });
+            }).catch(function(err){
+                console.log('server.js publisher.publish err',err);
+                notify({
+                    message:JSON.stringify(err.message),
+                    uid: user.uid,
+                    page: req.body.page,
+                    title: 'Server Error',
+                    eventType: 'requestError',
+                    preClass: null,
+                    postClass: 'error',
+                    item: req.body.preClass});
+            });
+        });
+    });   
 }

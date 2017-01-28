@@ -1,8 +1,5 @@
 "use strict";
-
 var q = require('q');
-var _ = require('underscore');
-
 var _ = require('underscore');
 
 function validate(user,request,permissions){
@@ -23,6 +20,9 @@ function siteRequestValidate(){
 }
 
 function linkRequestValidate(){
+
+}
+function captureRequestValidate(){
 
 }
 
@@ -101,14 +101,19 @@ function pageRequestValidate(user,request,permissions){
 
 var approvedRequestTypes = {
     page: pageRequestValidate,
-    site: siteRequestValidate,
-    link: linkRequestValidate
+    summary: pageRequestValidate,
+    // site: siteRequestValidate,
+    link: linkRequestValidate,
+    capture: captureRequestValidate
 }
 
 module.exports = {
     validate : validate,
     types : {
         page: require('./requests/page'),
-        link: require('./requests/link')
+        link: require('./requests/link'),
+        // site: require('./requests/link'),
+        summary: require('./requests/summary'),
+        capture: require('./requests/capture')
     }
 }

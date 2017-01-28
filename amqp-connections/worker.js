@@ -53,6 +53,28 @@ module.exports.start = function(amqpConn) {
             ch.consume("links", processLink,{noAck:false});
         });
 
+        ch.assertQueue("summary", {
+            durable: true
+        }, function(err, _ok) {
+            if (errorHandler(amqpConn, err)) {
+                /* Restart or something? */
+                console.log('amqpConn', amqpConn, 'err', err);
+                return;
+            }
+            ch.consume("summary", processSummary,{noAck:false});
+        });
+
+        ch.assertQueue("capture", {
+            durable: true
+        }, function(err, _ok) {
+            if (errorHandler(amqpConn, err)) {
+                /* Restart or something? */
+                console.log('amqpConn', amqpConn, 'err', err);
+                return;
+            }
+            ch.consume("capture", processCapture,{noAck:false});
+        });
+
         function processLink(msg) {
             console.log('processLink');
             var type = 'link';
@@ -69,6 +91,52 @@ module.exports.start = function(amqpConn) {
         function processPage(msg) {
             console.log('processPage');
             var type = 'page';
+            settings.types[type](msg).then(function(response,message,requestId) {
+                console.log('ackking message');
+                ch.ack(msg);                  
+            }).catch(function(err){
+                console.log('request failed');
+                ch.ack(msg);
+                Request.collection.findOneAndUpdate({
+                    requestId: err.requestId
+                }, {
+                    $set: {
+                        failedReason: err.message,
+                        status: err.status
+                    }
+                },
+                function(e, r, s) {
+                    console.log('request failed');
+                });
+            })
+        }
+
+        function processSummary(msg) {
+            console.log('processSummary');
+            var type = 'summary';
+            settings.types[type](msg).then(function(response,message,requestId) {
+                console.log('ackking message');
+                ch.ack(msg);                  
+            }).catch(function(err){
+                console.log('request failed');
+                ch.ack(msg);
+                Request.collection.findOneAndUpdate({
+                    requestId: err.requestId
+                }, {
+                    $set: {
+                        failedReason: err.message,
+                        status: err.status
+                    }
+                },
+                function(e, r, s) {
+                    console.log('request failed');
+                });
+            })
+        }
+
+        function processCapture(msg) {
+            console.log('processCapture');
+            var type = 'capture';
             settings.types[type](msg).then(function(response,message,requestId) {
                 console.log('ackking message');
                 ch.ack(msg);                  
