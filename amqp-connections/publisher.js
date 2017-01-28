@@ -1,7 +1,7 @@
 var pubChannel = null;
 var offlinePubQueue = [];
 var errorHandler = require('../settings/errorHandler'); 
-var q = require('Q'); 
+var q = require('q'); 
 var sh = require("shorthash");
 
 module.exports.start = function (amqpConn) {
