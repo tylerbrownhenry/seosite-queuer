@@ -23,6 +23,8 @@
     "robots-txt-parse": "~0.0.4",
     "urlcache": "~0.6.0",
     "urlobj": "0.0.10",
+    "parse-domain": "1.0.0",
+    "url": "0.11.0",
     "is-stream": "^1.0.1",
     "is-string": "^1.0.4",
     "parse5": "^3.0.1",
