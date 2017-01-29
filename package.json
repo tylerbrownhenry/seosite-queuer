@@ -4,6 +4,7 @@
   "dependencies": {
     "q": "^1.4.1",
     "socket.io": ">=1.7.2",
+    "is-browser": ">=2.0.1",
     "aws-sdk": ">=2.9.0",
     "guid": "0.0.12",
     "amqplib": "^0.5.1",
