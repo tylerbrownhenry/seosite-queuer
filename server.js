@@ -227,6 +227,7 @@ if (cluster.isMaster) {
     Should only be called by a bot
     */
 
+
     function authorize(req,res,callback){
         User.findOne({
             uid: req.body.uid,
