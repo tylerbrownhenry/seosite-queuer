@@ -49,7 +49,7 @@ function openPage(opts) {
     });
   }).catch(function (err) {
     console.log('err',err);
-    phantomInstance.exit();  // Abort PhantomJS when an error occurs.
+    // phantomInstance.exit();  // Abort PhantomJS when an error occurs.
   });
 }
 
