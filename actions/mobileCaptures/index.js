@@ -47,6 +47,12 @@ function doit(url,requestId){
                     }); /* Error? */
                     page.close();
                 });
+            }).then(funciton(){
+                console.log('done 2');
+
+                
+            }).finally(funciton(){
+                console.log('done');
             })
         })
     }
