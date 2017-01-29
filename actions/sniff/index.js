@@ -178,7 +178,7 @@ function createPage(opts) {
 
             page.content = {
               // Extract `Content-Type` from root (i.e., first) resource.
-              mimeType: '1' in page.resources ? page.resources['1'].endReply.contentType : null,
+              mimeType: '1' in (page.resources && page.resources['1'] && page.resources['1'].endReply ) ? page.resources['1'].endReply.contentType : null,
               size: content.length,
               // text: options.bodies ? content : null,
               // minified : minifiedTest(content)
