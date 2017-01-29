@@ -424,7 +424,13 @@ function summaryRequest(msg) {
                             promise.reject(err);
                         });
                     })
-                });/*Handle an error here... */
+                }).then(function(){
+                    console.log('test here');
+
+                }).catch(function(){
+                    /*Handle an error here... */
+                    console.log('test error :( ');
+                });
             });
         }
     });
