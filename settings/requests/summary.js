@@ -116,7 +116,7 @@ function summaryRequest(msg) {
 
 
             sniff.har(harOptions).then(function(res){
-                consoe.log('test');
+                console.log('test');
 
                 var captureSchema = new mongoose.Schema({
                     requestId:{
