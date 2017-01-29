@@ -49,8 +49,7 @@ function doit(url,requestId){
                 });
             }).then(function(){
                 console.log('done 2');
-
-                
+                ph.exit();
             }).finally(function(){
                 console.log('done');
             })
