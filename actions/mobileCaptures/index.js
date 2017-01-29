@@ -30,7 +30,7 @@ function doit(url,requestId){
                                 Capture.collection.findOneAndUpdate({
                                     requestId: requestId
                                 }, {
-                                    $set: [size] = url
+                                    $set: [sizes] = url
                                 },
                                 function(e, r, s) {
                                     console.log('request failed',e,r,s);
