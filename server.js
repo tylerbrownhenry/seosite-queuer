@@ -22,15 +22,15 @@ var permissions = {
     paid: require('./permissions/paidUserPermissions')
 }
 
-var cluster = require('cluster');  
-var numCPUs = require('os').cpus().length;
+// var cluster = require('cluster');  
+// var numCPUs = require('os').cpus().length;
 
-if (cluster.isMaster) {  
-    for (var i = 0; i < numCPUs; i++) {
-        // Create a worker
-        cluster.fork();
-    }
-} else {
+// if (cluster.isMaster) {  
+//     for (var i = 0; i < numCPUs; i++) {
+//         // Create a worker
+//         cluster.fork();
+//     }
+// } else {
     var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
     mongoose.connect(process.env.MONGO_URL+'/'+process.env.MONGO_DB); // connect to database
 
