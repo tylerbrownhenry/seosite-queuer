@@ -8,7 +8,7 @@ var Request = mongoose.model('Request', requestSchema, 'requests');
 var q = require('q');
 var _ = require('underscore');
 var sh = require("shorthash");
-
+var Capture = require('../../schemas/captureSchema');
 var sniff = require('../../actions/sniff/index');
 
 
@@ -134,8 +134,6 @@ function summaryRequest(msg) {
                     }
                 });
                 console.log('test2');
-
-                var Capture = mongoose.model('Capture', captureSchema, 'captures');
                 capture = new Capture({
                     url:res.url.resolvedUrl,
                     requestId: requestId
@@ -143,6 +141,7 @@ function summaryRequest(msg) {
                 capture.save(function(e){
                     console.log('capture saved',e);
                 });
+                console.log('test3');
 
                 publisher.publish("", "capture", new Buffer(JSON.stringify({ 
                         url: res.url.resolvedUrl,
