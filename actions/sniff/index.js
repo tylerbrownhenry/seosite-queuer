@@ -396,9 +396,10 @@ function processResponses(opts) {
   if (!data) {
     throw 'PhantomJS could not process the page';
   }
-
+  console.log('processResponses 1');
+  console.log('processResponses 1',_.keys(data.log.entries).length);
   // Fetch each request separately.
-  Object.keys(data.log.entries).forEach(function (key, idx) {
+  _.each(_.keys(data.log.entries),function (key, idx) {
     var entry = data.log.entries[key];
 
     reqPromises.push(new Prom(function (resolve) {
@@ -507,8 +508,11 @@ function processResponses(opts) {
 
     }));
   });
+  console.log('processResponses 2');
 
   return Prom.all(reqPromises).then(function (responses) {
+    console.log('processResponses 3');
+
     Object.keys(responses).forEach(function (key) {
       var res = responses[key];
       data.log.entries[res.idx] = res.data;
@@ -530,7 +534,7 @@ function har(opts) {
       options: opts
     });
     // console.log('data',data);
-    // console.log('res',res);
+    console.log('res',res);
     return res;
   }).catch(function(err){
     console.log('error');
