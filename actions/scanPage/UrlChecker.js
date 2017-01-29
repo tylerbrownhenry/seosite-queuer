@@ -5,7 +5,7 @@ var linkObj = require("./internal/linkObj");
 var parseOptions = require("./internal/parseOptions");
 var isString = require("is-string");
 var maybeCallback = require("maybe-callback");
-var UrlCache = require("./internal/urlcache");
+// var UrlCache = require("./internal/urlcache");
 var urlobj = require("urlobj");
 var getHostKey = require("./internal/getHostKey");
 
@@ -289,10 +289,7 @@ function UrlChecker(a, b) {
     var c = this;
     this.handlers = b || {};
     this.options = a = parseOptions(a);
-    this.cache = new UrlCache({
-        expiryTime: this.options.cacheExpiryTime,
-        normalizeUrls: false
-    });
+    this.cache = {};
     this.linkQueue = new RequestQueue({
         maxSockets: this.options.maxSockets,
         maxSocketsPerHost: this.options.maxSocketsPerHost,
@@ -316,7 +313,7 @@ function UrlChecker(a, b) {
 }
 
 UrlChecker.prototype.clearCache = function() {
-    return this.cache.clear();
+    // return this.cache.clear();
 };
 
 UrlChecker.prototype.dequeue = function(a) {
