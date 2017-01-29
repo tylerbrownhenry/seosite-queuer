@@ -47,11 +47,11 @@ function doit(url,requestId){
                     }); /* Error? */
                     page.close();
                 });
-            }).then(funciton(){
+            }).then(function(){
                 console.log('done 2');
 
                 
-            }).finally(funciton(){
+            }).finally(function(){
                 console.log('done');
             })
         })
