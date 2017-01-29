@@ -1,3 +1,10 @@
+when deploying to heroku
+remember to add buildpack
+
+https://github.com/stomita/heroku-buildpack-phantomjs
+
+
+
 NOT VERY VALID BUT CAN BE CLEANED UP
 
 ## Installation
