@@ -35,17 +35,17 @@ function doit(url,requestId){
                                     }
                                 },
                                 function(e, r, s) {
-                                    console.log('request failed',e,r,s);
+                                    callback(e);
+                                    console.log('request',e,r,s);
                                 });
 
                             } else {
+                                callback(err);
                                 console.log('trouble in paradise...');
                             }
                         })
-
-                    });
+                    }); /* Error? */
                     page.close();
-                    callback.apply();
                 });
             })
         })
