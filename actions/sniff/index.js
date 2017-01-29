@@ -10,10 +10,8 @@ var utils = require('./utils');
 var emailValidator = require("email-validator").validate;
 var pkg = require('../../package');
 var _ = require('underscore');
-var uglify    = require('uglify-js');
+// var uglify    = require('uglify-js');
                 
-
-
 if (!Date.prototype.toISOString) {
     Date.prototype.toISOString = function () {
         function pad(n) { return n < 10 ? '0' + n : n; }
@@ -28,13 +26,10 @@ if (!Date.prototype.toISOString) {
     }
 }
 
-
 // The contents of these types of files should be included in the HAR.
 var ALLOWED_CONTENT_TYPES = ['css', 'js', 'json', 'doc'];
 
-
 phantom.create = utils.promisify(phantom.create);
-
 
 function openPage(opts) {
   var phantomInstance;
@@ -529,7 +524,7 @@ function processResponses(opts) {
 function har(opts) {
     console.log('here!');
   return openPage(opts).then(function (data) {
-    console.log('here!222');
+    console.log('sniff/index.js open page callback success');
     var res = processResponses({
       data: data,
       options: opts

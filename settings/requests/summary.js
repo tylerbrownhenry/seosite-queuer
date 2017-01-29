@@ -116,7 +116,7 @@ function summaryRequest(msg) {
 
 
             sniff.har(harOptions).then(function(res){
-                
+                consoe.log('test');
 
                 var captureSchema = new mongoose.Schema({
                     requestId:{
@@ -133,6 +133,7 @@ function summaryRequest(msg) {
                         default: 'init'
                     }
                 });
+                consoe.log('test2');
 
                 var Capture = mongoose.model('Capture', captureSchema, 'captures');
                 capture = new Capture({
