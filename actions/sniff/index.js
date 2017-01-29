@@ -176,9 +176,19 @@ function createPage(opts) {
                 return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
             }
 
+            function findMime(page){
+                console.log('not sure this works',page.resources);
+                if(page.resources && page.resources['1'] && page.resources['1'].endReply && page.resources['1'].endReply.contentType){
+                    if(page.resources['1'].endReply.contentType){
+                        return page.resources['1'].endReply.contentType['1']
+                    }
+                }
+                return null;
+            }
+
             page.content = {
               // Extract `Content-Type` from root (i.e., first) resource.
-              mimeType: '1' in (page.resources && page.resources['1'] && page.resources['1'].endReply ) ? page.resources['1'].endReply.contentType : null,
+              mimeType: findMime(page),
               size: content.length,
               // text: options.bodies ? content : null,
               // minified : minifiedTest(content)
