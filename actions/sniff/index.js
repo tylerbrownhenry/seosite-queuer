@@ -49,7 +49,7 @@ function openPage(opts) {
     });
   }).catch(function (err) {
     console.log('err',err);
-    // phantomInstance.exit();  // Abort PhantomJS when an error occurs.
+    ph.exit();  // Abort PhantomJS when an error occurs.
   });
 }
 
@@ -104,6 +104,7 @@ function createPage(opts) {
         page.finalUrl = targetUrl;
     };
     page.onLoadFinished = function(status) {
+        console.log('LOAD FINISHED');
         var url = page.address;
       // for (var i = 100 - 1; i >= 0; i--) {
       //     console.log('page.address',page);
