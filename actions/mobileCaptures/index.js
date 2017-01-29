@@ -27,15 +27,10 @@ function doit(url,requestId){
                     page.render(filename,function(){
                         saveImageToAWS(filename,function(err,url){
                             if(err === 'success'){
-                                var set = {
-                                    captures: {}
-                                }
-                                set.captures[size] = url
-
                                 Capture.collection.findOneAndUpdate({
                                     requestId: requestId
                                 }, {
-                                    $set: set
+                                    $set: captures[size] = url
                                 },
                                 function(e, r, s) {
                                     console.log('request failed',e,r,s);
