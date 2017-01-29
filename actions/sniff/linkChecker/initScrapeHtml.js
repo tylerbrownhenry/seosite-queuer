@@ -3,7 +3,7 @@ var parseHtml = require("./parseHtml");
 var linkObj      = require("./linkObj");
 var excludeLink = require('./excludeLink');
 var parseOptions = require("./parseOptions");
-var q = require("Q");
+var q = require("q");
 
 function enqueueLink(link, instance){    
 
