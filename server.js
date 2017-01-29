@@ -51,7 +51,8 @@ var permissions = {
     app.all('*', function(req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-        res.header('Access-Control-Allow-Headers', 'accept, content-type, application/x-www-form-urlencoded, x-www-form-urlencoded, x-parse-application-id, x-parse-rest-api-key, x-parse-session-token');
+        // res.header('Access-Control-Allow-Headers', 'accept, content-type, application/x-www-form-urlencoded, x-www-form-urlencoded, x-parse-application-id, x-parse-rest-api-key, x-parse-session-token');
+        res.header('Access-Control-Allow-Headers', '*');
         next();
     });
 
@@ -326,6 +327,16 @@ var permissions = {
                 item: req.body.preClass});
         });
     }
+
+
+    apiRoutes.post('/v1/webtest', function(req, res) {
+        res.json({ message: 'Ok we got it from here!'});
+        _preFlight(req,res,['token','uid'],function(user,options){
+            queue.destroy(options)
+        });
+    });
+
+
 
     apiRoutes.post('/v1/purge', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
