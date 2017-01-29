@@ -15,9 +15,8 @@ function callback(data){
     });
 
     console.log('postData',postData);
-
     var options = {
-      hostname: 'localhost',
+      hostname: process.env.DASHBOARD_URL || 'localhost',
       port: 3000,
       path: '/callback',
       method: 'POST',

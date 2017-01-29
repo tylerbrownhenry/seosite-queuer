@@ -31,7 +31,6 @@ if (cluster.isMaster) {
         cluster.fork();
     }
 } else {
-
     var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
     mongoose.connect(process.env.MONGO_URL+'/'+process.env.MONGO_DB); // connect to database
 
