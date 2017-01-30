@@ -35,7 +35,7 @@ function openPage(opts) {
   var phantomInstance;
   return phantom.create().then(function (ph) {
     phantomInstance = ph;
-
+    console.log('openPage');
     // ph.onLoadStarted = function () {
     //     console.log('load started!!!');
     //   ph.startTime = new Date();
@@ -49,13 +49,16 @@ function openPage(opts) {
     });
   }).catch(function (err) {
     console.log('err',err);
-    ph.exit();  // Abort PhantomJS when an error occurs.
+    if(typeof ph !== 'undefined' && typeof ph.exit === 'function'){
+        ph.exit();  // Abort PhantomJS when an error occurs.
+    }
   });
 }
 
 
 function createPage(opts) {
   opts = opts || {};
+    console.log('createPage');
 
   var options = opts.options || {};
   options.delay = options.delay || 0;
@@ -104,7 +107,7 @@ function createPage(opts) {
         page.finalUrl = targetUrl;
     };
     page.onLoadFinished = function(status) {
-        console.log('LOAD FINISHED');
+        console.log('LOAD FINISHED',page.address);
         var url = page.address;
       // for (var i = 100 - 1; i >= 0; i--) {
       //     console.log('page.address',page);
@@ -537,9 +540,9 @@ function processResponses(opts) {
 
 
 function har(opts) {
-    console.log('here!');
+    console.log('here! function har sniff/index.js',opts);
   return openPage(opts).then(function (data) {
-    console.log('sniff/index.js open page callback success');
+    console.log('sniff/index.js open page callback success',data);
     var res = processResponses({
       data: data,
       options: opts

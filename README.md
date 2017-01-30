@@ -4,6 +4,13 @@ remember to add buildpack
 https://github.com/stomita/heroku-buildpack-phantomjs
 
 
+For socket.io
+https://devcenter.heroku.com/articles/node-websockets
+heroku features:enable http-session-affinity
+
+multi node socket.io
+http://socket.io/docs/using-multiple-nodes/
+
 
 NOT VERY VALID BUT CAN BE CLEANED UP
 

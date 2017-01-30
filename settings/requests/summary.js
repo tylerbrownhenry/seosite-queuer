@@ -109,7 +109,7 @@ function summaryRequest(msg) {
         } else {
 
             var harOptions = {
-                url: input.url,
+               url: input.url
                 // bodies:true
             };
 
@@ -165,31 +165,9 @@ function summaryRequest(msg) {
                 Handle Errors!!!
                 */
                 console.log('hardy har har!');
-                var scanSchema = new mongoose.Schema({
-                    requestId:{
-                        type: String
-                    },
-                    meta: {
-                        type: Object
-                    },
-                    resources: {
-                        type: Object
-                    },
-                    emails:{
-                        type: Object
-                    },
-                    linkCount: {
-                        type: Number
-                    },
-                    url: {
-                        type: Object
-                    },
-                    redirects: {
-                        type: Number
-                    }
-                });
 
-                var Scan = mongoose.model('Scan', scanSchema, 'scans');
+
+                var Scan = require('../../schemas/scanSchema');
                 var links = res.links;
                 res.links = undefined;
                 res.linkCount = links.length;
@@ -323,6 +301,7 @@ function summaryRequest(msg) {
                 });
 
                 delete newScan.log;
+                newScan.uid = input.user;
                 newScan.save(function (err, result) {
                     /*
                     Handle an error

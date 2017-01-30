@@ -35,12 +35,12 @@ function doit(url,requestId){
                                     }
                                 },
                                 function(e, r, s) {
-                                    callback(e);
+                                    callback(e,ph);
                                     console.log('request',e,r,s);
                                 });
 
                             } else {
-                                callback(err);
+                                callback(err,ph);
                                 console.log('trouble in paradise...');
                             }
                         })
@@ -49,14 +49,14 @@ function doit(url,requestId){
                 });
             }).then(function(){
                 console.log('done 2');
-                ph.exit();
+                // ph.exit();
             }).finally(function(){
                 console.log('done');
             })
         })
     }
 
-    async.eachSeries(sizes, scrot, function(err){
+    async.eachSeries(sizes, scrot, function(err,ph){
         if (err){
             console.log('done, error');
             promise.reject({
@@ -70,6 +70,9 @@ function doit(url,requestId){
             status:'success',
             data:'Captures taken'
         }); 
+        if(typeof ph !== 'undefined' && typeof ph.exit === 'function'){
+            ph.exit();
+        }
     });
     return promise.promise;
 }

@@ -26,6 +26,11 @@ function callback(data){
       }
     };
 
+    if(process.env.NODE_ENV === 'dev' && process.env.DASHBOARD_PORT){
+        options.port = process.env.DASHBOARD_PORT;
+    }
+
+
     var req = http.request(options, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
