@@ -65,6 +65,13 @@ function linkRequest(msg) {
                 */
                 promise.reject(true); /* Restart or something */
             } else {
+          // _.each(scan.links,function(link){
+                //     if(link.broken === true){
+                //       linkIssueCount++
+                //     }
+                // });
+
+
 
                 Request.collection.findOneAndUpdate({
                     requestId: link.requestId

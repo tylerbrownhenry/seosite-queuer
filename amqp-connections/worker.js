@@ -2,6 +2,7 @@ var errorHandler = require('../settings/errorHandler');
 var mongoose = require('mongoose');
 var settings = require("../settings/requests");
 var requestSchema = require("../schemas/requestSchema");
+var Scan = require("../schemas/requestSchema");
 var Request = mongoose.model('Request', requestSchema, 'requests');
 
 module.exports.start = function(amqpConn) {
@@ -138,19 +139,29 @@ module.exports.start = function(amqpConn) {
             console.log('processCapture');
             var type = 'capture';
             settings.types[type](msg).then(function(response,message,requestId) {
-                console.log('ackking message');
-                ch.ack(msg);                  
-            }).catch(function(err){
-                console.log('request failed');
-                ch.ack(msg);
-                Request.collection.findOneAndUpdate({
+                console.log('ackking message',response,message,requestId);
+                ch.ack(msg);   
+
+
+                Scan.collection.findOneAndUpdate({
                     requestId: err.requestId
                 }, {
                     $set: {
                         failedReason: err.message,
                         status: err.status
                     }
-                },
+                },               
+            }).catch(function(err){
+                console.log('request failed');
+                ch.ack(msg);
+                // Request.collection.findOneAndUpdate({
+                //     requestId: err.requestId
+                // }, {
+                //     $set: {
+                //         failedReason: err.message,
+                //         status: err.status
+                //     }
+                // },
                 function(e, r, s) {
                     console.log('request failed');
                 });

@@ -4,12 +4,16 @@ var q = require('q');
 var phantom = require('node-phantom-simple');
 var utils = require('../sniff/utils');
 var saveImageToAWS = require('./saveCapture');
-var Capture = require('../../schemas/captureSchema');
+// var Capture = require('../../schemas/captureSchema');
+var Scan = require('../../schemas/scanSchema');
 
-function doit(url,requestId){
+function doit(url,requestId,inputSizes){
     var promise = q.defer();
     console.log('url2',url);
     var sizes = ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360'];
+    if(typeof inputSizes !== 'undefined'){
+        sizes = inputSizes;
+    }
     var siteURL = url;
     var siteName = siteURL.replace('http://','');
     siteName = siteName.replace('.','_') + '_';
@@ -27,7 +31,7 @@ function doit(url,requestId){
                     page.render(filename,function(){
                         saveImageToAWS(filename,function(err,url){
                             if(err === 'success'){
-                                Capture.collection.findOneAndUpdate({
+                                Scan.collection.findOneAndUpdate({
                                     requestId: requestId
                                 }, {
                                     $set: {

@@ -8,6 +8,7 @@ var Request = mongoose.model('Request', requestSchema, 'requests');
 var q = require('q');
 var _ = require('underscore');
 var sh = require("shorthash");
+var moment = require('moment');
 var Capture = require('../../schemas/captureSchema');
 var sniff = require('../../actions/sniff/index');
 
@@ -118,34 +119,36 @@ function summaryRequest(msg) {
             sniff.har(harOptions).then(function(res){
                 console.log('test');
 
-                var captureSchema = new mongoose.Schema({
-                    requestId:{
-                        type: String
-                    },
-                    url: {
-                        type: Object
-                    },
-                    captures: {
-                        type: Object
-                    },
-                    status: {
-                        type: String,
-                        default: 'init'
-                    }
-                });
-                console.log('test2');
-                capture = new Capture({
-                    url:res.url.resolvedUrl,
-                    requestId: requestId
-                });
-                capture.save(function(e){
-                    console.log('capture saved',e);
-                });
+                // var captureSchema = new mongoose.Schema({
+                //     requestId:{
+                //         type: String
+                //     },
+                //     url: {
+                //         type: Object
+                //     },
+                //     captures: {
+                //         type: Object
+                //     },
+                //     status: {
+                //         type: String,
+                //         default: 'init'
+                //     }
+                // });
+                // console.log('test2');
+                // capture = new Capture({
+                //     url:res.url.resolvedUrl,
+                //     requestId: requestId
+                // });
+                // capture.save(function(e){
+                //     console.log('capture saved',e);
+                // });
                 console.log('test3');
 
                 publisher.publish("", "capture", new Buffer(JSON.stringify({ 
                         url: res.url.resolvedUrl,
-                        requestId:  requestId
+                        requestId:  requestId,
+                        sizes: ['1920x1080']
+                        // sizes: ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360']
                     })),
                     {
                     url: res.url.resolvedUrl,
@@ -234,6 +237,10 @@ function summaryRequest(msg) {
                     }
                 }
 
+
+
+       console.log('hardy har har!2');
+
                 function postProcess(scan){
                     var response = [];
                     if(scan && scan.log && scan.log.entries){
@@ -243,10 +250,10 @@ function summaryRequest(msg) {
                     }
                     return response;
                 }
-
+console.log('here1342341');
                 var resources = postProcess(res);
                 newScan.resources = resources;
-                newScan.emails = newScan.emails;
+                newScan.emails = res.emails;
                 newScan.meta = {
                     title: {
                         message: 'No title found',
@@ -300,6 +307,79 @@ function summaryRequest(msg) {
                     return true;
                 });
 
+
+console.log('here112312');
+
+                var metaIssueCount = 0;
+
+                  if(newScan.meta.title.found !== true){
+                    metaIssueCount++
+                  }
+                  if(newScan.meta.description.found !== true){
+                    metaIssueCount++
+                  }
+                  if(newScan.meta.h1.found !== true){
+                    metaIssueCount++
+                  }
+                  if(newScan.meta.h2.found !== true){
+                    metaIssueCount++
+                  }
+
+console.log('here112312566565');
+                var resourceIssueCount = 0;
+console.log('here112312566565');
+                _.each(newScan.resources,function(resource){
+console.log('here1123125665651',resource,resourceIssueCount);
+                    if(resource.gzip === null){
+                      resourceIssueCount += 1;
+                    }
+console.log('here1123125665651',resource,resourceIssueCount);
+                    if(resource.cached === null){
+                      resourceIssueCount += 1; 
+                    }
+                    if(resource.minified === null){
+                      resourceIssueCount += 1;  
+                    }
+                    if(resource.status !== 200 && resource.status !== 301){
+                      resourceIssueCount += 1;  
+                    }
+                });
+console.log('here11231256656522312');
+
+console.log('here1123122312');
+                var linkIssueCount = 0;
+      
+                var tooManyLinks = (links >= 100) ? true: false;
+                if(tooManyLinks){
+                  linkIssueCount++
+                }
+
+console.log('here1123121111',newScan.emails);
+
+                if(tooManyLinks === false 
+                  && linkIssueCount === 0 
+                  && resourceIssueCount === 0 
+                  && metaIssueCount === 0 
+                  && (newScan.emails && newScan.emails.length === 0)){
+                   newScan.issues = {noIssues : true};
+                } else {
+                 newScan.issues = {
+                    tooManyLinks: tooManyLinks,
+                    links: linkIssueCount,
+                    resources: resourceIssueCount,
+                    security: (newScan.emails) ? newScan.emails.length : 0,
+                    meta: metaIssueCount
+                  }  
+                }
+console.log('here1123');
+
+
+                newScan.grade = {
+                    letter:'B',
+                    message:'Could be better'
+                };
+
+                newScan.completedTime = moment().format('MMMM Do - h:mm a');
                 delete newScan.log;
                 newScan.uid = input.user;
                 newScan.save(function (err, result) {
