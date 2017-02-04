@@ -36,10 +36,6 @@ function openPage(opts) {
   return phantom.create().then(function (ph) {
     phantomInstance = ph;
     console.log('openPage');
-    // ph.onLoadStarted = function () {
-    //     console.log('load started!!!');
-    //   ph.startTime = new Date();
-    // };
     return utils.promisify(ph.createPage)().then(function (page) {
       return createPage({
         options: opts,
@@ -57,6 +53,9 @@ function openPage(opts) {
 
 
 function createPage(opts) {
+    try{
+
+
   opts = opts || {};
     console.log('createPage');
 
@@ -72,7 +71,7 @@ function createPage(opts) {
     };
 
     page.onResourceRequested = function (req) {
-        // console.log('onResourceRequested1',req,req.id);
+        console.log('onResourceRequested1');
         var r = req[0];
         this.resources[r.id] = {
             request: r,
@@ -82,7 +81,7 @@ function createPage(opts) {
     };
 
     page.onResourceReceived = function (res) {
-        // console.log('onResourceReceived2',res,res.stage);
+        console.log('onResourceReceived2');
         this.endTime = new Date();
         if(typeof this.resources[res.id] === 'undefined'){
             this.resources[res.id] = {
@@ -107,7 +106,7 @@ function createPage(opts) {
         page.finalUrl = targetUrl;
     };
     page.onLoadFinished = function(status) {
-        console.log('LOAD FINISHED',page.address);
+        // console.log('LOAD FINISHED',page.address);
         var url = page.address;
       // for (var i = 100 - 1; i >= 0; i--) {
       //     console.log('page.address',page);
@@ -181,7 +180,7 @@ function createPage(opts) {
             }
 
             function findMime(page){
-                console.log('not sure this works',page.resources);
+                // console.log('not sure this works',page.resources);
                 if(page.resources && page.resources['1'] && page.resources['1'].endReply && page.resources['1'].endReply.contentType){
                     if(page.resources['1'].endReply.contentType){
                         return page.resources['1'].endReply.contentType['1']
@@ -264,6 +263,14 @@ function createPage(opts) {
       }, options.delay * 1000);
     });
   });
+
+    }
+    catch(err){
+        console.log('err',err);
+        return new Prom(function (resolve, reject) {
+            return reject(err)
+        });
+    }
 }
 
 
@@ -399,140 +406,167 @@ function createHAR(page) {
 
 
 function processResponses(opts) {
-  opts = opts || {};
+    opts = opts || {};
 
-  var data = opts.data;
-  var options = opts.options || {};
+    var data = opts.data;
+    var options = opts.options || {};
 
-  var reqOpts = {};
-  var reqPromises = [];
+    var reqOpts = {};
+    var reqPromises = [];
 
-  if (!data) {
-    throw 'PhantomJS could not process the page';
-  }
-  console.log('processResponses 1');
-  console.log('processResponses 1',_.keys(data.log.entries).length);
-  // Fetch each request separately.
-  _.each(_.keys(data.log.entries),function (key, idx) {
-    var entry = data.log.entries[key];
-
-    reqPromises.push(new Prom(function (resolve) {
-      reqOpts = {
-        method: entry.request.method,
-        url: entry.request.url,
-        headers: {}
-      };
-      entry.request.headers.forEach(function (header) {
-        reqOpts.headers[header.name] = header.value;
-      });
-
-      var rawReqHeaders = 'HTTP/1.1 GET ' + entry.request.url + '\r\n';
-      Object.keys(reqOpts.headers).forEach(function (headerKey) {
-        rawReqHeaders += headerKey + ': ' + reqOpts.headers[headerKey] + '\r\n';
-      });
-      rawReqHeaders += '\r\n';
-
-      request(reqOpts).on('response', function (res) {
-        // Raw headers were added in v0.12
-        // (https://github.com/joyent/node/issues/4844), but let's
-        // reconstruct them for backwards compatibility.
-        var rawResHeaders = ('HTTP/' + res.httpVersion + ' ' + res.statusCode +
-                          ' ' + http.STATUS_CODES[res.statusCode] + '\r\n');
-        Object.keys(res.headers).forEach(function (headerKey) {
-          rawResHeaders += headerKey + ': ' + res.headers[headerKey] + '\r\n';
-        });
-        rawResHeaders += '\r\n';
-
-        var uncompressedSize = 0;  // size after uncompression
-        var bodySize = 0;  // bytes size over the wire
-        var body = '';  // plain text body (after uncompressing gzip/deflate)
-
-        function tally() {
-          entry.request.headerSize = Buffer.byteLength(rawReqHeaders, 'utf8');
-
-          if (options.bodies && ALLOWED_CONTENT_TYPES.indexOf(entry.response.content._type) !== -1) {
-            // Store only human-readable content (i.e., not binary)
-            // (and if the user actually wants the response bodies in the HAR).
-            entry.response.content.text = body;
-          }
+    if (!data) {
+        throw 'PhantomJS could not process the page';
+    }
+    console.log('processResponses 1', data.log.entries);
+    // console.log('processResponses 1',_.keys(data.log.entries).length);
+    // Fetch each request separately.
+    _.each(_.keys(data.log.entries), function(key, idx) {
+        console.log('processResponses 2');
 
 
-            // function minifiedTest(text,go){
-            //     if(typeof text !== 'undefined' && go === true){
-            //         return {
-            //             min: uglify(text).length,
-            //             orig: text.length
-            //         }
-            //     }
-            //     return null;
-            // }
+        try {
 
-          entry.response.bodySize = bodySize;
-          // entry.response.content.minified = minifiedTest(body, entry.response.content.mimeType === 'text/javascript');
-          entry.response.content.headersSize = Buffer.byteLength(rawResHeaders, 'utf8');
-          entry.response.content.size = uncompressedSize;
-          entry.response.content.compression = uncompressedSize - bodySize;
-          entry.response.content.bodySize = bodySize + entry.response.content.compression;
+            var entry = data.log.entries[key];
 
-          resolve({idx: idx, data: entry});
+            reqPromises.push(new Prom(function(resolve) {
+                    reqOpts = {
+                        method: entry.request.method,
+                        url: entry.request.url,
+                        headers: {}
+                    };
+                    entry.request.headers.forEach(function(header) {
+                        reqOpts.headers[header.name] = header.value;
+                    });
+
+                    var rawReqHeaders = 'HTTP/1.1 GET ' + entry.request.url + '\r\n';
+                    Object.keys(reqOpts.headers).forEach(function(headerKey) {
+                        rawReqHeaders += headerKey + ': ' + reqOpts.headers[headerKey] + '\r\n';
+                    });
+                    rawReqHeaders += '\r\n';
+
+                    request(reqOpts).on('response', function(error, res, body) {
+                        console.log('error, res, body',error,res) // Show the HTML for the Google homepage. 
+
+                        if (error){
+                            return resolve({
+                                idx: idx,
+                                body:body,
+                                data: {failed:true}
+                            });
+                        }
+
+
+                            // Raw headers were added in v0.12
+                            // (https://github.com/joyent/node/issues/4844), but let's
+                            // reconstruct them for backwards compatibility.
+                            var rawResHeaders = ('HTTP/' + res.httpVersion + ' ' + res.statusCode +
+                                ' ' + http.STATUS_CODES[res.statusCode] + '\r\n');
+                            Object.keys(res.headers).forEach(function(headerKey) {
+                                rawResHeaders += headerKey + ': ' + res.headers[headerKey] + '\r\n';
+                            });
+                            rawResHeaders += '\r\n';
+
+                            var uncompressedSize = 0; // size after uncompression
+                            var bodySize = 0; // bytes size over the wire
+                            var body = ''; // plain text body (after uncompressing gzip/deflate)
+
+                            function tally() {
+                                entry.request.headerSize = Buffer.byteLength(rawReqHeaders, 'utf8');
+
+                                if (options.bodies && ALLOWED_CONTENT_TYPES.indexOf(entry.response.content._type) !== -1) {
+                                    // Store only human-readable content (i.e., not binary)
+                                    // (and if the user actually wants the response bodies in the HAR).
+                                    entry.response.content.text = body;
+                                }
+
+
+                                // function minifiedTest(text,go){
+                                //     if(typeof text !== 'undefined' && go === true){
+                                //         return {
+                                //             min: uglify(text).length,
+                                //             orig: text.length
+                                //         }
+                                //     }
+                                //     return null;
+                                // }
+
+                                entry.response.bodySize = bodySize;
+                                // entry.response.content.minified = minifiedTest(body, entry.response.content.mimeType === 'text/javascript');
+                                entry.response.content.headersSize = Buffer.byteLength(rawResHeaders, 'utf8');
+                                entry.response.content.size = uncompressedSize;
+                                entry.response.content.compression = uncompressedSize - bodySize;
+                                entry.response.content.bodySize = bodySize + entry.response.content.compression;
+
+                                resolve({
+                                    idx: idx,
+                                    data: entry
+                                });
+                            }
+
+                            switch (res.headers['content-encoding']) {
+                                case 'gzip':
+                                    var gzip = zlib.createGunzip();
+
+                                    gzip.on('data', function(data) {
+                                        body += data;
+                                        uncompressedSize += data.length;
+                                    }).on('end', function() {
+                                        tally();
+                                    });
+
+                                    res.on('data', function(data) {
+                                        bodySize += data.length;
+                                    }).pipe(gzip);
+
+                                    break;
+                                case 'deflate':
+                                    var deflate = zlib.createInflate();
+
+                                    deflate.on('data', function(data) {
+                                        body += data;
+                                        uncompressedSize += data.length;
+                                    }).on('end', function() {
+                                        tally();
+                                    });
+
+                                    res.on('data', function(data) {
+                                        bodySize += data.length;
+                                    }).pipe(deflate);
+
+                                    break;
+                                default:
+                                    res.on('data', function(data) {
+                                        body += data;
+                                        uncompressedSize += bodySize += data.length;
+                                    }).on('end', function() {
+                                        tally();
+                                    });
+
+                                    break;
+                            }
+                    });
+
+
+            }));
+
+        } catch (err) {
+            console.log('err',err.stack)
+            // ^ will output the "unexpected" result of: elsewhere has failed
         }
-
-        switch (res.headers['content-encoding']) {
-          case 'gzip':
-            var gzip = zlib.createGunzip();
-
-            gzip.on('data', function (data) {
-              body += data;
-              uncompressedSize += data.length;
-            }).on('end', function () {
-              tally();
-            });
-
-            res.on('data', function (data) {
-              bodySize += data.length;
-            }).pipe(gzip);
-
-            break;
-          case 'deflate':
-            var deflate = zlib.createInflate();
-
-            deflate.on('data', function (data) {
-              body += data;
-              uncompressedSize += data.length;
-            }).on('end', function () {
-              tally();
-            });
-
-            res.on('data', function (data) {
-              bodySize += data.length;
-            }).pipe(deflate);
-
-            break;
-          default:
-            res.on('data', function (data) {
-              body += data;
-              uncompressedSize += bodySize += data.length;
-            }).on('end', function () {
-              tally();
-            });
-
-            break;
-        }
-      });
-
-    }));
-  });
-  console.log('processResponses 2');
-
-  return Prom.all(reqPromises).then(function (responses) {
-    console.log('processResponses 3');
-
-    Object.keys(responses).forEach(function (key) {
-      var res = responses[key];
-      data.log.entries[res.idx] = res.data;
     });
-    return data;
-  });
+    // console.log('processResponses 2');
+
+    return Prom.all(reqPromises).then(function(responses) {
+        console.log('processResponses 3');
+
+        Object.keys(responses).forEach(function(key) {
+            var res = responses[key];
+            data.log.entries[res.idx] = res.data;
+        });
+        return data;
+    }).catch(function(err) {
+        console.log('err', err);
+    });
 }
 
 
@@ -540,19 +574,20 @@ function processResponses(opts) {
 
 
 function har(opts) {
-    console.log('here! function har sniff/index.js',opts);
+    console.log('function har sniff/index.js');
   return openPage(opts).then(function (data) {
-    console.log('sniff/index.js open page callback success',data);
+    console.log('success');
+    // console.log('sniff/index.js open page callback success',data);
     var res = processResponses({
       data: data,
       options: opts
     });
     // console.log('data',data);
-    console.log('res',res);
+    // console.log('res',res);
     return res;
   }).catch(function(err){
     console.log('error');
-    console.log('error',err);
+    // console.log('error',err);
   })
 }
 

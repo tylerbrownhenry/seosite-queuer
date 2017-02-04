@@ -40,7 +40,7 @@ function start(publish) {
     });
 
     function whenConnected(amqpConn, publish) {
-        console.log('pusblish', publish)
+        console.log('connected to queue:', publish);
         if (publish === true) {
             publisher.publish("", "jobs", new Buffer("work work work"));
         } else {

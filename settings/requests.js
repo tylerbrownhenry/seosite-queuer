@@ -27,7 +27,7 @@ function captureRequestValidate(){
 }
 
 function pageRequestValidate(user,request,permissions){
-    console.log('######');
+    console.log('######',request,user);
     var promise = q.defer();
     var perm = permissions;
     var problems = [];
@@ -102,6 +102,7 @@ function pageRequestValidate(user,request,permissions){
 var approvedRequestTypes = {
     page: pageRequestValidate,
     summary: pageRequestValidate,
+    freeSummary: pageRequestValidate,
     // site: siteRequestValidate,
     link: linkRequestValidate,
     capture: captureRequestValidate
@@ -114,6 +115,7 @@ module.exports = {
         link: require('./requests/link'),
         // site: require('./requests/link'),
         summary: require('./requests/summary'),
+        freeSummary: require('./requests/summary'),
         capture: require('./requests/capture')
     }
 }

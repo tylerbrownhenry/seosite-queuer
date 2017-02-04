@@ -5,7 +5,7 @@ var phantom = require('node-phantom-simple');
 var utils = require('../sniff/utils');
 var saveImageToAWS = require('./saveCapture');
 // var Capture = require('../../schemas/captureSchema');
-var Scan = require('../../schemas/scanSchema');
+// var Scan = require('../../schemas/scanSchema');
 
 function doit(url,requestId,inputSizes){
     var promise = q.defer();
@@ -19,8 +19,8 @@ function doit(url,requestId,inputSizes){
     siteName = siteName.replace('.','_') + '_';
     var imageDir = './images/';
 
-    function scrot(sizes, callback){
-        size = sizes.split('x');
+    function scrot(_sizes, callback){
+        size = _sizes.split('x');
         phantom.create().then(function (ph) {
             utils.promisify(ph.createPage)().then(function (page) {
                 page.set("viewportSize", { width: size[0], height: size[1] });
@@ -31,20 +31,10 @@ function doit(url,requestId,inputSizes){
                     page.render(filename,function(){
                         saveImageToAWS(filename,function(err,url){
                             if(err === 'success'){
-                                Scan.collection.findOneAndUpdate({
-                                    requestId: requestId
-                                }, {
-                                    $set: {
-                                        [sizes] : url
-                                    }
-                                },
-                                function(e, r, s) {
-                                    callback(e,ph);
-                                    console.log('request',e,r,s);
-                                });
-
+                                console.log('request',url);
+                                callback({err:null,ph:ph,size:_sizes,url:url});
                             } else {
-                                callback(err,ph);
+                                callback({err:err,ph:ph,size:_sizes});
                                 console.log('trouble in paradise...');
                             }
                         })
@@ -60,9 +50,9 @@ function doit(url,requestId,inputSizes){
         })
     }
 
-    async.eachSeries(sizes, scrot, function(err,ph){
-        if (err){
-            console.log('done, error');
+    async.eachSeries(sizes, scrot, function(res){
+        console.log('done',res);
+        if (res && res.err){
             promise.reject({
                 status:'error',
                 data:'Captures not taken'
@@ -72,10 +62,13 @@ function doit(url,requestId,inputSizes){
         }
         promise.resolve({
             status:'success',
+            size: res.size,
+            url: res.url,
+            requestId: requestId,
             data:'Captures taken'
         }); 
-        if(typeof ph !== 'undefined' && typeof ph.exit === 'function'){
-            ph.exit();
+        if(typeof res.ph !== 'undefined' && typeof res.ph.exit === 'function'){
+            res.ph.exit();
         }
     });
     return promise.promise;

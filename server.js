@@ -9,6 +9,12 @@ var mongoose    = require('mongoose');
 var jwt    = require('jsonwebtoken');
 var sh = require("shorthash");
 
+
+process.on('uncaughtException', function(err) {
+    // handle the error safely
+    console.log(err)
+})
+
 require('dotenv').config();
 
 var notify = require('./actions/callback');
@@ -22,15 +28,15 @@ var permissions = {
     paid: require('./permissions/paidUserPermissions')
 }
 
-// var cluster = require('cluster');  
-// var numCPUs = require('os').cpus().length;
+var cluster = require('cluster');  
+var numCPUs = require('os').cpus().length;
 
-// if (cluster.isMaster) {  
-//     for (var i = 0; i < numCPUs; i++) {
-//         // Create a worker
-//         cluster.fork();
-//     }
-// } else {
+if (cluster.isMaster) {  
+    for (var i = 0; i < numCPUs; i++) {
+        // Create a worker
+        cluster.fork();
+    }
+} else {
     var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
     mongoose.connect(process.env.MONGO_URL+'/'+process.env.MONGO_DB); // connect to database
 
@@ -126,8 +132,7 @@ var permissions = {
                 },{
                     parent:'options',
                     title: 'Doh! ',
-                    message: 'Options are required.'
-                        
+                    message: 'Options are required.'    
                 }]
             });
         } else {
@@ -173,7 +178,7 @@ var permissions = {
                 console.log('server.js checkRequirements success');
                 _authorize(req).then(function(user){
                     console.log('server.js _authorize success');
-                    var options = JSON.parse(req.body.options)
+                    var options = JSON.parse(req.body.options);
                     requests.validate(user,options,permissions[user.stripe.plan]).then(function(passed){
                         console.log('server.js checkRequestPermissions success');
                         promise.resolve(user,options);
@@ -384,19 +389,61 @@ var permissions = {
         });
     });   
 
+
+
+    apiRoutes.post('/v1/freeScan', function(req, res) {
+        res.json({ message: 'Ok we got it from here!'});
+        _preFlight(req,res,['url','uid','token'],function(user,options){
+            console.log('we is in!');
+                var message = {
+                    date: Date.now(),
+                    user: req.body.uid,
+                    url:req.body.url,
+                    options: {free:true}
+                }
+                var requestId = sh.unique(JSON.stringify(message));
+                message.requestId = requestId;
+                console.log('server.js checkApiCall succees',message);
+            publisher.publish("", "freeSummary", new Buffer(JSON.stringify(message))).then(function(re){
+                console.log('server.js publisher.publish succees');
+                notify({
+                    message:'Starting Scan!',
+                    uid: user.uid,
+                    page: req.body.page,
+                    eventType: 'requestUpdate',
+                    preClass: '',
+                    postClass: 'pending',
+                    item: requestId
+                });
+            }).catch(function(err){
+                console.log('server.js publisher.publish err',err);
+                notify({
+                    message:JSON.stringify(err.message),
+                    uid: user.uid,
+                    page: req.body.page,
+                    title: 'Server Error',
+                    eventType: 'requestError',
+                    preClass: null,
+                    postClass: 'error',
+                    item: req.body.preClass});
+            });
+        });
+    });
+
+
     apiRoutes.post('/v1/queue', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
         _preFlight(req,res,['options','token','url','uid'],function(user,options){
             console.log('we is in!');
-            console.log('server.js checkApiCall succees');
                 var message = {
                     date: Date.now(),
                     user: user.uid,
                     url:req.body.url,
-                    options:options
+                    options: JSON.parse(req.body.options)
                 }
                 var requestId = sh.unique(JSON.stringify(message));
                 message.requestId = requestId;
+                console.log('server.js checkApiCall succees',message);
             publisher.publish("", "summary", new Buffer(JSON.stringify(message))).then(function(re){
                 console.log('server.js publisher.publish succees');
                 notify({
@@ -422,4 +469,4 @@ var permissions = {
             });
         });
     });   
-// }
+}

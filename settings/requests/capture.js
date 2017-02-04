@@ -10,12 +10,15 @@ function _capture(msg) {
     console.log('Capture Go',url,'requestId',requestId);
     capture(url,requestId,sizes).then(function(res){
         console.log('Capture Success',res);
-        promise.resolve('succes',{
+        promise.resolve({
             status:'success',
+            size:res.size,
+            url: res.url,
+            requestId: res.requestId,
             data:'Captures taken'
-        },requestId);                    
+        });                    
     }).catch(function(err){
-        console.log('Capture Error');
+        console.log('Capture Error',err);
         promise.reject(err);
     });
     return promise.promise;

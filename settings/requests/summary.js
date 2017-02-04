@@ -1,7 +1,9 @@
 var mongoose = require('mongoose');
 var linkSchema = require("../../schemas/linkSchema");
 var requestSchema = require("../../schemas/requestSchema");
+var Scan = require("../../schemas/scanSchema");
 var pageScanner = require("../../actions/scanPage/index");
+var notify = require('../../actions/callback');
 var publisher = require("../../amqp-connections/publisher");
 var Link = mongoose.model('Link', linkSchema, 'links ');
 var Request = mongoose.model('Request', requestSchema, 'requests');
@@ -97,6 +99,7 @@ function summaryRequest(msg) {
         processes: 0,
         status: 'active'
     });
+    console.log('input.options',input.options);
 
     console.log('Saving request...');
     _request.save(function (err, result) {
@@ -142,22 +145,23 @@ function summaryRequest(msg) {
                 // capture.save(function(e){
                 //     console.log('capture saved',e);
                 // });
-                console.log('test3');
-
-                publisher.publish("", "capture", new Buffer(JSON.stringify({ 
+                console.log('test3',input);
+                if(input.options && input.options.save && input.options.save.captures === true){
+                    publisher.publish("", "capture", new Buffer(JSON.stringify({ 
+                            url: res.url.resolvedUrl,
+                            requestId:  requestId,
+                            sizes: ['1920x1080']
+                            // sizes: ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360']
+                        })),
+                        {
                         url: res.url.resolvedUrl,
-                        requestId:  requestId,
-                        sizes: ['1920x1080']
-                        // sizes: ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360']
-                    })),
-                    {
-                    url: res.url.resolvedUrl,
-                    requestId:requestId
-                }).then(function(err,data){
-                    console.log('Capture published'); 
-                }).catch(function(err){
-                    console.log('Error publishing capture');
-                })
+                        requestId:requestId
+                    }).then(function(err,data){
+                        console.log('Capture published'); 
+                    }).catch(function(err){
+                        console.log('Error publishing capture');
+                    });
+                }
                 /* 
                 Handle Errors!!!
                 Handle Errors!!!
@@ -168,221 +172,245 @@ function summaryRequest(msg) {
                 Handle Errors!!!
                 */
                 console.log('hardy har har!');
+                try {
 
 
-                var Scan = require('../../schemas/scanSchema');
-                var links = res.links;
-                res.links = undefined;
-                res.linkCount = links.length;
                 var newScan = new Scan(res);
                 newScan.requestId = requestId;
-                var interest = {
-                    "Content-Type": {
-                        "text/css": true,
-                        "text/css; charset=utf-8": true,
-                        "text/javascript": true,
-                        "text/javascript; charset=UTF-8": true,
-                        "application/x-javascript": true,
-                        "application/x-javascript; charset=UTF-8": true,
-                        "application/javascript": true,
-                        "application/javascript; charset=UTF-8": true,
-                    },
-                    "Content-Encoding": {
-                        "gzip": true
-                    },
-                    "Cache-Control": true
-                }
 
-                function Resource(e){
-                    var acceptableGzip = null;
-                    var gZippable = null;
-                    var contentType = null;
-                    var cached = false;
-                    _.each(e.response.headers,function(header){
-                        if(typeof interest[header.name] !== 'undefined'){
-                            if(header.name === "Content-Type"){
-                                gZippable = true;
-                                contentType = header.value;
-                            } else if(header.name === "Content-Encoding"){
-                                acceptableGzip =  (interest[header.name][header.value] === true) ? true : false;
-                            } else if(header.name === 'Cache-Control'){
-                                cached = true;
+                if(input.options && input.options.save && input.options.save.resources === true || input.options && input.options.save.links === true){
+
+                    var links = res.links;
+                    res.links = undefined;
+                    res.linkCount = links.length;
+
+                    var interest = {
+                        "Content-Type": {
+                            "text/css": true,
+                            "text/css; charset=utf-8": true,
+                            "text/javascript": true,
+                            "text/javascript; charset=UTF-8": true,
+                            "application/x-javascript": true,
+                            "application/x-javascript; charset=UTF-8": true,
+                            "application/javascript": true,
+                            "application/javascript; charset=UTF-8": true,
+                        },
+                        "Content-Encoding": {
+                            "gzip": true
+                        },
+                        "Cache-Control": true
+                    }
+
+                    function Resource(e){
+                        var acceptableGzip = null;
+                        var gZippable = null;
+                        var contentType = null;
+                        var cached = false;
+                        _.each(e.response.headers,function(header){
+                            if(typeof interest[header.name] !== 'undefined'){
+                                if(header.name === "Content-Type"){
+                                    gZippable = true;
+                                    contentType = header.value;
+                                } else if(header.name === "Content-Encoding"){
+                                    acceptableGzip =  (interest[header.name][header.value] === true) ? true : false;
+                                } else if(header.name === 'Cache-Control'){
+                                    cached = true;
+                                }
                             }
-                        }
-                    });
-
-                    return {
-                        duration: e.time,
-                        start: e.startedDateTime,
-                        timings: e.timings,
-                        url: e.request.url,
-                        // request: {
-                            // url: e.request.url,
-                            // method: e.request.method,
-                            // bodySize: e.request.bodySize
-                        // },
-                        // pageref: e.pageref,
-                        status: e.response.status,
-                        // response: {
-                            // content: e.response.content,
-                            // status: e.response.status,
-                            // statusText: e.response.statusText
-                        // },
-                        // headers: {
-                        gzip: (gZippable) ? acceptableGzip : null,
-                        type: contentType,
-                        cached: cached,
-                        minified: null
-                        // }
-                    }
-                }
-
-
-
-       console.log('hardy har har!2');
-
-                function postProcess(scan){
-                    var response = [];
-                    if(scan && scan.log && scan.log.entries){
-                        _.each(scan.log.entries,function(entry){
-                            response.push(new Resource(entry))
                         });
+
+                        return {
+                            duration: e.time,
+                            start: e.startedDateTime,
+                            timings: e.timings,
+                            url: e.request.url,
+                            // request: {
+                                // url: e.request.url,
+                                // method: e.request.method,
+                                // bodySize: e.request.bodySize
+                            // },
+                            // pageref: e.pageref,
+                            status: e.response.status,
+                            // response: {
+                                // content: e.response.content,
+                                // status: e.response.status,
+                                // statusText: e.response.statusText
+                            // },
+                            // headers: {
+                            gzip: (gZippable) ? acceptableGzip : null,
+                            type: contentType,
+                            cached: cached,
+                            minified: null
+                            // }
+                        }
                     }
-                    return response;
+
+
+
+           console.log('hardy har har!2');
+
+                    function postProcess(scan){
+                        var response = [];
+                        if(scan && scan.log && scan.log.entries){
+                            _.each(scan.log.entries,function(entry){
+                                response.push(new Resource(entry))
+                            });
+                        }
+                        return response;
+                    }
+    console.log('here1342341');
+                    var resources = postProcess(res);
                 }
-console.log('here1342341');
-                var resources = postProcess(res);
-                newScan.resources = resources;
-                newScan.emails = res.emails;
-                newScan.meta = {
-                    title: {
-                        message: 'No title found',
-                        text: '',
-                        found:false
-                    },
-                    description:{
-                        message: 'No meta description found.',
-                        element: null,
-                        text: '',
-                        found: false
-                    },
-                    h1:{
-                        message: 'No h1 found.',
-                        element: null,
-                        text: '',
-                        found: false
-                    },
-                    h2:{
-                        message: 'No h2 found.',
-                        element: null,
-                        text: '',
-                        found: false
-                    }
+                    
+                if(input.options && input.options.save && input.options.save.resources === true){
+                    newScan.resources = resources;
                 }
 
-                var links = _.filter(links,function(link){
-                    if(typeof link.specialCase !== 'undefined'){
-                        if(link.specialCase === 'title'){
-                            newScan.meta.title.found = true;
-                            newScan.meta.title.text = link.html.text;
-                            newScan.meta.title.message = 'Found'
-                        } else if(link.specialCase === 'description'){
-                            newScan.meta.description.found = true;
-                            newScan.meta.description.element = link.html.tag;
-                            newScan.meta.description.text = link.html.attrs.content;
-                            newScan.meta.description.message = 'Found'
-                        }  else if(link.specialCase === 'h1'){
-                            newScan.meta.h1.found = true;
-                            newScan.meta.h1.element = link.html.tag;
-                            newScan.meta.h1.text = link.html.attrs.content;
-                            newScan.meta.h1.message = 'Found'
-                        }  else if(link.specialCase === 'h2'){
-                            newScan.meta.h2.found = true;
-                            newScan.meta.h2.element = link.html.tag;
-                            newScan.meta.h2.text = link.html.attrs.content;
-                            newScan.meta.h2.message = 'Found'
+                if(input.options && input.options.save && input.options.save.security === true){
+                    newScan.emails = res.emails;
+                }
+  
+                if(input.options && input.options.save && input.options.save.metaData === true){
+                  newScan.meta = {
+                        title: {
+                            message: 'No title found',
+                            text: '',
+                            found:false
+                        },
+                        description:{
+                            message: 'No meta description found.',
+                            element: null,
+                            text: '',
+                            found: false
+                        },
+                        h1:{
+                            message: 'No h1 found.',
+                            element: null,
+                            text: '',
+                            found: false
+                        },
+                        h2:{
+                            message: 'No h2 found.',
+                            element: null,
+                            text: '',
+                            found: false
                         }
-                        return false;
                     }
-                    return true;
-                });
+                    var links = _.filter(links,function(link){
+                        if(typeof link.specialCase !== 'undefined'){
+                            if(link.specialCase === 'title'){
+                                newScan.meta.title.found = true;
+                                newScan.meta.title.text = link.html.text;
+                                newScan.meta.title.message = 'Found'
+                            } else if(link.specialCase === 'description'){
+                                newScan.meta.description.found = true;
+                                newScan.meta.description.element = link.html.tag;
+                                newScan.meta.description.text = link.html.attrs.content;
+                                newScan.meta.description.message = 'Found'
+                            }  else if(link.specialCase === 'h1'){
+                                newScan.meta.h1.found = true;
+                                newScan.meta.h1.element = link.html.tag;
+                                newScan.meta.h1.text = link.html.attrs.content;
+                                newScan.meta.h1.message = 'Found'
+                            }  else if(link.specialCase === 'h2'){
+                                newScan.meta.h2.found = true;
+                                newScan.meta.h2.element = link.html.tag;
+                                newScan.meta.h2.text = link.html.attrs.content;
+                                newScan.meta.h2.message = 'Found'
+                            }
+                            return false;
+                        }
+                        return true;
+                    });
 
 
 console.log('here112312');
 
-                var metaIssueCount = 0;
+                    var metaIssueCount = 0;
 
-                  if(newScan.meta.title.found !== true){
-                    metaIssueCount++
-                  }
-                  if(newScan.meta.description.found !== true){
-                    metaIssueCount++
-                  }
-                  if(newScan.meta.h1.found !== true){
-                    metaIssueCount++
-                  }
-                  if(newScan.meta.h2.found !== true){
-                    metaIssueCount++
-                  }
+                      if(newScan.meta.title.found !== true){
+                        metaIssueCount++
+                      }
+                      if(newScan.meta.description.found !== true){
+                        metaIssueCount++
+                      }
+                      if(newScan.meta.h1.found !== true){
+                        metaIssueCount++
+                      }
+                      if(newScan.meta.h2.found !== true){
+                        metaIssueCount++
+                      }
 
-console.log('here112312566565');
-                var resourceIssueCount = 0;
-console.log('here112312566565');
-                _.each(newScan.resources,function(resource){
-console.log('here1123125665651',resource,resourceIssueCount);
-                    if(resource.gzip === null){
-                      resourceIssueCount += 1;
-                    }
-console.log('here1123125665651',resource,resourceIssueCount);
-                    if(resource.cached === null){
-                      resourceIssueCount += 1; 
-                    }
-                    if(resource.minified === null){
-                      resourceIssueCount += 1;  
-                    }
-                    if(resource.status !== 200 && resource.status !== 301){
-                      resourceIssueCount += 1;  
-                    }
-                });
-console.log('here11231256656522312');
+    console.log('here112312566565');
+                    var resourceIssueCount = 0;
+    console.log('here112312566565');
+                    _.each(newScan.resources,function(resource){
+    console.log('here1123125665651',resource,resourceIssueCount);
+                        if(resource.gzip === null){
+                          resourceIssueCount += 1;
+                        }
+    console.log('here1123125665651',resource,resourceIssueCount);
+                        if(resource.cached === null){
+                          resourceIssueCount += 1; 
+                        }
+                        if(resource.minified === null){
+                          resourceIssueCount += 1;  
+                        }
+                        if(resource.status !== 200 && resource.status !== 301){
+                          resourceIssueCount += 1;  
+                        }
+                    });
+    console.log('here11231256656522312');
 
-console.log('here1123122312');
-                var linkIssueCount = 0;
-      
-                var tooManyLinks = (links >= 100) ? true: false;
-                if(tooManyLinks){
-                  linkIssueCount++
+    console.log('here1123122312');
+                    var linkIssueCount = 0;
+          
+                    var tooManyLinks = (links >= 100) ? true: false;
+                    if(tooManyLinks){
+                      linkIssueCount++
+                    }
+
+    console.log('here1123121111',newScan.emails);
+
+                    if(tooManyLinks === false 
+                      && linkIssueCount === 0 
+                      && resourceIssueCount === 0 
+                      && metaIssueCount === 0 
+                      && (newScan.emails && newScan.emails.length === 0)){
+                       newScan.issues = {noIssues : true};
+                    } else {
+                     newScan.issues = {
+                        tooManyLinks: tooManyLinks,
+                        links: linkIssueCount,
+                        resources: resourceIssueCount,
+                        security: (newScan.emails) ? newScan.emails.length : 0,
+                        meta: metaIssueCount
+                      }  
+                    }
+    console.log('here1123');
+
+
+                    newScan.grade = {
+                        letter:'B',
+                        message:'Could be better'
+                    };
                 }
-
-console.log('here1123121111',newScan.emails);
-
-                if(tooManyLinks === false 
-                  && linkIssueCount === 0 
-                  && resourceIssueCount === 0 
-                  && metaIssueCount === 0 
-                  && (newScan.emails && newScan.emails.length === 0)){
-                   newScan.issues = {noIssues : true};
-                } else {
-                 newScan.issues = {
-                    tooManyLinks: tooManyLinks,
-                    links: linkIssueCount,
-                    resources: resourceIssueCount,
-                    security: (newScan.emails) ? newScan.emails.length : 0,
-                    meta: metaIssueCount
-                  }  
-                }
-console.log('here1123');
-
-
-                newScan.grade = {
-                    letter:'B',
-                    message:'Could be better'
-                };
 
                 newScan.completedTime = moment().format('MMMM Do - h:mm a');
                 delete newScan.log;
                 newScan.uid = input.user;
+
+
+                  }
+                catch(err){
+                    console.log('err',err);
+                    return
+                }
                 newScan.save(function (err, result) {
+                    
+                if(input.options && input.options.save && input.options.save.links === true){
+
+
                     /*
                     Handle an error
                     */
@@ -391,8 +419,6 @@ console.log('here1123');
                     for (var i = 0; i < 100; i++) {
                         console.log('newScan saved...',parentLink);
                     }
-
-
 
                     var counter = 0;
                     var commands = [];
@@ -481,7 +507,24 @@ console.log('here1123');
                             */
                             promise.reject(err);
                         });
-                    })
+                    });
+                } else {
+                    console.log('success!');
+                    promise.resolve({
+                        status:'success',
+                        data:'Scan complete'}); 
+
+                    notify({
+                        message:'Scan complete!',
+                        uid: input.user,
+                        page: 'summary',
+                        eventType: 'requestUpdate',
+                        preClass: 'pending',
+                        postClass: 'complete',
+                        item: input.requestId
+                    });
+                }
+
                 }).then(function(){
                     console.log('test here');
 
