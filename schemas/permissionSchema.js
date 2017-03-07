@@ -2,21 +2,25 @@
 var mongoose = require('mongoose');
 
 var permissionSchema = new mongoose.Schema({
+    label:{type:String},
     limits:{
         monthly:{
             page: {type: Number, default: 30},
             site: {type: Number, default: 0},
-            requests: {type: Number, default: 1000},
-            links: {type: Number, default: 1000}
+            requests: {type: Number, default: 30},
+            links: {type: Number, default: 100},
+            captures: {type: Number, default: 0}
         },
         daily:{
             page: {type: Number, default: 3},
             site: {type: Number, default: 0},
-            requests: {type: Number, default: 30},
-            links: {type: Number, default: 30}
+            requests: {type: Number, default: 3},
+            links: {type: Number, default: 30},
+            captures: {type: Number, default: 0}
         }
     },
     restrictions:{
+        captures: {type: Boolean, default: false},
         type:{
             site: {type: Boolean, default: false},
             page: {type: Boolean, default: true}
@@ -52,6 +56,5 @@ var permissionSchema = new mongoose.Schema({
         }
     }
 });
-
 
 module.exports = mongoose.model('Permission', permissionSchema, 'plan-permissions');

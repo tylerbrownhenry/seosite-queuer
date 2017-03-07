@@ -4,23 +4,26 @@ var permission = {
     label: 'paid',
     limits:{
         monthly:{
-            page: 100000,
-            site: 1000,
-            requests: 10000,
-            links: 1000000
+            // page: 1000,
+            // site: 1000,
+            requests: 1000,
+            links: 1000,
+            captures:1000
         },
         daily:{
-            page: 100000,
-            site: 1000,
-            requests: 10000,
-            links: 1000000
+            // page: 100000,
+            // site: 1000,
+            requests: 100,
+            links: 100,
+            captures:100
         }
     },
     restrictions:{
       type:{
-            site: true,
+            // site: false,
             page: true,
         },
+        captures:true,
         filterLimit: 10,
         digDepthLimit: 100,
         excludeExternalLinks: {

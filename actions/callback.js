@@ -1,17 +1,46 @@
 var http = require('http'),
 querystring = require('querystring');
+Alert = require('../schemas/alertSchema');
 
 function callback(data){
     console.log('postApiCall-->',data);
+
+    Alert.update({
+            uid:data.uid
+        },
+        {
+            $push: {
+                "messages": {
+                    message:data.message,
+                    uid: data.uid,
+                    page: data.page,
+                    type: data.type,
+                    status: data.status,
+                    requestDate: Date(),
+                    temp_id: data.temp_id,
+                    i_id: data.i_id
+                }
+            }
+        },
+        {
+            safe: true,
+            upsert: true
+        },
+        function(err, model) {
+            console.log(err);
+        }
+    );
+
+
     var postData = querystring.stringify({
-        message:data.message,
-        title:data.title,
+        // message:data.message,
+        // title:data.title,
         uid: data.uid,
         page: data.page,
-        eventType: data.eventType,
-        item: data.item,
-        preClass: data.preClass,
-        postClass: data.postClass
+        // eventType: data.eventType,
+        // item: data.item,
+        // preClass: data.preClass,
+        // postClass: data.postClass
     });
 
     console.log('postData',postData);
@@ -30,7 +59,6 @@ function callback(data){
         options.port = process.env.DASHBOARD_PORT;
     }
 
-
     var req = http.request(options, (res) => {
       console.log(`STATUS: ${res.statusCode}`);
       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
@@ -43,7 +71,7 @@ function callback(data){
       });
     });
 
-    console.log('dfdsfs');
+    console.log('dfdsfs',postData);
     req.on('error', (e) => {
         /* Do sometihng if not responsive? */
       console.log(`problem with request: ${e.message}`);

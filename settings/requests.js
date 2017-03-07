@@ -23,7 +23,9 @@ function linkRequestValidate(){
 
 }
 function captureRequestValidate(){
-
+    var promise = q.defer();
+    promise.resolve();
+    return promise.promise;
 }
 
 function pageRequestValidate(user,request,permissions){
@@ -41,10 +43,10 @@ function pageRequestValidate(user,request,permissions){
         problems.push({parent: 'form', hint: 'upgrade', message:'Your have performed the maximum number of ' + [request.type] +' requests ('+ user.activity[request.type+'s'].monthly.count +') your current plan allows for the month.'});
     }
     if(user.activity.requests.monthly.count >= perm.limits.monthly.requests){
-        problems.push({parent: 'form', hint: 'upgrade', message:'Your have performed the maximum number of scan api requests ('+ user.activity.requests.monthly.count +') your current plan allows for the month.'});
+        problems.push({parent: 'form', hint: 'upgrade', message:'Your have performed the maximum number of requests ('+ perm.limits.monthly.requests +') your current plan allows for the month.'});
     }
     if(user.activity.requests.daily.count >= perm.limits.daily.requests){
-        problems.push({parent: 'form', hint: 'upgrade', message:'Your have performed the maximum number of scan api requests ('+ user.activity.requests.monthly.count +') your current plan allows for the day.'});
+        problems.push({parent: 'form', hint: 'upgrade', message:'Your have performed the maximum number of requests ('+ perm.limits.daily.requests +') your current plan allows for the day.'});
     }
     if(request.filterLevel >= perm.restrictions.filterLimit){
         problems.push({parent: 'filterLimit', hint: 'upgrade', message:'You have selected a filter level of "'+request.filterLevel+'". Your current plan allows a maximum filter level of "' + perm.restictions.filterLimit +'".'});
@@ -60,7 +62,7 @@ function pageRequestValidate(user,request,permissions){
     }
     // if(typeof request.excludedSchemes !== 'undefined' && perm.restrictions.excludedSchemes.canUse === false){
     //     problems.push({response: false, selection: 'excludeExternalLinks', message:'Your current plan does not allow change excluded schemas.'});
-    // } 
+    // }
 
     if(request.acceptedSchemes.indexOf('https') !== -1 && perm.restrictions.acceptedSchemes['https'] === false){
         problems.push({parent: 'acceptedSchemes', hint: 'upgrade', message:'Your current plan does not allow acceptedSchemes ' + request.acceptedSchemes +'.'});
@@ -75,7 +77,7 @@ function pageRequestValidate(user,request,permissions){
     });
     if(failed === true){
         problems.push({parent: 'linkInformation', hint: 'upgrade', subSelections: linkInfo, message:'Your current plan does not allow fetching this link information.'});
-    } 
+    }
     if(problems.length > 0){
         var selections = [];
         var subSelections = [];
@@ -95,7 +97,7 @@ function pageRequestValidate(user,request,permissions){
         });
     } else {
          promise.resolve(true)
-    } 
+    }
     return promise.promise;
 }
 

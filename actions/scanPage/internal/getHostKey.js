@@ -1,5 +1,6 @@
 "use strict";
 var isBrowser = require("is-browser");
+var _ = require("underscore");
 var parseDomain,parseUrl;
 
 
@@ -19,6 +20,7 @@ else
 
 function getHostKey(url, options)
 {
+    console.log('url',url,'options',options);
     // console.log('do we need \'hostname\' url',url);
     var domainObj,port,protocol,urlObj;
     var key = "";
@@ -36,9 +38,12 @@ function getHostKey(url, options)
     protocol = urlObj.protocol;
     
     // Not using strict equals because `urlObj` might be a foreign object type
-    if (!protocol || !urlObj.hostname)
-    {
-        return false;
+    if (!protocol || !urlObj.hostname){
+        urlObj = urlObj.parsed;
+        protocol = urlObj.protocol;
+        if (!protocol || !urlObj.hostname){
+            return false;
+        }
     }
     
     // Remove ":" suffix

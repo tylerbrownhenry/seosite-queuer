@@ -37,7 +37,17 @@ var mongoose = require('mongoose');
     grade: {
         type: Object
     },
-    captures: {            
+    status: {
+        type: String
+    },
+    message: {
+        type: String
+    },
+    captures: {
+        thumb : {
+            type: String,
+            default: null
+        },
         "1920x1080" : {
             type: String,
             default: null

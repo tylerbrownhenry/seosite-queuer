@@ -1,4 +1,4 @@
-var capture = require("../../actions/mobileCaptures/index");
+var capture = require("../../actions/mobileCaptures/index").doit;
 var q = require('q');
 
 function _capture(msg) {

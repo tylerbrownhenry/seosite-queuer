@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var linkScanner = require("../../actions/scanPage/linkScanner");
 var linkSchema = require("../../schemas/linkSchema");
 var requestSchema = require("../../schemas/requestSchema");
-var Link = mongoose.model('Link', linkSchema, 'links ');
+var Link = mongoose.model('Link', linkSchema, 'links');
 var Request = mongoose.model('Request', requestSchema, 'requests');
 var notify = require('../../actions/callback');
 var q = require('q');
@@ -15,36 +15,50 @@ function linkRequest(msg) {
         url: link.url,
         baseUrl: link.baseUrl
     }).then(function(response) {
-        
+        // console.log('linkRequest responsee',link.linkId,'link.requestId',link.requestId);
+        console.log('linkRequest responsee',link._link,'msg',response);
         var input = {
-            broken: response.broken,
+            selector : link._link.html.selector,
+            tag : link._link.html.tag,
+            tagName : link._link.html.tagName,
+            // html : link.html,
+            // found: link.found,
             internal: response.internal,
             samePage: response.samePage,
-            excluded: response.excluded,
-            excludedReason: response.excludedReason,
-            html : link.html,
-            _id: link.linkId,
-            requestId: link.requestId,
+            linkId: link.linkId,
             uid: link.uid,
-            found: link.found,
-            filename: null,
-            "content-type": null,
-            "content-length": null,
-            statusCode : null
+            requestId: link.requestId
+            // filename: null
+            // "content-type": null,
+            // "content-length": null,
+            // statusCode : null,
+            // statusMessage : null,
+            // response: response
         };
+
+        if(response.broken === true){
+            input.broken = response.broken;
+            input.brokenReason = response.brokenReason;
+            input._brokenReason = response._brokenReason;
+            input.excluded = response.excluded;
+            input.excludedReason = response.excludedReason;            
+        } else {
+
+        }
 
         if(response && response.url && response.url.parsed && response.url.parsed.extra){
             input.filename = response.url.parsed.extra.filename
-        };
+        }
+
         if(response && response.http && response.http.response && response.http.response.headers){
            input["content-type"] = response.http.response.headers["content-type"];
            input["content-length"] = response.http.response.headers["content-length"];
-           input.statusCode = response.http.response.headers.statusCode;
+           input.statusCode = response.http.response.statusCode;
+           input.statusMessage = response.http.response.statusMessage;
         }
 
-        Link.collection.updateOne({
-            _id: link.linkId,
-            requestId: link.requestId
+        Link.collection.findOneAndUpdate({
+            linkId: link.linkId
         }, {
             $set: {
                 status: "complete",
@@ -58,6 +72,7 @@ function linkRequest(msg) {
         },
         function(e) {
             if (e) {
+                // console.log('save link update error',e);
                 /* 
                 If it errors here we need to make send it back to the queue?
                 We could mark it with a retry so the secod time it gets a new
@@ -65,6 +80,7 @@ function linkRequest(msg) {
                 */
                 promise.reject(true); /* Restart or something */
             } else {
+                // console.log('save link updated!',link.linkId);
           // _.each(scan.links,function(link){
                 //     if(link.broken === true){
                 //       linkIssueCount++
@@ -146,16 +162,27 @@ function linkRequest(msg) {
                                 */
                             } else {
                                 promise.resolve(true);
-                                console.log('thanks',link);
+                                console.log('Scan complete');
 
                                 notify({
                                     message:'Scan complete!',
                                     uid: link.uid,
-                                    page: 'summary',
-                                    eventType: 'requestUpdate',
-                                    preClass: 'pending',
-                                    postClass: 'complete',
-                                    item: link.requestId
+                                    page: '/dashboard', 
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    /* hard coded page is bad */
+                                    type: 'request',
+                                    status: 'complete',
+                                    i_id: link.requestId
                                 });
                             }
                         });
@@ -165,7 +192,9 @@ function linkRequest(msg) {
                 });
             }
         });
-    });
+    }).catch(function(err){
+        console.error('link request err',err);
+    })
     return promise.promise;
 }
 module.exports = linkRequest;

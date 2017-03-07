@@ -1,7 +1,18 @@
+install rabbitMQ Locally
+
+brew update
+brew install rabbitmq
+
+
+
 when deploying to heroku
 remember to add buildpack
 
 https://github.com/stomita/heroku-buildpack-phantomjs
+
+sharp buildpack
+https://github.com/alex88/heroku-buildpack-vips
+http://sharp.dimens.io/en/stable/install/
 
 
 For socket.io
@@ -166,7 +177,7 @@ Referer:http://localhost:8080/site
    "links":[
 
         (See 'links' api results for expanded result)
-   
+
    ]
    "pages":[
       {
@@ -490,6 +501,6 @@ Referer:http://localhost:8080/page
       {
         ...
       }
-  ] 
+  ]
 }
 ```

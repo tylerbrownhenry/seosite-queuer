@@ -5,7 +5,7 @@ var Scan = require("../../schemas/scanSchema");
 var pageScanner = require("../../actions/scanPage/index");
 var notify = require('../../actions/callback');
 var publisher = require("../../amqp-connections/publisher");
-var Link = mongoose.model('Link', linkSchema, 'links ');
+var Link = mongoose.model('Link', linkSchema, 'links');
 var Request = mongoose.model('Request', requestSchema, 'requests');
 var q = require('q');
 var _ = require('underscore');
@@ -54,7 +54,7 @@ var sniff = require('../../actions/sniff/index');
 ###
 */
 function updateCount(requestId, updatedCount, response) {
-    console.log('response',response);
+    console.log('response',response,updatedCount);
     var promise = q.defer();
     Request.collection.findOneAndUpdate({
         requestId: requestId
@@ -95,14 +95,25 @@ function summaryRequest(msg) {
         uid: input.user,
         options: input.options,
         requestId: input.requestId,
-        requestDate: Date.now(),
+        requestDate: Date(),
         processes: 0,
         status: 'active'
     });
-    console.log('input.options',input.options);
+    // console.log('input.options',input.options);
 
     console.log('Saving request...');
-    _request.save(function (err, result) {
+    Request.update(
+        { 
+            requestId: requestId
+        }, 
+        { 
+            $set: {
+                status: 'active'
+            }
+        }, { 
+            upsert: true
+        },
+        function (err, result) {
         console.log('Request saved...');
         if (err !== null){
             promise.reject({
@@ -113,12 +124,10 @@ function summaryRequest(msg) {
         } else {
 
             var harOptions = {
-               url: input.url
+               url: input.url,
+               requestId:requestId
                 // bodies:true
             };
-
-
-
             sniff.har(harOptions).then(function(res){
                 console.log('test');
 
@@ -150,6 +159,7 @@ function summaryRequest(msg) {
                     publisher.publish("", "capture", new Buffer(JSON.stringify({ 
                             url: res.url.resolvedUrl,
                             requestId:  requestId,
+                            uid:input.user,
                             sizes: ['1920x1080']
                             // sizes: ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360']
                         })),
@@ -172,8 +182,8 @@ function summaryRequest(msg) {
                 Handle Errors!!!
                 */
                 console.log('hardy har har!');
-                try {
-
+            
+            try {
 
                 var newScan = new Scan(res);
                 newScan.requestId = requestId;
@@ -247,7 +257,7 @@ function summaryRequest(msg) {
 
 
 
-           console.log('hardy har har!2');
+                   console.log('hardy har har!2');
 
                     function postProcess(scan){
                         var response = [];
@@ -258,7 +268,7 @@ function summaryRequest(msg) {
                         }
                         return response;
                     }
-    console.log('here1342341');
+                    console.log('here1342341');
                     var resources = postProcess(res);
                 }
                     
@@ -269,9 +279,10 @@ function summaryRequest(msg) {
                 if(input.options && input.options.save && input.options.save.security === true){
                     newScan.emails = res.emails;
                 }
+                newScan.captures.thumb = res.thumb
   
                 if(input.options && input.options.save && input.options.save.metaData === true){
-                  newScan.meta = {
+                    newScan.meta = {
                         title: {
                             message: 'No title found',
                             text: '',
@@ -296,6 +307,7 @@ function summaryRequest(msg) {
                             found: false
                         }
                     }
+
                     var links = _.filter(links,function(link){
                         if(typeof link.specialCase !== 'undefined'){
                             if(link.specialCase === 'title'){
@@ -319,37 +331,36 @@ function summaryRequest(msg) {
                                 newScan.meta.h2.message = 'Found'
                             }
                             return false;
+                        } else if(link.html.tagName === 'meta'){
+                            return false;
+                        } else if(link.url.original.toLowerCase().indexOf("mailto:") >= 0){
+                            return false;
+                        } else if(link.url.original.toLowerCase().indexOf("tel:") >= 0){
+                            return false;
                         }
                         return true;
                     });
 
-
-console.log('here112312');
-
                     var metaIssueCount = 0;
 
-                      if(newScan.meta.title.found !== true){
+                    if(newScan.meta.title.found !== true){
                         metaIssueCount++
-                      }
-                      if(newScan.meta.description.found !== true){
+                    }
+                    if(newScan.meta.description.found !== true){
                         metaIssueCount++
-                      }
-                      if(newScan.meta.h1.found !== true){
+                    }
+                    if(newScan.meta.h1.found !== true){
                         metaIssueCount++
-                      }
-                      if(newScan.meta.h2.found !== true){
+                    }
+                    if(newScan.meta.h2.found !== true){
                         metaIssueCount++
-                      }
+                    }
 
-    console.log('here112312566565');
                     var resourceIssueCount = 0;
-    console.log('here112312566565');
                     _.each(newScan.resources,function(resource){
-    console.log('here1123125665651',resource,resourceIssueCount);
                         if(resource.gzip === null){
                           resourceIssueCount += 1;
                         }
-    console.log('here1123125665651',resource,resourceIssueCount);
                         if(resource.cached === null){
                           resourceIssueCount += 1; 
                         }
@@ -360,18 +371,13 @@ console.log('here112312');
                           resourceIssueCount += 1;  
                         }
                     });
-    console.log('here11231256656522312');
 
-    console.log('here1123122312');
                     var linkIssueCount = 0;
           
                     var tooManyLinks = (links >= 100) ? true: false;
                     if(tooManyLinks){
                       linkIssueCount++
                     }
-
-    console.log('here1123121111',newScan.emails);
-
                     if(tooManyLinks === false 
                       && linkIssueCount === 0 
                       && resourceIssueCount === 0 
@@ -387,26 +393,23 @@ console.log('here112312');
                         meta: metaIssueCount
                       }  
                     }
-    console.log('here1123');
-
-
                     newScan.grade = {
                         letter:'B',
                         message:'Could be better'
                     };
                 }
 
-                newScan.completedTime = moment().format('MMMM Do - h:mm a');
+                // newScan.completedTime = moment().format('MMMM Do - h:mm a');
+                newScan.completedTime = Date();
                 delete newScan.log;
                 newScan.uid = input.user;
 
 
-                  }
-                catch(err){
-                    console.log('err',err);
-                    return
-                }
-                newScan.save(function (err, result) {
+            } catch(err){
+                console.log('err',err);
+                return
+            }
+            newScan.save(function (err, result) {
                     
                 if(input.options && input.options.save && input.options.save.links === true){
 
@@ -424,9 +427,43 @@ console.log('here112312');
                     var commands = [];
 
                     var linkObj = {};
-                    if(typeof links === 'undefined'){
+                    if(typeof links === 'undefined' || links.length === 0){
+                        Request.collection.findOneAndUpdate({
+                            requestId: input.requestId
+                        }, {
+                            $set: {
+                                status: 'complete'
+                            }
+                        });
+
+
+                        notify({
+                            message:'Scan complete!',
+                            uid: input.user,
+                            page: '/dashboard',
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            /* hardcoding page is bad */
+                            type: 'request',
+                            status: 'complete',
+                            i_id: input.requestId
+                        });
                         return promise.resolve({status:'success',data:'No links found to add to queue'});
                     }
+                    console.log('links',links);
                     _.each(links, function(link) {
                         var linkId = sh.unique(link.url.original+requestId);
                         commands.push({
@@ -439,12 +476,13 @@ console.log('here112312');
                                     "resolvedUrl": parentLink, /* REsolved url? */
                                     "url": link.url.original,
                                     "_id": linkId,
+                                    "linkId": linkId,
                                     "site": parentLink,
                                     "requestId": requestId,
                                     "status": 'pending',
                                     "__scan": {},
                                     "uid": input.user,
-                                    "found": Date.now(),
+                                    "found": Date(),
                                     "scanned": null,
                                     "__link": link
                                 },
@@ -459,7 +497,7 @@ console.log('here112312');
                     var updatedCount = 0;
 
                     Link.collection.bulkWrite(commands,{},function(err,e) {
-
+                        console.log('e',e,err);
                         if(typeof err === 'BulkWriteError'){
                             return promise.reject({system: 'mongo',requestId: requestId, status:'error',message: 'Trouble saving link information Error:' + err.message,commands: commands, func:'Link.collection.bulkWrite'});
                         } else if (typeof err === 'MongoError'){
@@ -467,7 +505,21 @@ console.log('here112312');
                         } else if (e === null){
                             return promise.reject({system: 'mongo',requestId: requestId, status:'error',message:'Trouble saving found links. Error: ' + e.message,commands: commands, func:'Link.collection.bulkWrite'});
                         }
+                        /*
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
+                        checkcheck if e is undeinfed...
 
+                        */
                         updatedCount = _.keys(e.upsertedIds).length;
                         console.log('Error/Success pageScanner...4',updatedCount,e);
 
@@ -485,7 +537,8 @@ console.log('here112312');
                                     }));
                                     publisher.publish("", "links", buffer, {
                                         type: parentLink,
-                                        messageId: linkObj[id]._id
+                                        messageId: linkObj[id]._id,
+                                        uid: input.user
                                     }).then(function(err,data){
                                         console.log('Error/Success pageScanner...7');
                                         promise.resolve({
@@ -507,31 +560,106 @@ console.log('here112312');
                             */
                             promise.reject(err);
                         });
-                    });
+                    })
                 } else {
+
+                    Request.collection.findOneAndUpdate({
+                        requestId: input.requestId
+                    }, {
+                        $set: {
+                            status: 'complete'
+                        }
+                    });
+
                     console.log('success!');
                     promise.resolve({
                         status:'success',
                         data:'Scan complete'}); 
 
                     notify({
+
                         message:'Scan complete!',
                         uid: input.user,
-                        page: 'summary',
-                        eventType: 'requestUpdate',
-                        preClass: 'pending',
-                        postClass: 'complete',
-                        item: input.requestId
+                        page: '/dashboard',
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        type: 'request',
+                        status: 'complete',
+                        i_id: input.requestId
                     });
                 }
 
                 }).then(function(){
                     console.log('test here');
-
                 }).catch(function(){
                     /*Handle an error here... */
                     console.log('test error :( ');
                 });
+            }).catch(function(err){
+                    /*Handle an error here... */
+                console.log('error',err);
+                Request.collection.findOneAndUpdate({
+                    requestId: input.requestId
+                }, {
+                    $set: {
+                        status: 'failed'
+                    }
+                });
+
+                var newScan = new Scan({
+                    completedTime: Date(),
+                    // completedTime: moment().format('MMMM Do - h:mm a'),
+                    uid:input.user,
+                    requestId:input.requestId,
+                    message: 'Error: ' + err.name + " : " + err.message,
+                    status:'failed',
+                    url:{
+                        url:input.url
+                    }
+                });
+
+                newScan.save(function(e,r){     
+                    console.log('e',e,'r',r);
+                    notify({
+                        message: err.name + " : " + err.message,
+                        uid: input.user,
+                        page: '/dashboard',
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        /* hardcoding page is bad */
+                        type: 'request',
+                        status: 'failed',
+                        i_id: input.requestId
+                    });
+               });
+                promise.reject(err)
             });
         }
     });

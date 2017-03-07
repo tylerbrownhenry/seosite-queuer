@@ -20,12 +20,12 @@ function doit(filenameFull,callback,requestId,size){
             s3.putObject(upload_params, function(err, s3_data) {
                 if(err!=null){
                     console.log("Error uploading to s3: " + err.message);
-                    callbac('error',err.message);
+                    callback('error',err.message);
                     // return response.json(500, { 'error': 'Problem uploading to S3.' + err.message });
                 }else{
                     //clean up and respond
                     fs.unlink(filenameFull, function(err){}); //delete local file
-                    var s3Region = process.env.AWS_REGION? 's3-' + process.env.AWS_REGION : 's3'
+                    var s3Region = process.env.AWS_REGION ? 's3-' + process.env.AWS_REGION : 's3-us-west-2'
                     var s3Url = 'https://' + s3Region + ".amazonaws.com/" + process.env.AWS_BUCKET_NAME +
                     '/' + upload_params.Key;
                     callback('success',s3Url,requestId,size);

@@ -8,11 +8,12 @@ var _ = require('underscore');
 var mongoose    = require('mongoose');
 var jwt    = require('jsonwebtoken');
 var sh = require("shorthash");
-
+var AWS = require('aws-sdk');
+var s3 = new AWS.S3({region: process.env.AWS_REGION});
 
 process.on('uncaughtException', function(err) {
     // handle the error safely
-    console.log(err)
+    console.log('uncaughtException',err)
 })
 
 require('dotenv').config();
@@ -21,17 +22,19 @@ var notify = require('./actions/callback');
 var publisher = require('./amqp-connections/publisher');
 var requests = require('./settings/requests');
 var amqpConnection = require('./amqp-connections/amqp');
-var User = require('./schemas/userSchema'); 
+var User = require('./schemas/userSchema');
+var requestSchema = require('./schemas/requestSchema');
+var Request = mongoose.model('Request', requestSchema, 'requests');
 
 var permissions = {
     free : require('./permissions/freeUserPermissions'),
     paid: require('./permissions/paidUserPermissions')
 }
 
-var cluster = require('cluster');  
+var cluster = require('cluster');
 var numCPUs = require('os').cpus().length;
 
-if (cluster.isMaster) {  
+if (cluster.isMaster) {
     for (var i = 0; i < numCPUs; i++) {
         // Create a worker
         cluster.fork();
@@ -40,20 +43,20 @@ if (cluster.isMaster) {
     var port = process.env.PORT || 8080; // used to create, sign, and verify tokens
     mongoose.connect(process.env.MONGO_URL+'/'+process.env.MONGO_DB); // connect to database
 
-    mongoose.connection.on('connected', function () {  
+    mongoose.connection.on('connected', function () {
         console.log('Mongoose default connection open to ');
-    }); 
+    });
 
-    mongoose.connection.on('error',function (err) {  
+    mongoose.connection.on('error',function (err) {
         console.log('Mongoose default connection error: ' + err);
-    }); 
+    });
 
     app.set('superSecret', process.env.SECRET);
     app.use(bodyParser.urlencoded({ extended: false })); // use body parser so we can get info from POST and/or URL parameters
     app.use(bodyParser.json());
     app.use(morgan('dev'));
 
-    var apiRoutes = express.Router(); 
+    var apiRoutes = express.Router();
     app.all('*', function(req, res, next) {
         res.header('Access-Control-Allow-Origin', '*');
         res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
@@ -88,7 +91,9 @@ if (cluster.isMaster) {
             uid: req.body.uid,
             apiToken: req.body.token
         }, function(err, user) {
-            var user = user.toJSON();
+            if(user !== null){
+                var user = user.toJSON();
+            }
             if (err) {
                 promise.reject({
                     success: false,
@@ -101,7 +106,7 @@ if (cluster.isMaster) {
                 });
             } else {
                 if (typeof user === 'undefined' || user === null) {
-                    promise.reject({ 
+                    promise.reject({
                         success: false,
                         type: 'userInput',
                         message: [{
@@ -132,7 +137,7 @@ if (cluster.isMaster) {
                 },{
                     parent:'options',
                     title: 'Doh! ',
-                    message: 'Options are required.'    
+                    message: 'Options are required.'
                 }]
             });
         } else {
@@ -170,8 +175,8 @@ if (cluster.isMaster) {
         return promise.promise;
     }
 
-    function checkApiCall(req,res,params){   
-        var promise = q.defer();     
+    function checkApiCall(req,res,params){
+        var promise = q.defer();
         checkOptions(req).then(function(){
             console.log('server.js checkOptions success');
             checkRequirements(params,req.body).then(function(){
@@ -199,8 +204,8 @@ if (cluster.isMaster) {
             promise.reject(err);
         });
         return promise.promise;
-    }  
-       
+    }
+
     // apiRoutes.post('/queue', function(req, res) {
     //     res.json({ message: 'Ok'});
     //     checkApiCall(req,res,['options','token','url','uid']).then(function(user,options){
@@ -265,7 +270,7 @@ if (cluster.isMaster) {
             console.log('verify',err, user,typeof user,_.keys(user));
             console.log('verify',_.keys(user));
             if (err) {
-                return res.json({ success: false, message: 'Failed to authenticate token.' });      
+                return res.json({ success: false, message: 'Failed to authenticate token.' });
             } else {
                 user = undefined;
                 if (typeof user === 'undefined' || user === null) {
@@ -278,21 +283,21 @@ if (cluster.isMaster) {
     }
 
     app.get('/refreshPermissions', function(req, res) {
-        authorize(req,res,function(res,req,user){
-            permissions.free.upsert({label:freeUser.label},function(err) {
+        // authorize(req,res,function(res,req,user){
+            permissions.free.update({label:'free'},function(err) {
                 if (err){
                     res.json({ message: err });
                 }
-                permissions.paid.save({label:paidUSer.label},function(err) {
+                permissions.paid.update({label:'paid'},function(err) {
                     if (err){
                         res.json({ message: err });
-                    } 
+                    }
                     var message = 'Permissions updated saved successfully';
                     console.log(message);
                     res.json({ message: message });
                 });
             });
-        });
+        // });
     });
 
     app.get('/refreshCounts', function(req, res) {
@@ -301,7 +306,7 @@ if (cluster.isMaster) {
         */
         authorize(req,res,function(res,req,user){
             console.log('req',req.body.type);
-            // var Link = mongoose.model('Link', linkSchema, 'links ');
+            // var Link = mongoose.model('HyperLink', linkSchema, 'hyperlinks ');
         });
     });
 
@@ -326,10 +331,11 @@ if (cluster.isMaster) {
                 title: 'Validation Error',
                 uid: req.body.uid,
                 page: req.body.page,
-                eventType: 'requestError',
-                preClass: null,
-                postClass: 'error',
-                item: req.body.preClass});
+                type: req.body.type,
+                temp_id: req.body.temp_id,
+                i_id: null,
+                status: 'error',
+            });
         });
     }
 
@@ -343,12 +349,41 @@ if (cluster.isMaster) {
 
 
 
+
+
+    apiRoutes.post('/v1/deleteCaptures', function(req, res) {
+        console.log('delete!',req.body);
+        res.json({ message: 'deleting captures requested!'});
+        _preFlight(req,res,['token','uid','filename'],function(user,options){
+            console.log('here we are');
+            function deleteFile(filename) {
+                console.log('filename',filename);
+                var bucketInstance = new AWS.S3();
+                var params = {
+                    Bucket: process.env.AWS_BUCKET_NAME,
+                    Key: filename
+                };
+                bucketInstance.deleteObject(params, function (err, data) {
+                    if (data) {
+                        console.log("File deleted successfully",data);
+                    }
+                    else {
+                        console.log("Check if you have sufficient permissions : "+err);
+                    }
+                });
+            }
+            deleteFile(req.body.filename.replace(/^.*[\\\/]/, ''))
+        });
+    });
+
+
     apiRoutes.post('/v1/purge', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
         _preFlight(req,res,['token','uid'],function(user,options){
             queue.destroy(options)
         });
     });
+
 
   apiRoutes.post('/v1/capture', function(req, res) {
         res.json({ message: 'Ok we got it from here!'});
@@ -363,31 +398,41 @@ if (cluster.isMaster) {
                 }
                 var requestId = sh.unique(JSON.stringify(message));
                 message.requestId = requestId;
+                User.collection.findOneAndUpdate({
+                    uid: user.uid
+                    }, {
+                        $inc: {
+                            'activity.requests.monthly.count':1,
+                            'activity.requests.daily.count':1
+                        }
+                },function(err, user) {
+                    console.log('user',err,'user',user)
+                });
             publisher.publish("", "capture", new Buffer(JSON.stringify(message))).then(function(re){
                 console.log('server.js publisher.publish succees');
                 notify({
                     message:'Starting Capture!',
                     uid: user.uid,
                     page: req.body.page,
-                    eventType: 'requestUpdate',
-                    preClass: '',
-                    postClass: 'pending',
-                    item: requestId
+                    type: req.body.type,
+                    status: 'pending',
+                    temp_id: req.body.temp_id,
+                    i_id: requestId
                 });
             }).catch(function(err){
                 console.log('server.js publisher.publish err',err);
                 notify({
                     message:JSON.stringify(err.message),
+                    title: 'Server Error',
                     uid: user.uid,
                     page: req.body.page,
-                    title: 'Server Error',
-                    eventType: 'requestError',
-                    preClass: null,
-                    postClass: 'error',
-                    item: req.body.preClass});
+                    type: req.body.type,
+                    status: 'error',
+                    temp_id: req.body.temp_id,
+                    i_id: requestId});
                 });
         });
-    });   
+    });
 
 
 
@@ -410,10 +455,10 @@ if (cluster.isMaster) {
                     message:'Starting Scan!',
                     uid: user.uid,
                     page: req.body.page,
-                    eventType: 'requestUpdate',
-                    preClass: '',
-                    postClass: 'pending',
-                    item: requestId
+                    type: req.body.type,
+                    status: 'pending',
+                    temp_id: req.body.temp_id,
+                    i_id: requestId
                 });
             }).catch(function(err){
                 console.log('server.js publisher.publish err',err);
@@ -422,10 +467,10 @@ if (cluster.isMaster) {
                     uid: user.uid,
                     page: req.body.page,
                     title: 'Server Error',
-                    eventType: 'requestError',
-                    preClass: null,
-                    postClass: 'error',
-                    item: req.body.preClass});
+                    type: req.body.type,
+                    status: 'error',
+                    temp_id: req.body.temp_id,
+                    i_id: requestId});
             });
         });
     });
@@ -442,31 +487,53 @@ if (cluster.isMaster) {
                     options: JSON.parse(req.body.options)
                 }
                 var requestId = sh.unique(JSON.stringify(message));
+                var requestDate = Date.now();
                 message.requestId = requestId;
                 console.log('server.js checkApiCall succees',message);
-            publisher.publish("", "summary", new Buffer(JSON.stringify(message))).then(function(re){
-                console.log('server.js publisher.publish succees');
-                notify({
-                    message:'Starting Scan!',
-                    uid: user.uid,
-                    page: req.body.page,
-                    eventType: 'requestUpdate',
-                    preClass: '',
-                    postClass: 'pending',
-                    item: requestId
+            var _request = new Request({
+                url: message.url,
+                uid: message.user,
+                options: message.options,
+                requestId: message.requestId,
+                requestDate: requestDate,
+                processes: 0,
+                status: 'init'
+            });
+
+            _request.save(function (err, result) {
+                console.log('err',err,'result',result);
+                publisher.publish("", "summary", new Buffer(JSON.stringify(message))).then(function(re){
+                    console.log('server.js publisher.publish succees');
+
+
+                    // var requestId = input.requestId;
+
+        // console.log('input.options',input.options);
+
+        // console.log('Saving request...');
+
+                        notify({
+                            message:'Starting Scan!',
+                            uid: user.uid,
+                            page: req.body.page,
+                            type: req.body.type,
+                            requestDate: requestDate,
+                            status: 'pending',
+                            temp_id: req.body.temp_id,
+                            i_id: requestId
+                        });
+                }).catch(function(err){
+                    console.log('server.js publisher.publish err',err);
+                    notify({
+                        message:JSON.stringify(err.message),
+                        uid: user.uid,
+                        page: req.body.page,
+                        type: req.body.type,
+                        status: 'error',
+                        temp_id: req.body.temp_id,
+                        i_id: requestId});
                 });
-            }).catch(function(err){
-                console.log('server.js publisher.publish err',err);
-                notify({
-                    message:JSON.stringify(err.message),
-                    uid: user.uid,
-                    page: req.body.page,
-                    title: 'Server Error',
-                    eventType: 'requestError',
-                    preClass: null,
-                    postClass: 'error',
-                    item: req.body.preClass});
             });
         });
-    });   
+    });
 }

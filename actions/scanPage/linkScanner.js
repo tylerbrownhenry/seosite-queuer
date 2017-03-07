@@ -38,9 +38,12 @@ function _enqueue(input, options) {
         return new Error("Invalid URI");
     }
 
-    if (id == null) id = instance.counter++;
+    if (id == null && typeof instance !== 'undefined'){
+        id = instance.counter++;
 
-    if (instance.items[id] !== undefined) {
+    } 
+
+    if (typeof instance !== 'undefined' && instance.items[id] !== undefined) {
         return new Error("Non-unique ID");
     }
 
@@ -80,10 +83,23 @@ function enqueueLink(link, instance) {
     link.excluded = false;
 
     instance.linkEnqueued = enqueue(link, instance.options);
-
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
+    console.log('instance.linkEnqueued',instance.linkEnqueued);
     if (instance.linkEnqueued instanceof Error) { // TODO :: is this redundant? maybe use `linkObj.invalidate()` in `excludeLink()` ?
         link.broken = true;
         link.brokenReason = instance.linkEnqueued.message === "Invalid URI" ? "BLC_INVALID" : "BLC_UNKNOWN"; // TODO :: update limited-request-queue to support path-only URLs        
+        link._brokenReason = instance.linkEnqueued;
         clean(link);
         maybeCallback(instance.handlers.link)(link);
     }
@@ -113,13 +129,13 @@ function copyResponseData(response, link) {
             link.brokenReason = "ERRNO_" + response.code;
         } else {
             link.brokenReason = "BLC_UNKNOWN";
-            link.actualReason = response.code;
+            link.actualReason = response;
         }
     }
     clean(link);
 }
 
-function checkUrl(link, baseUrl, options, retry) {
+function checkUrl(link, baseUrl, options, retry, method) {
     var cached;
 
     if (retry === undefined) {
@@ -133,7 +149,6 @@ function checkUrl(link, baseUrl, options, retry) {
             linkObj.clean(link);
             return Promise.resolve(link);
         }
-
     }
 
     var request = bhttp.request(link.url.resolved, // TODO :: https://github.com/joepie91/node-bhttp/issues/3
@@ -142,11 +157,14 @@ function checkUrl(link, baseUrl, options, retry) {
             headers: {
                 "user-agent": options.userAgent
             },
-            method: retry !== 405 ? options.requestMethod : "get"
+            method: retry !== 405 ? options.requestMethod : method
         }).then(function(response) {
         response = simpleResponse(response);
-        if (response.statusCode === 405 && options.requestMethod === "head" && options.retry405Head === true && retry !== 405) {
-            return checkUrl(link, baseUrl, options, 405); // Retry possibly broken server with "get"
+        if (response.statusCode === 405 && method !== 'post' && options.requestMethod === "head" && options.retry405Head === true && retry !== 405) {
+            return checkUrl(link, baseUrl, options, 405,"get"); // Retry possibly broken server with "get"
+        }
+        if (retry === 405 && method === 'get') {
+            return checkUrl(link, baseUrl, options, 405,"post"); // Retry possibly broken server with "get"
         }
         return response;
     }).catch(function(error) {

@@ -9,7 +9,7 @@ function excludeLink(link, instance){
     var attrName = link.html.attrName;
     var tagName = link.html.tagName;
     var tagGroup = instance.options.tags[instance.options.filterLevel][tagName];
-    
+    console.log('excludeLink',instance.options.filterLevel);
     if (tagGroup != null){
         attrSupported = tagGroup[attrName];
     }

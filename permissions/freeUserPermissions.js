@@ -7,13 +7,15 @@ var permission = {
             page: 100,
             site: 0,
             requests: 100,
-            links: 0
+            links: 0,
+            captures:0
         },
         dailyLimit:{
             page: 5,
             site: 0,
             requests: 5,
-            links: 0
+            links: 0,
+            captures:0
         }
     },
     restrictions:{
@@ -21,6 +23,7 @@ var permission = {
             site: false,
             page: true,
         },
+        captures:false,
         filterLimit: 1,
         digDepthLimit: 0,
         excludeExternalLinks: {

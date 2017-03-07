@@ -3,7 +3,7 @@ var linkSchema = require("../../schemas/linkSchema");
 var requestSchema = require("../../schemas/requestSchema");
 var pageScanner = require("../../actions/scanPage/index");
 var publisher = require("../../amqp-connections/publisher");
-var Link = mongoose.model('Link', linkSchema, 'links ');
+var Link = mongoose.model('Link', linkSchema, 'links');
 var Request = mongoose.model('Request', requestSchema, 'requests');
 var q = require('q');
 var _ = require('underscore');
@@ -25,7 +25,7 @@ function updateCount(requestId, updatedCount, response) {
                 statusMessage: response.currentResponse.statusMessage,
                 'content-type' : response.currentResponse.headers["content-type"],
                 redirects: response.currentResponse.redirects.length,
-                failedReason: response.currentResponse.failedReason                
+                failedReason: response.currentResponse.failedReason
             }
         }
     }, {
@@ -45,7 +45,7 @@ function pageRequest(msg) {
     var input = JSON.parse(msg.content);
     var parentLink = input.url;
     var requestId = input.requestId;
-    
+
     var _request = new Request({
         url: input.url,
         uid: input.user,
@@ -134,7 +134,7 @@ function pageRequest(msg) {
                         if(_.keys(e.upsertedIds).length !== 0){
                             _.each(_.keys(e.upsertedIds), function(_id) {
                                 var id = e.upsertedIds[_id];
-                                var buffer = new Buffer(JSON.stringify({ 
+                                var buffer = new Buffer(JSON.stringify({
                                     url:        linkObj[id].resolvedUrl,
                                     requestId:  requestId,
                                     linkId:     linkObj[id]._id,
@@ -149,7 +149,7 @@ function pageRequest(msg) {
                                     console.log('Error/Success pageScanner...7');
                                     promise.resolve({
                                         status:'success',
-                                        data:'New links added to queue'});  
+                                        data:'New links added to queue'});
                                 }).catch(function(err){
                                     console.log('Error/Success pageScanner...6');
                                     promise.reject(err);
@@ -161,13 +161,13 @@ function pageRequest(msg) {
                         }
                     }).catch(function(err){
                         console.log('Error/Success pageScanner...8',err);
-                        /* 
-                        Update count is only thing to fail here 
+                        /*
+                        Update count is only thing to fail here
                         */
                         promise.reject(err);
                     });
                 })
-            }); 
+            });
         }
     });
     return promise.promise;

@@ -12,7 +12,7 @@ var defaultOptions =
 	excludeExternalLinks: false,
 	excludeInternalLinks: false,
 	excludeLinksToSamePage: true,
-	filterLevel: 1,
+	filterLevel: 2,
     // filterLevels = {
     //     0: true, // clickable links
     //     1: true, // clickable links, media, iframes, meta refreshes

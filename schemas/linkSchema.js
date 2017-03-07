@@ -14,6 +14,9 @@ var linkSchema = new mongoose.Schema({
         type: Date
     },
     _id: {
+        type: [mongoose.Schema.Types.ObjectId]
+    },
+    linkId: {
         type: String
     },
     uid: {
