@@ -1,3 +1,7 @@
+var options = {
+        path: '/usr/local/bin/'
+}
+
 var phantom = require('phantom');
 phantom.create(function(ph) {
   return ph.createPage(function(page) {
@@ -11,4 +15,4 @@ phantom.create(function(ph) {
       });
     });
   });
-});
+},options);
