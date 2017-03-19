@@ -1,42 +1,44 @@
-var mongoose = require('mongoose');
-
-var requestSchema = new mongoose.Schema({
-    retries: {
-        type: Number,
-        default: 0
-    },
-    uid: {
-        type: String
-    },
-    url: {
-        type: String
-    },
-    requestId: {
-        type: String
-    },
-    requestDate: {
-        type: Date,
-        default: Date.now()
-    },
-    options: {
-        type: Object
-    },
-    processes: {
-        type: Number,
-        default: 0
-    },
-    status: {
-        type: String,
-        default: 'init'
-    },
-    failedReason: {
-        type: String,
-        default: null
-    },
-    response: {
-        type: Object,
-        default: {}
-    }
+var dynamoose = require('dynamoose');
+var requestSchema = new dynamoose.Schema({
+     requestId: {
+          type: String,
+          hashKey: true
+     },
+     retries: {
+          type: Number
+     },
+     uid: {
+          type: String
+     },
+     url: {
+          type: String
+     },
+     requestDate: {
+          type: Date
+     },
+     options: {
+          type: Object
+     },
+     processes: {
+          type: Number
+     },
+     status: {
+          type: String,
+     },
+     failedReason: {
+          type: String,
+     },
+     response: {
+          type: Object
+     },
+}, {
+     throughput: {
+          read: 15,
+          write: 5
+     },
+     timestamps: {
+          createdAt: 'createdTs',
+          updatedAt: 'updatedTs'
+     }
 });
-
 module.exports = requestSchema;

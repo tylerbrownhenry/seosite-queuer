@@ -1,0 +1,36 @@
+var args = process.argv.slice(2);
+
+require('dotenv').config();
+var dynamoose = require('dynamoose');
+dynamoose.AWS.config.update({
+     region: "us-west-2",
+     endpoint: process.env.AWS_DYNAMODB_ENDPOINT
+});
+
+var dynamoose = require('dynamoose');
+var AWS = require('aws-sdk');
+var s3 = new AWS.S3({
+     region: process.env.AWS_REGION
+});
+
+var utils = require('./app/utils');
+var publisher = require('./amqp-connections/publisher');
+var amqpConnection = require('./amqp-connections/amqp');
+amqpConnection(function () {
+
+     var RequestSchema = require('./schemas/requestSchema');
+     var Request = dynamoose.model('Request', RequestSchema);
+
+     // utils.findOneUser({email:'2pdasc@email.com'},function(err,user){
+     // console.log('err',err,'user',user);
+     utils.findBy(Request, {
+          requestId: args[0]
+     }, function (err, res) {
+          // console.log('err', err, 'res', res);
+          publisher.publish("", "summary", new Buffer(JSON.stringify(res))).then(function (e) {
+               consoel.log('e', e);
+          });
+     });
+
+     // });
+});

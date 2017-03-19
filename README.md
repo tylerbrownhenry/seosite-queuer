@@ -1,3 +1,12 @@
+//python -mwebbrowser http://localhost:3000
+//python -mwebbrowser http://localhost:4000
+//python -mwebbrowser http://localhost:15672
+
+
+install phantomjs
+http://phantomjs.org/download.html
+cahnge the path to phantomjs
+
 install rabbitMQ Locally
 
 brew update
