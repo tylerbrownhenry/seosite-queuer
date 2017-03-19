@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var q = require('Q');
+var q = require('q');
 var scrapeHtml = require("../linkChecker/initScrapeHtml");
 var saveImage = require("../../mobileCaptures/index").saveImage;
 var createHAR = require('./createHAR');

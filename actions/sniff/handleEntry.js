@@ -1,4 +1,4 @@
-var q = require('Q');
+var q = require('q');
 var _ = require('underscore');
 var request = require('request');
 var http = require('http');

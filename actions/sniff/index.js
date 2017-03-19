@@ -4,7 +4,7 @@ var phantom = require('node-phantom-simple');
 var processResponses = require('./process/processResponses');
 var createPage = require('./process/createPage');
 var utils = require('./utils');
-var q = require('Q');
+var q = require('q');
 
 if (!Date.prototype.toISOString) {
      Date.prototype.toISOString = function () {

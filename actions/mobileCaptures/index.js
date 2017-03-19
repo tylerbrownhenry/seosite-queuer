@@ -9,6 +9,13 @@ var saveImageToAWS = require('./saveCapture');
 // var Capture = require('../../schemas/captureSchema');
 // var Scan = require('../../schemas/scanSchema');
 
+/**
+ * saves a thumbnail image of the current page being scanned
+ * @param  {Object}   page          phantomJS page object
+ * @param  {String}   filename      name of the file
+ * @param  {Function} callback      success callback
+ * @param  {Function}   errorCallback error callback
+ */
 function saveImage(page, filename, callback, errorCallback) {
      var imageDir = './images/';
      var _filename = imageDir + filename;
