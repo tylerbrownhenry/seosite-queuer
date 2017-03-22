@@ -1,0 +1,1572 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/settings/requests/summary.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../prettify.css">
+    <link rel="stylesheet" href="../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/settings/requests/summary.js</span></h1>
+    <h2>
+        Statements: <span class="metric">22.01% <small>(35 / 159)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 65)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 21)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">22.01% <small>(35 / 159)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../index.html">All files</a> &#187; <a href="index.html">app/settings/requests/</a> &#187; summary.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var dynamoose = require('dynamoose');
+var requestSchema = require("../../models/request");
+var Scan = require("../../models/scan");
+var pageScanner = require("../../actions/scanPage/index");
+var preFlight = require("../../amqp-connections/helpers/preFlight");
+var utils = require("../../utils");
+var processResources = require("./resources/process").processResources;
+var processMetaData = require("./meta/process");
+var processLinks = require("./links/process");
+var publishCaptures = require("./capture/publish");
+&nbsp;
+var notify = require('../../actions/callback');
+var publisher = require("../../amqp-connections/publisher");
+var Request = dynamoose.model('Request', requestSchema);
+var q = require('q');
+var _ = require('underscore');
+var sh = require("shorthash");
+var moment = require('moment');
+var Capture = require('../../models/capture');
+var sniff = require('../../actions/sniff/index');
+&nbsp;
+// /**
+//  * takes input and returns a Request object
+//  * @param  {Object} input  parsed message from rabbitMQ
+//  * @return {Object}        new Request object
+//  */
+// function mergeInput(input) {
+//      return new Request({
+//           url: input.url,
+//           uid: input.uid,
+//           options: input.options,
+//           requestId: input.requestId,
+//           requestDate: Date(),
+//           processes: 0,
+//           status: 'active'
+//      });
+// }
+&nbsp;
+// function reject(promise, statusType, message, notify, input, retry, retryCommand, retryOptions) {
+<span class="fstat-no" title="function not covered" >function reject(promise, input) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; failed -&gt; reject');</span>
+<span class="cstat-no" title="statement not covered" >     if (typeof input === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >          input = {}</span>
+     }
+<span class="cstat-no" title="statement not covered" >     var msg = {</span>
+          uid: input.uid || null,
+          requestId: input.requestId || null,
+          url: input.url || null,
+          page: input.page || null,
+          status: 'error',
+          statusType: input.statusType || null
+     };
+<span class="cstat-no" title="statement not covered" >     if (input.retry === true) {</span>
+<span class="cstat-no" title="statement not covered" >          msg.retry = true;</span>
+<span class="cstat-no" title="statement not covered" >          if (input.softRetry === true) {</span>
+<span class="cstat-no" title="statement not covered" >               msg.softRetry = true;</span>
+          } else <span class="cstat-no" title="statement not covered" >if (input.retryCommand &amp;&amp; input.retryOptions) {</span>
+<span class="cstat-no" title="statement not covered" >               msg.retryCommand = input.retryCommand;</span>
+<span class="cstat-no" title="statement not covered" >               msg.retryOptions = input.retryOptions;</span>
+          }
+     }
+<span class="cstat-no" title="statement not covered" >     if (input.notify === true) {</span>
+<span class="cstat-no" title="statement not covered" >          msg.notify = true;</span>
+<span class="cstat-no" title="statement not covered" >          msg.message = 'Request updated';</span>
+<span class="cstat-no" title="statement not covered" >          if (input.message) {</span>
+<span class="cstat-no" title="statement not covered" >               msg.message = input.message;</span>
+          }
+     }
+<span class="cstat-no" title="statement not covered" >     promise.reject(msg)</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function resolve(promise, input) {</span>
+<span class="cstat-no" title="statement not covered" >     var msg = {</span>
+          uid: input.uid,
+          requestId: input.requestId,
+          page: input.page,
+          status: input.status,
+          statusType: input.statusType,
+          message: input.message
+     }
+<span class="cstat-no" title="statement not covered" >     if (input.notify === true) {</span>
+<span class="cstat-no" title="statement not covered" >          msg.notify = true;</span>
+     }
+<span class="cstat-no" title="statement not covered" >     promise.resolve(msg);</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function retryInput(input, funcName) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     if (typeof [funcName] !== 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >          input.promise = promise;</span>
+<span class="cstat-no" title="statement not covered" >          [funcName](input);</span>
+          // .then(function (res) {
+          //  promise.resolve(res);
+          // }).catch(function (err) {
+          //  promise.reject(err);
+          // });
+     }
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function _saveAsActive(opts) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt;');</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     utils.updateBy(Request, {</span>
+          requestId: opts.requestId
+     }, {
+          $PUT: {
+               status: 'active'
+          }
+     }, <span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >          if (err !== null) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:failed');</span>
+<span class="cstat-no" title="statement not covered" >               promise.reject(opts);</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >               console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed');</span>
+<span class="cstat-no" title="statement not covered" >               promise.resolve(opts);</span>
+          }
+     });
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function saveAsActive(opts) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; saveAsActive -&gt;');</span>
+<span class="cstat-no" title="statement not covered" >     _saveAsActive(opts).then(processUrl).catch(savingAsActiveError);</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function savingAsActiveError(opts) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:failed -&gt; savingAsActiveError');</span>
+<span class="cstat-no" title="statement not covered" >     var promise = opts.promise;</span>
+<span class="cstat-no" title="statement not covered" >     opts.promise = undefined;</span>
+<span class="cstat-no" title="statement not covered" >     return reject(promise, {</span>
+          statusType: 'database',
+          notify: true,
+          message: 'Trouble saving request.  We\'re checking connections then trying again.',
+          requestId: opts.requestId,
+          uid: opts.uid,
+          url: opts.url,
+          page: opts.page,
+          retry: true,
+          retryCommand: 'request.summary.saveAsActive',
+          retryOptions: opts
+     });
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function processHar(input, res) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var url = input.url;</span>
+<span class="cstat-no" title="statement not covered" >     var options = input.options;</span>
+<span class="cstat-no" title="statement not covered" >     var promise = input.promise;</span>
+<span class="cstat-no" title="statement not covered" >     var requestId = input.requestId;</span>
+<span class="cstat-no" title="statement not covered" >     var uid = input.uid;</span>
+<span class="cstat-no" title="statement not covered" >     var page = input.page;</span>
+<span class="cstat-no" title="statement not covered" >     var url = input.url;</span>
+<span class="cstat-no" title="statement not covered" >     var isRetry = input.isRetry;</span>
+<span class="cstat-no" title="statement not covered" >     console.log('summary.js sniff.har responded');</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; publishCaptures');</span>
+<span class="cstat-no" title="statement not covered" >     publishCaptures(input, res);</span>
+     /* CHECK */
+     /* CHECK */
+     /* CHECK */
+     /* CHECK */
+     /* CHECK */
+&nbsp;
+     /*
+     Handle Errors!!!
+     */
+<span class="cstat-no" title="statement not covered" >     try {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; processHtml');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var newScan = new Scan(res);</span>
+<span class="cstat-no" title="statement not covered" >          newScan.requestId = requestId;</span>
+<span class="cstat-no" title="statement not covered" >          resources = processResources(input, res);</span>
+          /* CHECK *?
+          /* CHECK *?
+          /* CHECK *?
+          /* CHECK *?
+          /* CHECK */
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (options &amp;&amp; options.save &amp;&amp; options.save.resources === true) {</span>
+<span class="cstat-no" title="statement not covered" >               newScan.resources = resources;</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (options &amp;&amp; options.save &amp;&amp; options.save.security === true) {</span>
+<span class="cstat-no" title="statement not covered" >               newScan.emails = res.emails;</span>
+          }
+<span class="cstat-no" title="statement not covered" >          newScan.thumb = res.thumb;</span>
+          /* FIX */
+          /* FIX */
+          /* FIX */
+          /* FIX */
+          /* FIX */
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          newScan = processMetaData(newScan, input, res);</span>
+          /* CHECK */
+          /* CHECK */
+          /* CHECK */
+          /* CHECK */
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          newScan.completedTime = Date();</span>
+          /* SERVER TIME */
+          /* SERVER TIME */
+          /* SERVER TIME */
+          /* SERVER TIME */
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          delete newScan.log;</span>
+<span class="cstat-no" title="statement not covered" >          newScan.uid = uid;</span>
+&nbsp;
+     } catch (err) {
+          /** Handle this error??? */
+<span class="cstat-no" title="statement not covered" >          console.log('err', err);</span>
+<span class="cstat-no" title="statement not covered" >          return reject(promise, {</span>
+               statusType: 'system',
+               notify: true,
+               message: 'An error occured while processing the html of your page.',
+               retry: false,
+               requestId: requestId,
+               uid: uid,
+               url: url,
+               page: page
+          });
+     }
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save -&gt;');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     newScan.save(<span class="fstat-no" title="function not covered" >function (err) {</span></span>
+<span class="cstat-no" title="statement not covered" >          if (err) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save:failed');</span>
+               /*
+               Here we should send the unsaved scan to rabbitMQ, and suggest restarting from here
+               */
+<span class="cstat-no" title="statement not covered" >               return reject(promise, {</span>
+                    statusType: 'database',
+                    message: 'Trouble saving scan. We\'re checking our connections then trying again.',
+                    notify: true,
+                    requestId: requestId,
+                    uid: uid,
+                    url: url,
+                    page: page,
+                    retry: true,
+                    retryCommand: 'request.summary.processHar',
+                    retryOptions: {
+                         res: res,
+                         input: input
+                    }
+               });
+          } else {
+<span class="cstat-no" title="statement not covered" >               console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save:passed');</span>
+<span class="cstat-no" title="statement not covered" >               if (options &amp;&amp; options.save &amp;&amp; options.save.links === true &amp;&amp; typeof res.links !== 'undefined' &amp;&amp; res.links.length !== 0) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save:passed -&gt; processLinks');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    processLinks(input, res, requestId, newScan).then(<span class="fstat-no" title="function not covered" >function (_res) {</span></span>
+<span class="cstat-no" title="statement not covered" >                         console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save:passed -&gt; processLinks:passed');</span>
+&nbsp;
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         //  promise.resolve(_res);
+                         //  resolve(promise, uid, input.requestId, input.page, _res.status, 'processing', )
+<span class="cstat-no" title="statement not covered" >                         resolve(promise, {</span>
+                              requestId: requestId,
+                              uid: uid,
+                              page: page,
+                              status: _res.status,
+                              statusType: 'pending',
+                              message: _res.message,
+                              notify: true
+                         });
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                         /* Check */
+                    }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >                         console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed -&gt; processHar -&gt; newScan.save:passed -&gt; processLinks:failed');</span>
+&nbsp;
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         /* Check how this err is sent back ... */
+                         // reject(promise, uid, input.requestId, input.page, 'error', statusType, message, notify);
+<span class="cstat-no" title="statement not covered" >                         return reject(promise, {</span>
+                              //  statusType: 'database',
+                              //  message: 'Trouble saving scan. We\'re checking our connections, then we will retry.',
+                              //  message: 'Trouble saving links...'
+                              retry: true,
+                              notify: true,
+                              //  requestId: requestId,
+                              uid: uid,
+                              url: url,
+                              page: page,
+                              //  retryCommand: 'request.summary.processHar',
+                              //  retryOptions:{
+                              //  res:res,
+                              //  input:input
+                              //  }
+                         });
+                    });
+&nbsp;
+               } else {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    utils.updateBy(Request, {</span>
+                         requestId: requestId
+                    }, {
+                         $set: {
+                              status: 'complete'
+                         }
+                    }, <span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >                         if (err) {</span>
+                              /* Check */
+                              /* Check */
+                              /* Check */
+                              /* Check */
+                              /* Check */
+                              // return reject(promise, 'database', 'Trouble saving scan.', true, input, page, true, 'settings.request.summary.utils.update.by', {
+                              //      input: input
+                              // });
+                         } else {
+<span class="cstat-no" title="statement not covered" >                              resolve(promise, {</span>
+                                   requestId: requestId,
+                                   uid: uid,
+                                   page: page,
+                                   status: 'success',
+                                   statusType: 'complete',
+                                   message: 'Scan Complete',
+                                   notify: true
+                              });
+                              /* Check */
+                              /* Check */
+                              /* Check */
+                              /* Check */
+                              /* Check */
+&nbsp;
+                         }
+                    });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    console.log('request/summary.js success!');</span>
+               }
+          }
+&nbsp;
+     }).then(<span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('test here');</span>
+     }).catch(<span class="fstat-no" title="function not covered" >function () {</span>
+          /*Handle an error here... */
+<span class="cstat-no" title="statement not covered" >          console.log('test error :( ');</span>
+     });
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function markedRequstAsFailed(input) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('markedRequstAsFailed -&gt;');</span>
+<span class="cstat-no" title="statement not covered" >     utils.updateBy(Request, {</span>
+          requestId: input.requestId
+     }, {
+          $PUT: {
+               status: 'failed'
+          }
+     }, <span class="fstat-no" title="function not covered" >function (_err) {</span>
+<span class="cstat-no" title="statement not covered" >          if (_err === null) {</span>
+<span class="cstat-no" title="statement not covered" >              console.log('markedRequstAsFailed:passed');</span>
+<span class="cstat-no" title="statement not covered" >               return reject(input.promise, {</span>
+                    requestId: input.requestId,
+                    uid: input.uid,
+                    page: input.page,
+                    statusType: 'input',
+                    message: 'Unable to scan link provided',
+                    notify: true
+               });
+          } else {
+<span class="cstat-no" title="statement not covered" >                console.log('markedRequstAsFailed:failed');</span>
+<span class="cstat-no" title="statement not covered" >               return reject(input.promise, {</span>
+                    statusType: input.statusType || 'scan',
+                    notify: true,
+                    message: 'Unable to save failed scan',
+                    requestId: input.requestId,
+                    uid: input.uid,
+                    url: input.url,
+                    page: input.page,
+                    retry: true,
+                    retryCommand: 'request.summary.markedRequstAsFailed',
+                    retryOptions: input
+               });
+          }
+     });
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function shouldRetry(err) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('shouldRetry should have some logic eventually');</span>
+<span class="cstat-no" title="statement not covered" >     return true;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function processUrl(input) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var harOptions = {</span>
+          url: input.url,
+          uid: input.uid,
+          options: input.options,
+          requestId: input.requestId
+     };
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har');</span>
+<span class="cstat-no" title="statement not covered" >     sniff.har(harOptions).then(<span class="fstat-no" title="function not covered" >function (res) {</span></span>
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:passed');</span>
+<span class="cstat-no" title="statement not covered" >          processHar(input, res);</span>
+     }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:failed');</span>
+<span class="cstat-no" title="statement not covered" >          if (input.isRetry !== true) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:failed -&gt; not a retry');</span>
+<span class="cstat-no" title="statement not covered" >               if (shouldRetry(err)) {</span>
+                    /*
+                    Check error description
+                    */
+<span class="cstat-no" title="statement not covered" >                    return reject(input.promise, {</span>
+                         statusType: input.statusType || 'scan',
+                         notify: true,
+                         message: 'First scan failed. Retrying.',
+                         requestId: input.requestId,
+                         uid: input.uid,
+                         url: input.url,
+                         page: input.page,
+                         retry: true,
+                         retryCommand:'request.summary.processUrl',
+                         retryOptions:{
+                           input:input
+                         }
+                    });
+               }
+          }
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; _saveAsActive -&gt; updateBy:passed -&gt; processUrl -&gt; sniff.har:failed -&gt; is a retry');</span>
+<span class="cstat-no" title="statement not covered" >          return markedRequstAsFailed(input, err);</span>
+&nbsp;
+          /*
+          Dont retry
+          */
+&nbsp;
+          /*
+          Handle an error here...
+           */
+&nbsp;
+          // console.log('test');
+          /*
+            Check if this was a retry, or was retryable... then save as failed.
+           */
+          // var newScan = new Scan({
+          //      completedTime: Date(),
+          //      uid: input.uid,
+          //      requestId: input.requestId,
+          //      message: 'Error: ' + err.name + " : " + err.message,
+          //      status: 'failed',
+          //      url: {
+          //           url: input.url
+          //      }
+          // });
+          // console.log('test');
+          // newScan.save(function (e, r) {
+          //      console.log('e', e, 'r', r);
+          //      notify({
+          //           message: err.name + " : " + err.message,
+          //           uid: input.uid,
+          //           page: '/dashboard',
+          //           /* hardcoding page is bad */
+          //           type: 'request',
+          //           status: 'failed',
+          //           i_id: input.requestId
+          //      });
+          // });
+          // return reject(promise, 'scan', err.name + " : " + err.message, true, input, input.page, true, 'settings.request.summary.sniff.har', {
+          //      harOptions: harOptions
+          // });
+     });
+}
+&nbsp;
+/**
+ * process summary request message from rabbitMQ
+ * @param  {Buffer} msg buffered message from rabbitMQ
+ * @return {Promise} promise function
+ */
+<span class="fstat-no" title="function not covered" >function init(msg) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('request/summary.js init');</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var input = preFlight(promise, msg, reject);</span>
+<span class="cstat-no" title="statement not covered" >     if (input === false) {</span>
+<span class="cstat-no" title="statement not covered" >          return promise.promise;</span>
+     }
+<span class="cstat-no" title="statement not covered" >     var page = '/dashboard';</span>
+     // var _request = mergeInput(input);      // Not sure if was assuming this was getting updated but it's not?
+<span class="cstat-no" title="statement not covered" >     if (utils.checkRequirements(input, ['url', 'requestId', 'uid', 'options']) === true) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; checkRequirements : failed');</span>
+<span class="cstat-no" title="statement not covered" >          reject(promise, 'input', 'Missing required fields', true, input, page, false)</span>
+     } else {
+<span class="cstat-no" title="statement not covered" >          console.log('request/summary.js init -&gt; checkRequirements : passed -&gt;');</span>
+<span class="cstat-no" title="statement not covered" >          input.page = page;</span>
+<span class="cstat-no" title="statement not covered" >          input.promise = promise;</span>
+<span class="cstat-no" title="statement not covered" >          saveAsActive(input);</span>
+     }
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+module.exports.init = init;
+module.exports.saveAsActive = saveAsActive;
+module.exports.processHar = processHar;
+module.exports.processUrl = processUrl;
+module.exports.markedRequstAsFailed = markedRequstAsFailed;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

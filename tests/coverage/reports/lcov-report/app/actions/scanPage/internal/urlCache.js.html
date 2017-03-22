@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/scanPage/internal/urlCache.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../../prettify.css">
+    <link rel="stylesheet" href="../../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/actions/scanPage/internal/urlCache.js</span></h1>
+    <h2>
+        Statements: <span class="metric">23.64% <small>(13 / 55)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 25)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 9)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">24.07% <small>(13 / 54)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../../index.html">All files</a> &#187; <a href="index.html">app/actions/scanPage/internal/</a> &#187; urlCache.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+var urllib = require("url");
+var urlobj = require("urlobj");
+&nbsp;
+var defaultOptions = {
+     defaultPorts: null, // will use urlobj default value
+     expiryTime: Infinity,
+     normalizeUrls: true,
+     stripUrlHashes: true
+};
+&nbsp;
+<span class="fstat-no" title="function not covered" >function UrlCache(options) {</span>
+<span class="cstat-no" title="statement not covered" >     this.options = Object.assign({}, defaultOptions, options);</span>
+<span class="cstat-no" title="statement not covered" >     this.clear();</span>
+}
+&nbsp;
+UrlCache.prototype.clear = <span class="fstat-no" title="function not covered" >function (url) {</span>
+<span class="cstat-no" title="statement not covered" >     if (url != null) {</span>
+<span class="cstat-no" title="statement not covered" >          url = parseUrl(url, this.options);</span>
+<span class="cstat-no" title="statement not covered" >          url = stringifyUrl(url);</span>
+<span class="cstat-no" title="statement not covered" >          if (this.values[url] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >               delete this.expiries[url];</span>
+<span class="cstat-no" title="statement not covered" >               delete this.values[url];</span>
+<span class="cstat-no" title="statement not covered" >               this.count--;</span>
+          }
+     } else {
+<span class="cstat-no" title="statement not covered" >          this.count = 0;</span>
+<span class="cstat-no" title="statement not covered" >          this.expiries = {};</span>
+<span class="cstat-no" title="statement not covered" >          this.values = {};</span>
+     }
+};
+&nbsp;
+UrlCache.prototype.get = <span class="fstat-no" title="function not covered" >function (url) {</span>
+<span class="cstat-no" title="statement not covered" >     url = formatUrl(url, this.options);</span>
+<span class="cstat-no" title="statement not covered" >     removeExpired(url, this.expiries, this.values);</span>
+<span class="cstat-no" title="statement not covered" >     return this.values[url];</span>
+};
+&nbsp;
+UrlCache.prototype.length = <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >     return this.count;</span>
+};
+&nbsp;
+UrlCache.prototype.set = <span class="fstat-no" title="function not covered" >function (url, value, expiryTime) {</span>
+     // Avoid filling cache with values that will only cause rejection
+<span class="cstat-no" title="statement not covered" >     if (value === undefined) <span class="cstat-no" title="statement not covered" >return;</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     url = formatUrl(url, this.options);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     if (expiryTime == null) {</span>
+<span class="cstat-no" title="statement not covered" >          expiryTime = this.options.expiryTime;</span>
+     }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     this.expiries[url] = Date.now() + expiryTime;</span>
+<span class="cstat-no" title="statement not covered" >     this.values[url] = value;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     this.count++;</span>
+};
+&nbsp;
+//::: PRIVATE FUNCTIONS
+&nbsp;
+<span class="fstat-no" title="function not covered" >function formatUrl(url, options) {</span>
+<span class="cstat-no" title="statement not covered" >     url = parseUrl(url, options);</span>
+<span class="cstat-no" title="statement not covered" >     url = stringifyUrl(url);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     return url;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function parseUrl(url, options) {</span>
+<span class="cstat-no" title="statement not covered" >     if (options.defaultPorts != null) {</span>
+<span class="cstat-no" title="statement not covered" >          url = urlobj.parse(url, {</span>
+               defaultPorts: options.defaultPorts
+          });
+     } else {
+          // Avoid overriding the default value of `defaultPorts` with null/undefined
+<span class="cstat-no" title="statement not covered" >          url = urlobj.parse(url);</span>
+     }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     if (options.normalizeUrls === true) {</span>
+          // TODO :: this mutates input
+<span class="cstat-no" title="statement not covered" >          urlobj.normalize(url);</span>
+     }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     if (options.stripUrlHashes === true &amp;&amp; url.hash != null) {</span>
+          // TODO :: this mutates input
+<span class="cstat-no" title="statement not covered" >          url.hash = null;</span>
+<span class="cstat-no" title="statement not covered" >          url.href = stringifyUrl(url);</span>
+     }
+<span class="cstat-no" title="statement not covered" >     return url;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function removeExpired(url, expiries, values) {</span>
+<span class="cstat-no" title="statement not covered" >     if (values[url] !== undefined) {</span>
+<span class="cstat-no" title="statement not covered" >          if (expiries[url] &lt; Date.now()) {</span>
+<span class="cstat-no" title="statement not covered" >               delete expiries[url];</span>
+<span class="cstat-no" title="statement not covered" >               delete values[url];</span>
+          }
+     }
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function stringifyUrl(url) {</span>
+<span class="cstat-no" title="statement not covered" >     if (url !== null &amp;&amp; typeof url === "object" &amp;&amp; url instanceof String === false) {</span>
+<span class="cstat-no" title="statement not covered" >          return urllib.format(url); </span>// TODO :: use urlobj.format() when available
+     }
+}
+&nbsp;
+module.exports = UrlCache;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

@@ -14,5 +14,5 @@ phantom.create(function(ph) {
         return ph.exit();
       });
     });
-  });
+  }),options});
 },options);

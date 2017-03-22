@@ -15,7 +15,7 @@ process.on('uncaughtException', function (err) {
      // handle the error safely
      console.log('uncaughtException', err)
 })
-var amqpConnection = require('./amqp-connections/amqp');
+var amqpConnection = require('./app/amqp-connections/amqp');
 var cluster = require('cluster');
 var numCPUs = require('os').cpus().length;
 

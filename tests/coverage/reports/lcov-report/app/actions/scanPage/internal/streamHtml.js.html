@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/scanPage/internal/streamHtml.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../../prettify.css">
+    <link rel="stylesheet" href="../../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/actions/scanPage/internal/streamHtml.js</span></h1>
+    <h2>
+        Statements: <span class="metric">10.34% <small>(3 / 29)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 24)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 3)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">10.34% <small>(3 / 29)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../../index.html">All files</a> &#187; <a href="index.html">app/actions/scanPage/internal/</a> &#187; streamHtml.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+var errors = require("./messages").errors,
+     simpleResponse = require("./simpleResponse"),
+     checkErrors = require("./checkErrors"),
+     bhttp = require("bhttp"),
+     q = require("q");
+&nbsp;
+/*
+Request a URL for its HTML contents and return a stream.
+*/
+&nbsp;
+<span class="fstat-no" title="function not covered" >function stream(url, cache, options) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var result;</span>
+<span class="cstat-no" title="statement not covered" >     console.log('streamhtml...', 'url', url, 'userAgent', options.userAgent);</span>
+<span class="cstat-no" title="statement not covered" >     bhttp.get(url, { // TODO :: https://github.com/joepie91/node-bhttp/issues/3   // Always gets the URL because response bodies are never cached</span>
+          discardResponse: true,
+          headers: {
+               "user-agent": options.userAgent
+          },
+          stream: true
+     }).then(<span class="fstat-no" title="function not covered" >function (orgResponse) {</span>
+<span class="cstat-no" title="statement not covered" >          var response = simpleResponse(orgResponse);</span>
+<span class="cstat-no" title="statement not covered" >          result = checkErrors(response);</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (typeof result === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >               result = {</span>
+                    response: response,
+                    stream: orgResponse
+               };
+<span class="cstat-no" title="statement not covered" >               if (options.cacheResponses === true &amp;&amp; response.url !== url) {</span>
+<span class="cstat-no" title="statement not covered" >                    cache.set(response.url, response);</span>
+               }
+          }
+<span class="cstat-no" title="statement not covered" >          console.log('result', result);</span>
+<span class="cstat-no" title="statement not covered" >          if (response instanceof Error === true) {</span>
+<span class="cstat-no" title="statement not covered" >               throw response;</span>
+          }
+<span class="cstat-no" title="statement not covered" >          if (result instanceof Error === true) {</span>
+<span class="cstat-no" title="statement not covered" >               throw result;</span>
+          }
+<span class="cstat-no" title="statement not covered" >          return promise.resolve(result);</span>
+     }).catch(<span class="fstat-no" title="function not covered" >function (error) {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('Typeof Error ', typeof error, error);</span>
+<span class="cstat-no" title="statement not covered" >          if (typeof error === 'MultipartError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'bhttpError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ConflictingOptionsError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'UnsupportedProtocolError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'RedirectError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ConnectionTimeoutError') {</span>
+&nbsp;
+          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ResponseTimeoutError') {</span>
+&nbsp;
+          } else {
+&nbsp;
+          }
+<span class="cstat-no" title="statement not covered" >          promise.reject({</span>
+               status: 'error',
+               message: error
+          });
+     });
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+module.exports = stream;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/settings/requests/links/process.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../../prettify.css">
+    <link rel="stylesheet" href="../../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/settings/requests/links/process.js</span></h1>
+    <h2>
+        Statements: <span class="metric">9.3% <small>(4 / 43)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 6)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 9)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">9.3% <small>(4 / 43)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../../index.html">All files</a> &#187; <a href="index.html">app/settings/requests/links/</a> &#187; process.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var notify = require('../../../actions/callback'),
+     dynamoose = require('dynamoose'),
+     linkSchema = require("../../../models/link"),
+     Link = dynamoose.model('Link', linkSchema),
+     _updateCount = require("../page/updateCount"),
+     _ = require('underscore'),
+     sh = require('shorthash'),
+     utils = require('../../../utils'),
+     q = require('q');
+&nbsp;
+/**
+* wrapper for updateCount function creates put object
+* @param  {string} requestId unqiue id of page request
+* @param  {number} updatedCount number of new links found
+* @param  {object} response  content but the page request
+* @return {promise}
+*/
+<span class="fstat-no" title="function not covered" >function updateCount(requestId, updatedCount, response) {</span>
+<span class="cstat-no" title="statement not covered" >      var putObject = {</span>
+           processes: updatedCount - 1,
+           dev_use_only_request: response.currentResponse,
+           response: {
+                resolvedUrl: response.url.resolvedUrl,
+                statusMessage: 'Success',
+                redirects: response.redirects,
+                failedReason: null
+           }
+      }
+<span class="cstat-no" title="statement not covered" >      return _updateCount(requestId, updatedCount, putObject);</span>
+ }
+&nbsp;
+/**
+ * saves any link found during scan in database, and marks it on the scan object
+ * @param  {Object} input message from rabbitMQ
+ * @param  {Object} res   scan response object
+ * @return {Promise}
+ */
+<span class="fstat-no" title="function not covered" >function processLinks(input, res, requestId, newScan) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var links = res.links;</span>
+<span class="cstat-no" title="statement not covered" >     res.links = undefined;</span>
+<span class="cstat-no" title="statement not covered" >     res.linkCount = links.length;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var parentLink = newScan.url.resolvedUrl;</span>
+<span class="cstat-no" title="statement not covered" >     var commands = [];</span>
+<span class="cstat-no" title="statement not covered" >     var linkObj = {};</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     _.each(links, <span class="fstat-no" title="function not covered" >function (link) {</span></span>
+<span class="cstat-no" title="statement not covered" >          var linkId = sh.unique(link.url.original + requestId);</span>
+<span class="cstat-no" title="statement not covered" >          if (typeof linkObj[linkId] === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >               commands.push({</span>
+                    "_id": linkId,
+                    "__scan": {},
+                    "__link": link,
+                    "found": Date(),
+                    "linkId": linkId,
+                    "resolvedUrl": parentLink,
+                    "requestId": requestId,
+                    "scanned": null,
+                    "status": 'pending',
+                    "site": parentLink,
+                    "uid": input.uid,
+                    "url": link.url.original,
+               });
+<span class="cstat-no" title="statement not covered" >               link._id = linkId;</span>
+<span class="cstat-no" title="statement not covered" >               linkObj[linkId] = link;</span>
+          }
+     });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var updatedCount = 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     Link.batchPut(commands, <span class="fstat-no" title="function not covered" >function (err, e) {</span></span>
+<span class="cstat-no" title="statement not covered" >          console.log('summary.js line ~350');</span>
+<span class="cstat-no" title="statement not covered" >          if (err !== null) {</span>
+<span class="cstat-no" title="statement not covered" >            return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page,true,'links.process.batchPut',{requestId:requestId, updatedCount:updatedCount, newScan:newScan,commands:commands,parentLink:parentLink,requestId:requestId});</span>
+          }
+          /*
+          checkcheck if e is undeinfed...
+          */
+<span class="cstat-no" title="statement not covered" >          updatedCount = commands.length;</span>
+<span class="cstat-no" title="statement not covered" >          console.log('summary.js updatedCount');</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          updateCount(requestId, updatedCount, newScan).then(<span class="fstat-no" title="function not covered" >function (resp) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log('summary.js updatedCount response',commands);</span>
+<span class="cstat-no" title="statement not covered" >               _.each(commands, <span class="fstat-no" title="function not covered" >function (command) {</span></span>
+<span class="cstat-no" title="statement not covered" >                    var id = command._id;</span>
+<span class="cstat-no" title="statement not covered" >                    var buffer = new Buffer(JSON.stringify({</span>
+                         url: linkObj[id].resolvedUrl,
+                         requestId: requestId,
+                         linkId: linkObj[id]._id,
+                         uid: input.uid,
+                         baseUrl: parentLink,
+                         _link: linkObj[id]
+                    }));
+<span class="cstat-no" title="statement not covered" >                    publisher.publish("", "links", buffer, {</span>
+                         type: parentLink,
+                         messageId: linkObj[id]._id,
+                         uid: input.uid
+                    }).then(<span class="fstat-no" title="function not covered" >function (err, data) {</span>
+<span class="cstat-no" title="statement not covered" >                         console.log('summary.js successfully published to queue');</span>
+<span class="cstat-no" title="statement not covered" >                         var add = '';</span>
+<span class="cstat-no" title="statement not covered" >                         if(commands.length &gt; 1){</span>
+<span class="cstat-no" title="statement not covered" >                           add = 's';</span>
+                         }
+<span class="cstat-no" title="statement not covered" >                         promise.resolve({</span>
+                              status: 'working',
+                              message: 'Found '+commands.length+' link'+ add
+                         });
+                    }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >                         console.error('summary.js error publishing to queue');</span>
+<span class="cstat-no" title="statement not covered" >                         promise.reject(err);</span>
+                    })
+               });
+          }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >               console.warn('summary.js error updating count for scan');</span>
+<span class="cstat-no" title="statement not covered" >               console.log('Error/Success pageScanner...8', err);</span>
+               /*
+               Update count is only thing to fail here
+               */
+<span class="cstat-no" title="statement not covered" >               promise.reject(promise, 'database', 'Trouble updating link count for request.', true, input, page,true,'settings.request.summary.newScan.save',{requestId:requestId, updatedCount:updatedCount, newScan:newScan,commands:commands,parentLink:parentLink,requestId:requestId});</span>
+&nbsp;
+          });
+     });
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+module.exports = processLinks;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

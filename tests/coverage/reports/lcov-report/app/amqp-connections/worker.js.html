@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/amqp-connections/worker.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../prettify.css">
+    <link rel="stylesheet" href="../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/amqp-connections/worker.js</span></h1>
+    <h2>
+        Statements: <span class="metric">38.89% <small>(14 / 36)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 4)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 8)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">38.89% <small>(14 / 36)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../index.html">All files</a> &#187; <a href="index.html">app/amqp-connections/</a> &#187; worker.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82</td><td class="line-coverage"><span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var errorHandler = require('../settings/errorHandler');
+var dynamoose = require('dynamoose');
+var settings = require("../settings/requests");
+var requestSchema = require("../models/request");
+var Request = dynamoose.model('Request', requestSchema);
+var Scan = require("../models/scan");
+var User = require("../models/user");
+&nbsp;
+/*
+Consumer Actions
+*/
+var consumeSummary = require("./consumers/summary");
+var consumeLink = require("./consumers/link");
+var consumePage = require("./consumers/page");
+var consumeCapture = require("./consumers/capture");
+var consumeRetry = require("./consumers/retry");
+&nbsp;
+/**
+ * initilizes rabbitMQ consumer
+ * @param  {object} amqpConn rabbitMq connection object
+ */
+module.exports.start = <span class="fstat-no" title="function not covered" >function (amqpConn) {</span>
+<span class="cstat-no" title="statement not covered" >     amqpConn.createChannel(<span class="fstat-no" title="function not covered" >function (err, ch) {</span></span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (errorHandler(amqpConn, err)) {</span>
+<span class="cstat-no" title="statement not covered" >               return; </span>/* Restart or something? */
+          }
+<span class="cstat-no" title="statement not covered" >          ch.on("drain", <span class="fstat-no" title="function not covered" >function (err) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.error("[AMQP] channel drgain", err);</span>
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          ch.on("error", <span class="fstat-no" title="function not covered" >function (err) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.error("[AMQP] channel error", err); </span>/* Restart or something? */
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          ch.on("close", <span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log("[AMQP] channel closed");</span>
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          ch.prefetch(10);</span>
+&nbsp;
+          // init('summary', consumeSummary, 'freeSummary', false, ch);
+<span class="cstat-no" title="statement not covered" >          init('links', consumeLink, 'links', true, ch);</span>
+<span class="cstat-no" title="statement not covered" >          init('pages', consumePage, 'pages', true, ch);</span>
+<span class="cstat-no" title="statement not covered" >          init('summary', consumeSummary, 'summary', true, ch);</span>
+<span class="cstat-no" title="statement not covered" >          init('capture', consumeCapture, 'capture', true, ch);</span>
+<span class="cstat-no" title="statement not covered" >          init('retry', consumeRetry, 'retry', true, ch);</span>
+          /**
+           * initalize consumer
+           * @param  {String} assertName
+           * @param  {Function} queueFunc  function to run on message
+           * @param  {String} queueName  name of queue message belongs to
+           * @param  {Object} ack       object with ack function on it
+           * @param  {Object} ch         rabbitMQ channel
+           * @return {[type]}            [description]
+           */
+<span class="fstat-no" title="function not covered" >          function init(assertName, queueFunc, queueName, ack, ch) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('ch init');</span>
+               //  console.log('ch init', ch);
+<span class="cstat-no" title="statement not covered" >               ch.assertQueue(queueName, {</span>
+                    durable: true
+               }, <span class="fstat-no" title="function not covered" >function (err, _ok) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (errorHandler(amqpConn, err)) {</span>
+<span class="cstat-no" title="statement not covered" >                         console.log('amqpConn', amqpConn, 'err', err); </span>/* Restart or something? */
+<span class="cstat-no" title="statement not covered" >                         return;</span>
+                    }
+&nbsp;
+                    // var _queueFunc = new PreConsumer(queueFunc,ch);
+                    // if (ack) {
+<span class="cstat-no" title="statement not covered" >                         ch.consume(assertName,<span class="fstat-no" title="function not covered" >function(e){</span></span>
+<span class="cstat-no" title="statement not covered" >                           queueFunc(e,ch);</span>
+                         }, {
+                              noAck: false
+                         });
+                    // } else {
+                        //  ch.consume(assertName, _queueFunc.func);
+                    // }
+               });
+          }
+     });
+};
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../sorter.js"></script>
+</body>
+</html>

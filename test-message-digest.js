@@ -14,21 +14,21 @@ var s3 = new AWS.S3({
 });
 
 var utils = require('./app/utils');
-var publisher = require('./amqp-connections/publisher');
-var amqpConnection = require('./amqp-connections/amqp');
+var publisher = require('./app/amqp-connections/publisher');
+var amqpConnection = require('./app/amqp-connections/amqp');
 amqpConnection(function () {
 
-     var RequestSchema = require('./schemas/requestSchema');
+     var RequestSchema = require('./app/models/request');
      var Request = dynamoose.model('Request', RequestSchema);
 
      // utils.findOneUser({email:'2pdasc@email.com'},function(err,user){
-     // console.log('err',err,'user',user);
+    //  console.log('err',err,'user',user);
      utils.findBy(Request, {
           requestId: args[0]
      }, function (err, res) {
-          // console.log('err', err, 'res', res);
+          console.log('err', err, 'res', res);
           publisher.publish("", "summary", new Buffer(JSON.stringify(res))).then(function (e) {
-               consoel.log('e', e);
+               console.log('e', e);
           });
      });
 

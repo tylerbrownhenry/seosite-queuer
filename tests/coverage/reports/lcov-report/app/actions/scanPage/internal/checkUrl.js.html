@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/scanPage/internal/checkUrl.js</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../../../../prettify.css">
+    <link rel="stylesheet" href="../../../../base.css">
+    <style type='text/css'>
+        div.coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class="header low">
+    <h1>Code coverage report for <span class="entity">app/actions/scanPage/internal/checkUrl.js</span></h1>
+    <h2>
+        Statements: <span class="metric">18.75% <small>(9 / 48)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Branches: <span class="metric">0% <small>(0 / 26)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Functions: <span class="metric">0% <small>(0 / 5)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Lines: <span class="metric">18.75% <small>(9 / 48)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        Ignored: <span class="metric"><span class="ignore-none">none</span></span> &nbsp;&nbsp;&nbsp;&nbsp;
+    </h2>
+    <div class="path"><a href="../../../../index.html">All files</a> &#187; <a href="index.html">app/actions/scanPage/internal/</a> &#187; checkUrl.js</div>
+</div>
+<div class="body">
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
+var linkObj = require("./linkObj");
+var reasons = require("./messages").reasons;
+var simpleResponse = require("./simpleResponse");
+var bhttp = require("bhttp");
+var extend = require("extend");
+var isString = require("is-string");
+&nbsp;
+/*
+	Checks a URL to see if it's broken or not.
+*/
+<span class="fstat-no" title="function not covered" >function checkUrl(link, baseUrl, cache, options, retry) {</span>
+<span class="cstat-no" title="statement not covered" >     var cached;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     if (typeof retry === "undefined") {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('retry?');</span>
+<span class="cstat-no" title="statement not covered" >          if (isString(link) === true) {</span>
+<span class="cstat-no" title="statement not covered" >               link = linkObj(link);</span>
+<span class="cstat-no" title="statement not covered" >               linkObj.resolve(link, baseUrl, options);</span>
+          }
+&nbsp;
+          // TODO :: move out to an `linkObj.invalidate()` to share with `HtmlChecker()` ?
+<span class="cstat-no" title="statement not covered" >          if (link.url.resolved === null) {</span>
+<span class="cstat-no" title="statement not covered" >               link.broken = true;</span>
+<span class="cstat-no" title="statement not covered" >               link.brokenReason = "BLC_INVALID";</span>
+<span class="cstat-no" title="statement not covered" >               linkObj.clean(link);</span>
+<span class="cstat-no" title="statement not covered" >               return Promise.resolve(link);</span>
+          }
+&nbsp;
+          // cached = cache.get(link.url.parsed);
+&nbsp;
+          // if(typeof cached !== "undefined"){
+          // 	return Promise.resolve(cached).then(function(response){
+          // 		// Cloned to avoid unexpected mutations as a result of user changes
+          //   				response = extend({}, response);
+          //   				copyResponseData(response, link, options);
+          //   				link.http.cached = true;
+          //   				return link;
+          // 	});
+          // }
+     }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var request = bhttp.request(link.url.resolved, // TODO :: https://github.com/joepie91/node-bhttp/issues/3	{</span>
+               {
+                    discardResponse: true,
+                    headers: {
+                         "user-agent": options.userAgent
+                    },
+                    method: retry !== 405 ? options.requestMethod : "get"
+               }).then(<span class="fstat-no" title="function not covered" >function (response) {</span>
+<span class="cstat-no" title="statement not covered" >               response = simpleResponse(response);</span>
+<span class="cstat-no" title="statement not covered" >               if (response.statusCode === 405 &amp;&amp; options.requestMethod === "head" &amp;&amp; options.retry405Head === true &amp;&amp; retry !== 405) {</span>
+                    // Retry possibly broken server with "get"
+<span class="cstat-no" title="statement not covered" >                    return checkUrl(link, baseUrl, cache, options, 405);</span>
+               }
+               // TODO :: store ALL redirected urls in cache
+               // if (options.cacheResponses===true &amp;&amp; response.url!==link.url.resolved)		{
+               // cache.set(response.url, response);  // TODO :: store `request` instead to be consistent?
+               // }
+<span class="cstat-no" title="statement not covered" >               return response;</span>
+          })
+          .catch(<span class="fstat-no" title="function not covered" >function (error) {</span>
+               // The error will be stored as a response
+<span class="cstat-no" title="statement not covered" >               return error;</span>
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     if (typeof retry === "undefined") {</span>
+          // Send response to cache -- it will be available to `cache.get()` before being resolved
+          // if (options.cacheResponses === true){
+          // 	cache.set(link.url.parsed, request);
+          // }
+          // Send linkObj to caller
+<span class="cstat-no" title="statement not covered" >          return request.then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
+<span class="cstat-no" title="statement not covered" >               copyResponseData(response, link, options);</span>
+<span class="cstat-no" title="statement not covered" >               link.http.cached = false;</span>
+<span class="cstat-no" title="statement not covered" >               return link;</span>
+          });
+     } else {
+<span class="cstat-no" title="statement not covered" >          return request;</span>
+     }
+}
+&nbsp;
+/*
+	Copy data from a bhttp response object—either from a request or cache—
+	into a link object.
+*/
+<span class="fstat-no" title="function not covered" >function copyResponseData(response, link, options) {</span>
+<span class="cstat-no" title="statement not covered" >     if (response instanceof Error === false) {</span>
+<span class="cstat-no" title="statement not covered" >          if (response.statusCode !== 200) {</span>
+<span class="cstat-no" title="statement not covered" >               link.broken = true;</span>
+<span class="cstat-no" title="statement not covered" >               link.brokenReason = "HTTP_" + response.statusCode;</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >               link.broken = false;</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          link.http.response = response;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (link.url.resolved !== response.url) {</span>
+<span class="cstat-no" title="statement not covered" >               link.url.redirected = response.url;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >               if (link.base.resolved !== null) {</span>
+                    // TODO :: this needs a test
+<span class="cstat-no" title="statement not covered" >                    linkObj.relation(link, link.url.redirected);</span>
+               }
+          }
+     } else {
+<span class="cstat-no" title="statement not covered" >          link.broken = true;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (reasons["ERRNO_" + response.code] != null) {</span>
+<span class="cstat-no" title="statement not covered" >               link.brokenReason = "ERRNO_" + response.code;</span>
+               // }
+               /*else if (response.message === "Invalid URL")
+               {
+               	link.brokenReason = "BLC_INVALID";
+               }*/
+          } else {
+<span class="cstat-no" title="statement not covered" >               link.brokenReason = "BLC_UNKNOWN";</span>
+<span class="cstat-no" title="statement not covered" >               link.actualReason = response.code;</span>
+          }
+     }
+<span class="cstat-no" title="statement not covered" >     linkObj.clean(link);</span>
+}
+&nbsp;
+module.exports = checkUrl;
+&nbsp;</pre></td></tr>
+</table></pre>
+
+</div>
+<div class="footer">
+    <div class="meta">Generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Mar 21 2017 18:08:07 GMT-0700 (PDT)</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

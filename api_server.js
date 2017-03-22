@@ -47,17 +47,17 @@ process.on('uncaughtException', function (err) {
      console.log('uncaughtException', err)
 })
 
-// var notify = require('./actions/callback');
-// var publisher = require('./amqp-connections/publisher');
-// var requests = require('./settings/requests');
-var amqpConnection = require('./amqp-connections/amqp');
-// var User = require('./schemas/userSchema');
-// var requestSchema = require('./schemas/requestSchema');
+// var notify = require('./app/actions/callback');
+// var publisher = require('./app/amqp-connections/publisher');
+// var requests = require('./app/settings/requests');
+var amqpConnection = require('./app/amqp-connections/amqp');
+// var User = require('./app/models/user');
+// var requestSchema = require('./app/models/request');
 // module.exports = dynamoose.model('Request', requestSchema);
 
 // var permissions = {
-//  free: require('./permissions/freeUserPermissions'),
-//  paid: require('./permissions/paidUserPermissions')
+//  free: require('./app/permissions/freeUserPermissions'),
+//  paid: require('.app/permissions/paidUserPermissions')
 // }
 
 var cluster = require('cluster');
