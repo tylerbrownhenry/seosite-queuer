@@ -19,6 +19,14 @@ var amqpConnection = require('./app/amqp-connections/amqp');
 var cluster = require('cluster');
 var numCPUs = require('os').cpus().length;
 
+var permissions = {
+    free : require('./app/permissions/freeUserPermissions'),
+    paid: require('./app/permissions/paidUserPermissions')
+}
+
+permissions.free.save()
+permissions.paid.save()
+
 if (cluster.isMaster) {
      for (var i = 0; i < numCPUs; i++) {
           // Create a worker
