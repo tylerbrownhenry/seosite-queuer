@@ -27,11 +27,11 @@ var permissions = {
 permissions.free.save()
 permissions.paid.save()
 
-if (cluster.isMaster) {
-     for (var i = 0; i < numCPUs; i++) {
+// if (cluster.isMaster) {
+    //  for (var i = 0; i < numCPUs; i++) {
           // Create a worker
-          cluster.fork();
-     }
-} else {
+          // cluster.fork();
+    //  }
+// } else {
      amqpConnection();
-}
+// }
