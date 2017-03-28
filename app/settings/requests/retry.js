@@ -6,48 +6,78 @@ var sh = require('shorthash'),
      retryables = require('./retry/retryables'),
      preFlight = require('../../amqp-connections/helpers/preFlight');
 
+/**
+ * checks that if the original issue that made the message fail has been resolved
+ * @param  {String} type string representing the root cause of the error
+ * @return {Boolean}
+ */
 function originalIssueResolved(type) {
      if (type === 'database') {
-          /**
-           * Check database connection
-           */
+          /* Check database connection? */
           return true;
+     } else if (type === 'failsForTesting') {
+          return false;
      }
+     return true;
 }
 
+/**
+ * promises a message to be retried
+ * @param  {Object} input
+ */
 function publish(input) {
+     var promise = q.defer();
+     console.log('retry.js --> publish --> checkRequirements', input);
+     if (typeof input === 'undefined' || utils.checkRequirements(input, ['i_id', 'retryCommand', 'retryOptions']) === true) {
+          console.log('retry.js --> publish --> checkRequirements:failed');
+          logError({
+               where: 'retry.js:publish:checkRequirements',
+               with: input,
+               error: 'requirements not met.'
+          });
+          promise.reject(false);
+          return promise.promise;
+     }
      var msg = {
           uid: input.uid || null,
-          i_id: input.i_id || null,
+          i_id: input.i_id,
           url: input.url || null,
           page: input.page || null,
           status: input.status || null,
           statusType: input.statusType || null,
           isRetry: true
      };
-     if (utils.checkRequirements(input, ['requestId','retryCommand', 'retryOptions']) === true) {
-          logError({
-               where: 'retry.js:publish:checkRequirements',
-               with: msg,
-               error: 'requirements not met.'
-          });
-          promise.resolve();
-          return promise.promise;
+     console.log('retry.js --> publish -->', input);
+     console.log('publisher', publisher);
+     msg.retryCommand = input.retryCommand;
+     if (input.retryOptions.promise) {
+          delete input.retryOptions.promise;
      }
-     msg.retryCommand = input.retryCommand
-     msg.retryOptions = input.retryOptions
-     var buffer = new Buffer(JSON.stringify(msg));
-     publisher.publish("", "retries", buffer);
+     msg.retryOptions = input.retryOptions;
+     console.log('publisher', msg);
+     publisher.publish("", "retry", new Buffer(JSON.stringify(msg))).then(function (e) {
+          console.log('retry -> success', e);
+          promise.resolve(msg);
+     }).catch(function (e) {
+          promise.reject(msg);
+          /**
+           * RETRY HERE?
+           */
+          console.log('retry -> error', e);
+     });
+
+     return promise.promise;
 }
 
-function start(msg){
-
-}
-
-function init(msg) {
+/**
+ * check the requirements of a message if passes consume it
+ * @param  {Object} input message from RabbitMQ
+ */
+function init(msg, ch) {
+     console.log('requests/retry.js -->');
      var promise = q.defer();
-
      var input = preFlight(promise, msg, function (promise, err) {
+          console.log('requests/retry.js --> preFlight:failed');
           logError({
                where: 'retry.js:preFlight',
                with: msg,
@@ -56,8 +86,9 @@ function init(msg) {
           promise.resolve();
           return promise.promise;
      });
-
-     if (utils.checkRequirements(input, ['i_id','retryCommand', 'retryOptions']) === true) {
+     console.log('request/retry.js --> parsed input:', input);
+     if (utils.checkRequirements(input, ['i_id', 'retryCommand', 'retryOptions']) === true) {
+          console.log('requests/retry.js --> checkRequirements:failed');
           logError({
                where: 'retry.js:checkRequirements',
                with: msg,
@@ -68,16 +99,18 @@ function init(msg) {
      }
 
      if (originalIssueResolved(input.statusType) === false) {
+          console.log('requests/retry.js --> originalIssueResolved');
           logError({
                where: 'retry.js:originProblemResolved',
                with: msg,
                error: 'original failed issue is still present, issue: ' + input.statusType
           });
-          promise.reject();
+          promise.reject(input);
           return promise.promise;
      }
 
      if (typeof retryables[input.retryCommand] === 'undefined') {
+          console.log('requests/retry.js --> does not exist');
           logError({
                where: 'retry.js:check if command exists',
                with: msg,
@@ -86,10 +119,18 @@ function init(msg) {
           promise.resolve();
           return promise.promise;
      } else {
-          retryables[input.retryCommand](promise, input.retryOptions);
+          console.log('requests/retry.js --> do it!');
+          retryables[input.retryCommand](promise, input.retryOptions).then(function (res) {
+               console.log('requests/retry --> retryables --> success', res)
+               promise.resolve(res);
+          }).catch(function (err) {
+               console.log('requests/retry --> retryables --> error', err);
+               promise.reject(err);
+          })
      }
      return promise.promise;
 }
 
 module.exports.init = init;
+module.exports.publish = publish;
 module.exports.originalIssueResolved = originalIssueResolved;

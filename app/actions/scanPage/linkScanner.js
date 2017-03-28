@@ -1,61 +1,56 @@
-/*
- * Routes handlers
- */
 var q = require('q'),
      defaultOptions = require("./internal/defaultOptions"),
-     UrlChecker = require("./UrlChecker"),
-     isString = require("is-string"),
      _ = require("underscore"),
-     parseHtml = require("./internal/parseHtml"),
      bhttp = require("bhttp"),
-     matchUrl = require("./internal/matchUrl"),
      linkObj = require("./internal/linkObj"),
      simpleResponse = require("./internal/simpleResponse"),
      maybeCallback = require("maybe-callback"),
      RobotDirectives = require("robot-directives"),
-     parseOptions = require("./internal/parseOptions"),
      isString = require("is-string"),
      excludeLink = require('./internal/excludeLink'),
      reasons = require("./internal/messages").reasons,
      getHostKey = require("./internal/getHostKey");
 
 var enqueue = function (input, options) {
-     var idOrError;
-     if (typeof input === "string" || input instanceof String === true) {
-          input = {
-               url: input
-          };
-     }
-     idOrError = _enqueue(input, options);
-     return idOrError;
-};
-
-function _enqueue(input, options) {
-     var hostKey = getHostKey(input.url, options);
+    //  var idOrError;
      var id = input.id;
-
+    //  if (typeof input === "string" || input instanceof String === true) {
+    //       input = {
+    //            url: input
+    //       };
+    //  }
+     var hostKey = getHostKey(input.url, options);
+     options.items[id] = {
+       active: false,
+       hostKey: hostKey,
+       id: id,
+       input: input
+     };
      if (hostKey === false) {
           return new Error("Invalid URI");
+     } else {
+       return id;
      }
+    //  idOrError = _enqueue(input, options);
+    //  return idOrError;
+};
 
-     if (id == null && typeof instance !== 'undefined') {
-          id = instance.counter++;
-
-     }
-
-     if (typeof instance !== 'undefined' && instance.items[id] !== undefined) {
-          return new Error("Non-unique ID");
-     }
-
-     options.items[id] = {
-          active: false,
-          hostKey: hostKey,
-          id: id,
-          input: input
-     };
-
-     return id;
-}
+// function _enqueue(input, options) {
+//      var hostKey = getHostKey(input.url, options);
+//      var id = input.id;
+//
+//      if (hostKey === false) {
+//           return new Error("Invalid URI");
+//      }
+//
+//      options.items[1] = {
+//           active: false,
+//           hostKey: hostKey,
+//           id: id,
+//           input: input
+//      };
+//      return id;
+// }
 
 var clean = function (link) {
      delete link.html.base;
@@ -64,37 +59,25 @@ var clean = function (link) {
 };
 
 function enqueueLink(link, instance) {
+    /* Do we get link.url set here ? */
+      /* Do we get link.url set here ? */
+      /* Do we get link.url set here ? */
+      /* Do we get link.url set here ? */
      linkObj.resolve(link, instance.baseUrl, instance.options);
-
      var excludedReason = excludeLink(link, instance);
-
      if (excludedReason !== false) {
-          link.html.offsetIndex = instance.excludedLinks++;
+          // link.html.offsetIndex = instance.excludedLinks++;
           link.excluded = true;
           link.excludedReason = excludedReason;
-
           clean(link);
           maybeCallback(instance.handlers.junk)(link);
           return;
      }
 
-     link.html.offsetIndex = link.html.index - instance.excludedLinks;
+    //  link.html.offsetIndex = link.html.index - instance.excludedLinks;
      link.excluded = false;
 
      instance.linkEnqueued = enqueue(link, instance.options);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
-     console.log('instance.linkEnqueued', instance.linkEnqueued);
      if (instance.linkEnqueued instanceof Error) { // TODO :: is this redundant? maybe use `linkObj.invalidate()` in `excludeLink()` ?
           link.broken = true;
           link.brokenReason = instance.linkEnqueued.message === "Invalid URI" ? "BLC_INVALID" : "BLC_UNKNOWN"; // TODO :: update limited-request-queue to support path-only URLs
@@ -136,13 +119,15 @@ function copyResponseData(response, link) {
 
 function checkUrl(link, baseUrl, options, retry, method) {
      var cached;
-
-     if (retry === undefined) {
+     if (typeof retry === "undefined") {
+           if(!link){
+             link = {};
+           }
           if (isString(link) === true) {
                link = linkObj(link);
                linkObj.resolve(link, baseUrl, options);
           }
-          if (link.url.resolved === null) {
+          if (!link || !link.url || link.url.resolved === null) {
                link.broken = true;
                link.brokenReason = "BLC_INVALID";
                linkObj.clean(link);
@@ -184,13 +169,17 @@ function checkUrl(link, baseUrl, options, retry, method) {
 module.exports.init = function (input) {
      var promise = q.defer();
      var instance = {
+          id:1,
           items: {
 
           },
-          counter: 0,
+          url:{
+
+          },
+          // counter: 0,
           baseUrl: input.baseUrl,
           options: defaultOptions,
-          excludedLinks: 0,
+          // excludedLinks: 0,
           linkEnqueued: {
                message: ''
           },
@@ -213,7 +202,6 @@ module.exports.init = function (input) {
      });;
 
      enqueueLink(link, instance);
-     console.log('checking url');
      var resp = checkUrl(link.url.original, input.baseUrl, defaultOptions);
 
      resp.then(function (_link) {

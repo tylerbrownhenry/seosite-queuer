@@ -40,6 +40,7 @@ function updateCount(requestId, updatedCount, putObject) {
           }, {
                $PUT: putObject
           }, function (err) {
+            console.log('DONE?');
                if (err) {
                     handleError(promise, err, requestId, updatedCount)
                } else {

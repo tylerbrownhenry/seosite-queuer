@@ -1,33 +1,33 @@
-var notify = require('../../../actions/callback'),
-     dynamoose = require('dynamoose'),
+var  dynamoose = require('dynamoose'),
      linkSchema = require("../../../models/link"),
      Link = dynamoose.model('Link', linkSchema),
      _updateCount = require("../page/updateCount"),
+     publisher = require('../../../amqp-connections/publisher'),
      _ = require('underscore'),
      sh = require('shorthash'),
      utils = require('../../../utils'),
      q = require('q');
 
 /**
-* wrapper for updateCount function creates put object
-* @param  {string} requestId unqiue id of page request
-* @param  {number} updatedCount number of new links found
-* @param  {object} response  content but the page request
-* @return {promise}
-*/
+ * wrapper for updateCount function creates put object
+ * @param  {string} requestId unqiue id of page request
+ * @param  {number} updatedCount number of new links found
+ * @param  {object} response  content but the page request
+ * @return {promise}
+ */
 function updateCount(requestId, updatedCount, response) {
-      var putObject = {
-           processes: updatedCount - 1,
-           dev_use_only_request: response.currentResponse,
-           response: {
-                resolvedUrl: response.url.resolvedUrl,
-                statusMessage: 'Success',
-                redirects: response.redirects,
-                failedReason: null
-           }
-      }
-      return _updateCount(requestId, updatedCount, putObject);
- }
+     var putObject = {
+          processes: updatedCount,
+          dev_use_only_request: response.currentResponse,
+          response: {
+               resolvedUrl: response.url.resolvedUrl,
+               statusMessage: 'Success',
+               redirects: response.redirects,
+               failedReason: null
+          }
+     }
+     return _updateCount(requestId, updatedCount, putObject);
+}
 
 /**
  * saves any link found during scan in database, and marks it on the scan object
@@ -36,6 +36,7 @@ function updateCount(requestId, updatedCount, response) {
  * @return {Promise}
  */
 function processLinks(input, res, requestId, newScan) {
+     console.log('request/links/process.js');
      var promise = q.defer();
      var links = res.links;
      res.links = undefined;
@@ -45,43 +46,57 @@ function processLinks(input, res, requestId, newScan) {
      var commands = [];
      var linkObj = {};
 
+     console.log('request/links/process.js --> build commands');
      _.each(links, function (link) {
-          var linkId = sh.unique(link.url.original + requestId);
-          if (typeof linkObj[linkId] === 'undefined') {
-               commands.push({
-                    "_id": linkId,
-                    "__scan": {},
-                    "__link": link,
-                    "found": Date(),
-                    "linkId": linkId,
-                    "resolvedUrl": parentLink,
-                    "requestId": requestId,
-                    "scanned": null,
-                    "status": 'pending',
-                    "site": parentLink,
-                    "uid": input.uid,
-                    "url": link.url.original,
-               });
-               link._id = linkId;
-               linkObj[linkId] = link;
+          if (link.url) {
+               var linkId = sh.unique(link.url.original + requestId);
+               if (typeof linkObj[linkId] === 'undefined') {
+                    commands.push({
+                         "_id": linkId,
+                         "__scan": {},
+                         "__link": link,
+                         "found": Date(),
+                         "linkId": linkId,
+                         "resolvedUrl": parentLink,
+                         "requestId": requestId,
+                         "scanned": null,
+                         "status": 'pending',
+                         "site": parentLink,
+                         "uid": input.uid,
+                         "url": link.url.original,
+                    });
+                    link._id = linkId;
+                    linkObj[linkId] = link;
+               }
           }
      });
-
+     console.log('request/links/process.js --> build commands:passed --> batchPut');
      var updatedCount = 0;
-
-     Link.batchPut(commands, function (err, e) {
-          console.log('summary.js line ~350');
+     utils.batchPut(Link, commands, function (err, e) {
           if (err !== null) {
-            return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page,true,'links.process.batchPut',{requestId:requestId, updatedCount:updatedCount, newScan:newScan,commands:commands,parentLink:parentLink,requestId:requestId});
+               console.log('request/links/process.js --> build commands:passed --> batchPut:failed');
+               // FIRST FIX HERE
+               // FIRST FIX HERE
+               // FIRST FIX HERE
+               // FIRST FIX HERE
+               // FIRST FIX HERE
+               // FIRST FIX HERE
+               return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
+                    requestId: requestId,
+                    updatedCount: updatedCount,
+                    newScan: newScan,
+                    commands: commands,
+                    parentLink: parentLink,
+                    requestId: requestId
+               });
           }
+          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
           /*
           checkcheck if e is undeinfed...
           */
           updatedCount = commands.length;
-          console.log('summary.js updatedCount');
-
           updateCount(requestId, updatedCount, newScan).then(function (resp) {
-               console.log('summary.js updatedCount response',commands);
+               console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
                _.each(commands, function (command) {
                     var id = command._id;
                     var buffer = new Buffer(JSON.stringify({
@@ -96,28 +111,64 @@ function processLinks(input, res, requestId, newScan) {
                          type: parentLink,
                          messageId: linkObj[id]._id,
                          uid: input.uid
-                    }).then(function (err, data) {
-                         console.log('summary.js successfully published to queue');
-                         var add = '';
-                         if(commands.length > 1){
-                           add = 's';
-                         }
-                         promise.resolve({
-                              status: 'working',
-                              message: 'Found '+commands.length+' link'+ add
-                         });
                     }).catch(function (err) {
-                         console.error('summary.js error publishing to queue');
-                         promise.reject(err);
-                    })
-               });
+                      console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed');
+                      console.error('summary.js error publishing to queue');
+                      /*
+                      3 Send to retry (Rarely should happen)
+                      3 does publish send back a promise?
+                      3 does publish send back a promise?
+                      3 does publish send back a promise?
+                      3 does publish send back a promise?
+                       */
+                      // promise.reject(err);
+                    });
+                 });
+                 console.log('summary.js successfully published to queue');
+                 var add = '';
+                 if (commands.length > 1) {
+                   add = 's';
+                 }
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 // 4 check if this is even listended to
+                 promise.resolve({
+                      statusType: 'update',
+                      status: 'success',
+                      message: 'Found ' + commands.length + ' link' + add
+                 });
+              //  });
           }).catch(function (err) {
-               console.warn('summary.js error updating count for scan');
-               console.log('Error/Success pageScanner...8', err);
+              console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:failed');
                /*
                Update count is only thing to fail here
                */
-               promise.reject(promise, 'database', 'Trouble updating link count for request.', true, input, page,true,'settings.request.summary.newScan.save',{requestId:requestId, updatedCount:updatedCount, newScan:newScan,commands:commands,parentLink:parentLink,requestId:requestId});
+
+                //2 Check that this works...
+                //2 Check that this works...
+                //2 Check that this works...
+                //2 Check that this works...
+                //2 Check that this works...
+                //2 Check that this works...
+               promise.reject({
+                    statusType: 'failed',
+                    status: 'error',
+                    message: 'Trouble updating link count for request.',
+                    notify:true,
+                    retry: true,
+                    type:'page:request',
+                    retryCommand: 'settings.request.links.updateCount',
+                    retryOptions: {
+                      input:input,
+                      res:res,
+                      requestId: requestId,
+                      newScan: newScan
+                    }
+               });
 
           });
      });

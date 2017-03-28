@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/mobileCaptures/saveCapture.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">app/actions/mobileCaptures/</a> saveCapture.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">31.58% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>6/19</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">31.58% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>6/19</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var guid = require('guid');
+var AWS = require('aws-sdk');
+var fs = require('fs');
+var s3 = new AWS.S3({
+     region: process.env.AWS_REGION
+});
+&nbsp;
+<span class="fstat-no" title="function not covered" >function doit(filenameFull, callback, requestId, size) {</span>
+     //load the saved file
+<span class="cstat-no" title="statement not covered" >     fs.readFile(filenameFull, <span class="fstat-no" title="function not covered" >function (err, temp_png_data) {</span></span>
+<span class="cstat-no" title="statement not covered" >          if (err != null) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log("Error loading saved screenshot: " + err.message);</span>
+<span class="cstat-no" title="statement not covered" >               return callback('error', "Error loading saved screenshot: " + err.message);</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >               upload_params = {</span>
+                    Body: temp_png_data,
+                    Key: guid.raw() + ".png",
+                    ACL: "public-read",
+                    Bucket: process.env.AWS_BUCKET_NAME
+               };
+               //start uploading
+<span class="cstat-no" title="statement not covered" >               s3.putObject(upload_params, <span class="fstat-no" title="function not covered" >function (err, s3_data) {</span></span>
+<span class="cstat-no" title="statement not covered" >                    if (err != null) {</span>
+<span class="cstat-no" title="statement not covered" >                         console.log("Error uploading to s3: " + err.message);</span>
+<span class="cstat-no" title="statement not covered" >                         callback('error', err.message);</span>
+                         // return response.json(500, { 'error': 'Problem uploading to S3.' + err.message });
+                    } else {
+                         //clean up and respond
+<span class="cstat-no" title="statement not covered" >                         fs.unlink(filenameFull, <span class="fstat-no" title="function not covered" >function (err) {</span>}); </span>//delete local file
+<span class="cstat-no" title="statement not covered" >                         var s3Region = process.env.AWS_REGION ? 's3-' + process.env.AWS_REGION : 's3-us-west-2'</span>
+<span class="cstat-no" title="statement not covered" >                         var s3Url = 'https://' + s3Region + ".amazonaws.com/" + process.env.AWS_BUCKET_NAME +</span>
+                              '/' + upload_params.Key;
+<span class="cstat-no" title="statement not covered" >                         callback('success', s3Url, requestId, size);</span>
+                    }
+               });
+          }
+     });
+}
+&nbsp;
+module.exports = doit;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 19:57:22 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

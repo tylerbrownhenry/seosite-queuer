@@ -1,5 +1,7 @@
 var User = require('./models/user'),
-     Activity = require('./models/activity'),
+     dynamoose = require('dynamoose'),
+     activitySchema = require('./models/activity'),
+     Activity = dynamoose.model('Activity', activitySchema),
      Permission = require('./models/permission'),
      _ = require('underscore');
 /**
@@ -9,7 +11,7 @@ var User = require('./models/user'),
  * @return {Boolean}
  */
 function checkRequirements(input, props) {
-     console.log('request/summary.js init -> checkRequirements', props, input);
+     console.log('utils.js -> checkRequirements', props, input);
      var failed = false;
      _.each(props, function (prop) {
           if (typeof input[prop] === 'undefined') {
@@ -31,7 +33,7 @@ function updateActivity(oid, type, callback) {
      };
      updates['$ADD'][type + '-day-count'] = 1;
      updates['$ADD'][type + '-month-count'] = 1;
-     Activity.update({
+     updateBy(Activity, {
           oid: oid
      }, updates, function (err) {
           if (err) {
@@ -130,7 +132,7 @@ function findUser(args, callback) {
      } catch (err) {
           if (typeof callback === 'function') {
                return callback({
-                    message: 'There was an issue finding user'
+                    message: 'error:find:user'
                });
           }
      }
@@ -158,7 +160,7 @@ function findOneUser(args, callback) {
      } catch (err) {
           if (typeof callback === 'function') {
                return callback({
-                    message: 'There was an issue finding user'
+                    message: 'error:find:user'
                });
           }
      }
@@ -171,22 +173,27 @@ function findOneUser(args, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function updateBy(model, args, updates, callback) {
-     console.log('utils.js updateBy', model,args,updates,callback);
+     console.log('updateBy');
      try {
+         console.log('utils.js --> updateBy')
           model.update(args, updates, function (err) {
+            console.log('utils.js --> updateBy -> response');
                if (err) {
+                   console.log('utils.js --> updateBy:failed');
                     if (typeof callback === 'function') {
                          return callback(err);
                     }
                }
+               console.log('utils.js --> updateBy:passed');
                if (typeof callback === 'function') {
                     return callback(null);
                }
           });
      } catch (err) {
+           console.log('utils.js --> updateBy:error',err);
           if (typeof callback === 'function') {
                return callback({
-                    message: 'There was an issue updating item'
+                    message: 'error:update:item'
                });
           }
      }
@@ -214,7 +221,7 @@ function updateUser(args, updates, callback) {
      } catch (err) {
           if (typeof callback === 'function') {
                return callback({
-                    message: 'There was an issue updating user'
+                    message: 'error:update:user'
                });
           }
      }
@@ -242,9 +249,34 @@ function deleteUser(uid, cb) {
      } catch (err) {
           if (typeof cb === 'function') {
                return cb({
-                    message: 'There was an issue deleting user'
+                    message: 'error:delete:user'
                });
           }
+     }
+}
+
+/**
+ * saves a scan
+ * @param  {Object}   scan
+ * @param  {Function} cb    callback accepts one paramaters, err
+ */
+function saveScan(scan, cb) {
+     console.log('saving scan');
+     try {
+
+          scan.save(function (err) {
+               console.log('utils.js saveScan response', err);
+               if (err) {
+                    if (typeof cb === 'function') {
+                         return cb(err);
+                    }
+               }
+               if (typeof cb === 'function') {
+                    return cb(null);
+               }
+          });
+     } catch (e) {
+          console.log('utils.js saveScan catch error', e);
      }
 }
 
@@ -270,7 +302,7 @@ function findBy(model, args, cb) {
      } catch (err) {
           if (typeof cb === 'function') {
                return cb({
-                    message: 'There was an issue finding' + model
+                    message: 'error:model:get'
                });
           }
      }
@@ -298,12 +330,21 @@ function deleteBy(model, args, cb) {
           });
      } catch (err) {
           return cb({
-               message: 'There was an issue deleting user'
+               message:'error:delete:item'
           });
      }
 }
 
+function batchPut(model, commands, cb) {
+     console.log('here!');
+
+     model.batchPut(commands, function (err, e) {
+          cb(err, e);
+     });
+}
+
 module.exports.findBy = findBy;
+module.exports.batchPut = batchPut;
 module.exports.updateBy = updateBy;
 module.exports.updateActivity = updateActivity;
 module.exports.checkActivity = checkActivity;
@@ -312,4 +353,5 @@ module.exports.findUser = findUser; /* Deprecate */
 module.exports.findOneUser = findOneUser;
 module.exports.updateUser = updateUser;
 module.exports.deleteUser = deleteUser;
+module.exports.saveScan = saveScan;
 module.exports.checkRequirements = checkRequirements;

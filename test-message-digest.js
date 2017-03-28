@@ -26,7 +26,7 @@ amqpConnection(function () {
      utils.findBy(Request, {
           requestId: args[0]
      }, function (err, res) {
-          console.log('err', err, 'res', res);
+          console.log('--err', err, 'res', res);
           publisher.publish("", "summary", new Buffer(JSON.stringify(res))).then(function (e) {
                console.log('e', e);
           });

@@ -1,7 +1,6 @@
 var sh = require('shorthash'),
      publisher = require('../amqp-connections/publisher'),
      retry = require('../settings/requests/retry').publish,
-     retry = require('../amqp-connections/publisher'),
      Update = require('../models/update');
 /**
  * [notify description]
@@ -16,27 +15,29 @@ var sh = require('shorthash'),
 function notify(msg) {
      console.log('actions/notify', msg);
      var msg = {
-          id: sh.unique(msg.status + msg.uid + msg.i_id),
+          id: sh.unique(msg.status + msg.uid + (msg.i_id || msg.requestId)),
           uid: msg.uid,
-          i_id: msg.i_id,
-          objectType: msg.objectType, // 'request' || 'link'
+          i_id: msg.i_id || msg.requestId,
           status: msg.status, // 'success' || 'error'
-          statusType: msg.statusType, //(success) 'pending' || 'complete' (error) 'database' || 'system' || 'invalidInput'
-          type: msg.type,
+          statusType: msg.statusType,  // 'update' || 'complete' || 'failed'
+          //(success) 'pending' || 'complete' (error) 'database' || 'system' || 'invalidInput'
+          type: msg.type, //'page:request'
           message: msg.message,
           page: msg.page
      };
-
+     console.log('actions/notify.js -> new Update');
      var update = new Update(msg);
 
      update.save(function (err) {
           if (err) {
                console.log('send to retry...');
+                console.log('actions/notify.js -> update save:failed');
+                console.log('err',err);
                retry({
                     statusType: msg.type,
                     status: msg.status,
                     message: msg.message,
-                    objectType: msg.objectType,
+                    type: msg.type,
                     i_id: msg.i_id,
                     uid: msg.uid,
                     url: msg.url,
@@ -46,12 +47,23 @@ function notify(msg) {
                     retryOptions: msg
                });
           } else {
+                 console.log('actions/notify.js -> update save:passed',err);
                /*
                Let user know there is an update
                */
+               try{
+
                publisher.publish("", "update", new Buffer(JSON.stringify({
                     uid: msg.uid
-               })));
+               }))).then(function(res){
+                 console.log('res',res);
+
+               }).catch(function(err){
+                 console.log('err',err);
+               });
+           }catch(e){
+            console.log('error publishing',e);
+           }
           }
      });
 }

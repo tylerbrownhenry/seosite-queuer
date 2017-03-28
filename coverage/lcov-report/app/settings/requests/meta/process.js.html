@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/settings/requests/meta/process.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">app/settings/requests/meta/</a> process.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">4.84% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>3/62</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/53</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/3</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">4.84% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>3/62</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var _ = require('underscore');
+/**
+ * adds the properties ['meta','grade','issues'] to newScan object
+ * @return {Object} modified version of Scan object
+ */
+&nbsp;
+<span class="fstat-no" title="function not covered" >function processMetaData(newScan,input,res) {</span>
+<span class="cstat-no" title="statement not covered" >     if (input.options &amp;&amp; input.options.save &amp;&amp; input.options.save.metaData === true) {</span>
+<span class="cstat-no" title="statement not covered" >          newScan.meta = {</span>
+               title: {
+                    message: 'No title found',
+                    text: '',
+                    found: false
+               },
+               description: {
+                    message: 'No meta description found.',
+                    element: null,
+                    text: '',
+                    found: false
+               },
+               h1: {
+                    message: 'No h1 found.',
+                    element: null,
+                    text: '',
+                    found: false
+               },
+               h2: {
+                    message: 'No h2 found.',
+                    element: null,
+                    text: '',
+                    found: false
+               }
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var links = _.filter(res.links, <span class="fstat-no" title="function not covered" >function (link) {</span></span>
+<span class="cstat-no" title="statement not covered" >               if (typeof link.specialCase !== 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >                    if (link.specialCase === 'title') {</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.title.found = true;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.title.text = link.html.text;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.title.message = 'Found'</span>
+                    } else <span class="cstat-no" title="statement not covered" >if (link.specialCase === 'description') {</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.description.found = true;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.description.element = link.html.tag;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.description.text = link.html.attrs.content;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.description.message = 'Found'</span>
+                    } else <span class="cstat-no" title="statement not covered" >if (link.specialCase === 'h1') {</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h1.found = true;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h1.element = link.html.tag;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h1.text = link.html.attrs.content;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h1.message = 'Found'</span>
+                    } else <span class="cstat-no" title="statement not covered" >if (link.specialCase === 'h2') {</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h2.found = true;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h2.element = link.html.tag;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h2.text = link.html.attrs.content;</span>
+<span class="cstat-no" title="statement not covered" >                         newScan.meta.h2.message = 'Found'</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+               } else <span class="cstat-no" title="statement not covered" >if (link.html.tagName === 'meta') {</span>
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+               } else <span class="cstat-no" title="statement not covered" >if (link.url.original.toLowerCase().indexOf("mailto:") &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+               } else <span class="cstat-no" title="statement not covered" >if (link.url.original.toLowerCase().indexOf("tel:") &gt;= 0) {</span>
+<span class="cstat-no" title="statement not covered" >                    return false;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               return true;</span>
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var metaIssueCount = 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (newScan.meta.title.found !== true) {</span>
+<span class="cstat-no" title="statement not covered" >               metaIssueCount++</span>
+          }
+<span class="cstat-no" title="statement not covered" >          if (newScan.meta.description.found !== true) {</span>
+<span class="cstat-no" title="statement not covered" >               metaIssueCount++</span>
+          }
+<span class="cstat-no" title="statement not covered" >          if (newScan.meta.h1.found !== true) {</span>
+<span class="cstat-no" title="statement not covered" >               metaIssueCount++</span>
+          }
+<span class="cstat-no" title="statement not covered" >          if (newScan.meta.h2.found !== true) {</span>
+<span class="cstat-no" title="statement not covered" >               metaIssueCount++</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var resourceIssueCount = 0;</span>
+<span class="cstat-no" title="statement not covered" >          _.each(newScan.resources, <span class="fstat-no" title="function not covered" >function (resource) {</span></span>
+<span class="cstat-no" title="statement not covered" >               if (resource.gzip === null) {</span>
+<span class="cstat-no" title="statement not covered" >                    resourceIssueCount += 1;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               if (resource.cached === null) {</span>
+<span class="cstat-no" title="statement not covered" >                    resourceIssueCount += 1;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               if (resource.minified === null) {</span>
+<span class="cstat-no" title="statement not covered" >                    resourceIssueCount += 1;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               if (resource.status !== 200 &amp;&amp; resource.status !== 301) {</span>
+<span class="cstat-no" title="statement not covered" >                    resourceIssueCount += 1;</span>
+               }
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var linkIssueCount = 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var tooManyLinks = (links &gt;= 100) ? true : false;</span>
+<span class="cstat-no" title="statement not covered" >          if (tooManyLinks) {</span>
+<span class="cstat-no" title="statement not covered" >               linkIssueCount++</span>
+          }
+<span class="cstat-no" title="statement not covered" >          if (tooManyLinks === false &amp;&amp;</span>
+               linkIssueCount === 0 &amp;&amp;
+               resourceIssueCount === 0 &amp;&amp;
+               metaIssueCount === 0 &amp;&amp;
+               (newScan.emails &amp;&amp; newScan.emails.length === 0)) {
+<span class="cstat-no" title="statement not covered" >               newScan.issues = {</span>
+                    noIssues: true
+               };
+          } else {
+<span class="cstat-no" title="statement not covered" >               newScan.issues = {</span>
+                    tooManyLinks: tooManyLinks,
+                    links: linkIssueCount,
+                    resources: resourceIssueCount,
+                    security: (newScan.emails) ? newScan.emails.length : 0,
+                    meta: metaIssueCount
+               }
+          }
+<span class="cstat-no" title="statement not covered" >          newScan.grade = {</span>
+               letter: 'B',
+               message: 'Could be better'
+          };
+     }
+<span class="cstat-no" title="statement not covered" >     return newScan;</span>
+}
+module.exports = processMetaData;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 19:57:22 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

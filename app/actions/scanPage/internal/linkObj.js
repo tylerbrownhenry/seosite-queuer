@@ -54,8 +54,13 @@ function linkObj(url) {
 	Remove unnecessary keys for public use.
 */
 linkObj.clean = function (link) {
-     delete link.html.base; // TODO :: don't clean this?
+    console.log('clean');
+    if(link && link.html && link.html.base){
+      delete link.html.base; // TODO :: don't clean this?
+    }
+    if(link && link.resolved){
      delete link.resolved;
+   }
      return link;
 };
 
@@ -70,6 +75,9 @@ linkObj.relation = function (link, url_parsed) {
      }
      var relation;
      // If no protocols, it's impossible to determine if they link to the same server
+     //     console.log('clean');
+     console.log('relation');
+
      if (url_parsed.protocol === null || link.base.parsed.protocol === null) {
           // Overwrite any previous values
           link.internal = null;
@@ -92,7 +100,6 @@ linkObj.resolve = function (link, base, options) {
      if (link.resolved === true) {
           return;
      }
-
      // Parity with core `url.resolve()`
      var parseOptions = {
           slashesDenoteHost: true
@@ -101,7 +108,7 @@ linkObj.resolve = function (link, base, options) {
      // TODO :: we're constantly re-parsing base and html base -- find way to cache them
      var base_parsed = base == null ? "" : base;
      base_parsed = urlobj.normalize(urlobj.parse(base_parsed, parseOptions));
-
+     console.log('resolve',link);
      var htmlBase_parsed = link.html.base == null ? "" : link.html.base;
      htmlBase_parsed = urlobj.normalize(urlobj.parse(htmlBase_parsed, parseOptions));
 

@@ -14,8 +14,6 @@ if (isBrowser === true) {
 }
 
 function getHostKey(url, options) {
-     console.log('url', url, 'options', options);
-     console.log('do we need \'hostname\' url',url);
      var domainObj, port, protocol, urlObj;
      var key = "";
 
@@ -24,8 +22,6 @@ function getHostKey(url, options) {
      } else {
           urlObj = url;
      }
-     console.log('urlObj',urlObj);
-
      protocol = urlObj.protocol;
 
      // Not using strict equals because `urlObj` might be a foreign object type

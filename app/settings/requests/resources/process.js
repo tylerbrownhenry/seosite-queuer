@@ -26,7 +26,7 @@ function Resource(e) {
      var contentType = null;
      var cached = false;
      console.log('processResponse.js resource ', e);
-     if (!e || !e.response) {
+     if (!e || !e.response || !e.request) {
           return {
                status: 'failed'
           }
@@ -79,9 +79,7 @@ function postProcess(scan) {
 function processResources(input, res) {
      if (input.options
        && input.options.save
-       && input.options.save.resources === true
-       || input.options && input.options.save.links === true) {
-          res.linkCount = res.links.length;
+       && input.options.save.resources === true){
           return postProcess(res);
      }
      return;

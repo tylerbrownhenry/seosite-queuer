@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/sniff/process/createHAR.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">app/actions/sniff/process/</a> createHAR.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.53% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>4/38</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/20</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/2</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.53% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>4/38</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var utils = require('../utils');
+// The contents of these types of files should be included in the HAR.
+var ALLOWED_CONTENT_TYPES = ['css', 'js', 'json', 'doc'];
+&nbsp;
+/**
+ * creates an object of the page performance
+ * @param  {Object} page contents of the scanned page
+ * @return {Object}      a log object of the scanned page
+ */
+<span class="fstat-no" title="function not covered" >function createHAR(page) {</span>
+<span class="cstat-no" title="statement not covered" >     var address = page.address;</span>
+<span class="cstat-no" title="statement not covered" >     var title = page.title;</span>
+<span class="cstat-no" title="statement not covered" >     var startTime = page.startTime;</span>
+<span class="cstat-no" title="statement not covered" >     var types = page.types;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     var entries = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     Object.keys(page.resources).forEach(<span class="fstat-no" title="function not covered" >function (key) {</span></span>
+<span class="cstat-no" title="statement not covered" >          var resource = page.resources[key];</span>
+<span class="cstat-no" title="statement not covered" >          console.log('resource',resource);</span>
+<span class="cstat-no" title="statement not covered" >          var request = resource.request;</span>
+<span class="cstat-no" title="statement not covered" >          var startReply = resource.startReply;</span>
+<span class="cstat-no" title="statement not covered" >          var endReply = resource.endReply;</span>
+<span class="cstat-no" title="statement not covered" >          var error = resource.error;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (!request || !startReply || !endReply) {</span>
+<span class="cstat-no" title="statement not covered" >               return;</span>
+          }
+&nbsp;
+          // Exclude data URIs from the HAR because they aren't
+          // included in the spec.
+<span class="cstat-no" title="statement not covered" >          if (request.url.substring(0, 5).toLowerCase() === 'data:') {</span>
+<span class="cstat-no" title="statement not covered" >               return;</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var resType = types[request.url];</span>
+<span class="cstat-no" title="statement not covered" >          if (!resType &amp;&amp; endReply.contentType &amp;&amp;</span>
+               typeof endReply.contentType === 'string') {
+<span class="cstat-no" title="statement not covered" >               resType = utils.getType(endReply.contentType, request.url);</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (typeof request.time === 'string') {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('requestime',request.time);</span>
+<span class="cstat-no" title="statement not covered" >               request.time = new Date(request.time);</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (error) {</span>
+<span class="cstat-no" title="statement not covered" >               startReply.bodySize = 0;</span>
+<span class="cstat-no" title="statement not covered" >               startReply.time = 0;</span>
+<span class="cstat-no" title="statement not covered" >               endReply.time = 0;</span>
+<span class="cstat-no" title="statement not covered" >               endReply.content = {};</span>
+<span class="cstat-no" title="statement not covered" >               endReply.contentType = null;</span>
+<span class="cstat-no" title="statement not covered" >               endReply.headers = [];</span>
+<span class="cstat-no" title="statement not covered" >               endReply.statusText = utils.getErrorString(error);</span>
+<span class="cstat-no" title="statement not covered" >               endReply.status = null;</span>
+<span class="cstat-no" title="statement not covered" >               resType = null;</span>
+          }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          entries.push({</span>
+               cache: {},
+               pageref: address,
+               request: {
+                    // Accurate `bodySize` blocked on https://github.com/ariya/phantomjs/pull/11484
+                    // bodySize: -1,
+                    bodySize: startReply.bodySize,
+                    cookies: [],
+                    headers: request.headers,
+                    // Accurate `headersSize` blocked on https://github.com/ariya/phantomjs/pull/11484
+                    // headersSize: -1,
+                    headersSize: 0,
+                    httpVersion: 'HTTP/1.1',
+                    method: request.method,
+                    queryString: [],
+                    url: request.url
+               },
+               response: {
+                    // Accurate `bodySize` (after gzip/deflate) blocked on https://github.com/ariya/phantomjs/issues/10156
+                    // bodySize: -1,
+                    bodySize: endReply.bodySize,
+                    cookies: [],
+                    headers: endReply.headers,
+                    headersSize: -1,
+                    httpVersion: 'HTTP/1.1',
+                    redirectURL: '',
+                    status: endReply.status,
+                    statusText: endReply.statusText,
+                    content: {
+                         _type: resType,
+                         mimeType: endReply.contentType,
+                         size: endReply.bodySize,
+                         // This will be empty because of this PhantomJS bug: https://github.com/ariya/phantomjs/pull/11484
+                         // Fortunately, in `processResponses` we have a workaround :)
+                         text: page.options.bodies &amp;&amp; ALLOWED_CONTENT_TYPES.indexOf(endReply.contentType) !== -1 ? endReply.body : null
+                    }
+               },
+               startedDateTime: request.time.toISOString(),
+               time: new Date(endReply.time).getTime() - new Date(request.time).getTime(),
+               timings: {
+                    blocked: 0,
+                    dns: -1,
+                    connect: -1,
+                    send: 0,
+                    wait: new Date(startReply.time).getTime() - new Date(request.time).getTime(),
+                    receive: new Date(endReply.time).getTime() - new Date(startReply.time).getTime(),
+                    ssl: -1
+               }
+          });
+     });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     return {</span>
+          log: {
+               entries: entries,
+               cookies: page.cookies,
+               content: page.content,
+               pages: [{
+                    startedDateTime: startTime.toISOString(),
+                    id: address,
+                    title: title,
+                    pageTimings: {
+                         onLoad: new Date(page.endTime).getTime() - new Date(page.startTime).getTime()
+                    }
+               }]
+          }
+     };
+}
+module.exports = createHAR;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 19:57:22 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>

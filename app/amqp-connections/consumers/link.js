@@ -9,9 +9,10 @@ var settings = require("../../settings/requests");
 function processLink(msg,ch) {
      console.log('consumer/link.js processLink');
      var type = 'link';
-     settings.types[type](msg).then(function (ok) {
-          console.log('consumer/link.js ackking message processLink', ok, msg);
-          console.warn('CREDIT THE USER FOR CONSUMPTION');
+
+     settings.types.link(msg).then(function (ok) {
+          console.log('consumer/link.js ackking message processLink');
+          // console.warn('CREDIT THE USER FOR CONSUMPTION',ch,JSON.parse(msg).requestId);
           // User.collection.findOneAndUpdate({
           //      uid: msg.uid
           // }, {
@@ -24,7 +25,7 @@ function processLink(msg,ch) {
           // });
           ch.ack(msg);
      }).catch(function (err) {
-          console.log('consumer/link.js  failed message');
+          console.log('consumer/link.js  failed message',err,JSON.parse(msg).requestId);
           ch.ack(msg);
           errorHandler(amqpConn, e);
      });

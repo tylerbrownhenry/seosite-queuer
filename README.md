@@ -513,3 +513,68 @@ Referer:http://localhost:8080/page
   ]
 }
 ```
+
+
+
+
+/**
+ * A page summary has a number of tasks that it needs to do before being considered complete.
+ * 1. If scanning links, all links must be scanned
+ * 2. If saving meta data, all meta data must be processed
+ * 3. If saving resources, all resoucres must be processed
+ * 4. Page itself must get contacted and the html must get parsed
+ *
+ * Of these their are also a couple api calls involved in saving the data.
+ * 1. BatchPut of all of the link Objects
+ * 2. Update count of scan object
+ * 3. Request is marked active
+ */
+
+ /**
+  * Api Call: Request is marked active -->
+  * Pass -->
+  *   Sniff Url
+  *   Pass -->
+  *     processResources
+  *     processMetaData
+  *     Pass -->
+  *       Save Scan
+  *         Pass -->
+  *           If Scanning Links and there are links
+  *             Process links
+  *               batchPut
+  *                 Pass -->
+  *                   updateCount
+  *                     Pass -->
+  *                       Publish links individually?
+  *                         Pass -->
+  *                            Fogetabout it
+  *                            (Eventually as the links are consumed they check the Request process list to see if all the links have been scanned)
+  *                            (What if a single link is not sent to the queue... how can we tell when to finish the scan?)
+  *                         Fail -->
+  *                           (Problem) Link will remain unscanned?
+  *
+  *                     Fail -->
+  *                       (Should) send to rabbitMQ to process later (maybe make this happen before processLinks)
+  *                 Fail -->
+  *                  (Should) Send batchPut to rabbit to process later
+  *           Else
+  *             Update Request as complete
+  *               Pass -->
+  *                 Done
+  *               Fail -->
+  *                 (Should) Send request to save back to rabbitMQ to process later
+  *         Fail -->
+  *           (Should) Publish unsaved scan to rabbitMQ, and restart here.
+  *     Fail -->
+  *       No retry, likely an object bug (should be preventable / codeable / bulletproofable)
+  *   Fail -->
+  *     Todo:
+  *     Check why failed
+  *     If timed out, do we retry?
+  *     If 500 do not retry..
+  *     etc.
+  * Fail -->
+  *   Message nacked (Retrying)
+  *
+  */

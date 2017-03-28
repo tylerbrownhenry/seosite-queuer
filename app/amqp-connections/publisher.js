@@ -39,10 +39,12 @@ module.exports.start = function (amqpConn) {
  * @return {promise}           promise object
  */
 function publish(exchange, routingKey, content, options) {
+     console.log('publish');
      var promise = q.defer();
      var opts = (typeof options !== 'undefined') ? options : {};
      opts.persistent = true;
      try {
+          console.log('publisher.js -> publish');
           pubChannel.publish(exchange, routingKey, content, opts, function (err, ok) {
                if (err) {
                     console.error("[AMQP] publish", err);
@@ -51,9 +53,10 @@ function publish(exchange, routingKey, content, options) {
                     promise.reject({
                          system: 'amqp',
                          status: 'warning',
-                         message: 'An error occured while processing your request, added to queue while waiting for connection. More: ' + err
+                         message: 'error:offline:queue'
                     })
                } else {
+                    console.log('publisher.js -> publish:pass');
                     promise.resolve();
                }
           });
@@ -62,7 +65,7 @@ function publish(exchange, routingKey, content, options) {
           promise.reject({
                system: 'amqp',
                status: 'warning',
-               message: 'An error occured while processing your request, added to queue while waiting for connection. More: ' + e.message
+               message: 'error:offline:queue'
           });
           offlinePubQueue.push([exchange, routingKey, content]);
      }

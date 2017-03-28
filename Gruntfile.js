@@ -6,6 +6,8 @@ module.exports = function (grunt) {
      require('./grunt/grunt-coverage.js')(grunt);
     //  require('./grunt/grunt-jsdoc.js')(grunt);
      require('./grunt/grunt-mocha.js')(grunt);
+     require('./grunt/grunt-mocha-istanbul.js')(grunt);
+
     //  require('./grunt/grunt-jshint.js')(grunt);
     //  require('./grunt/grunt-watch.js')(grunt);
     //  require('./grunt/grunt-less.js')(grunt);
@@ -29,9 +31,10 @@ module.exports = function (grunt) {
 
      // tasks
     //  grunt.registerTask("test", ["mochaTest"]);
-     grunt.registerTask('coverage', ['clean', 'copy:views', 'env:coverage',
-          'instrument', 'reloadTasks', 'mochaTest', 'storeCoverage', 'makeReport'
-     ]);
+    //  grunt.registerTask('coverage', ['clean', 'copy:views', 'env:coverage',
+          // 'instrument', 'reloadTasks', 'mochaTest', 'storeCoverage', 'makeReport'
+    //  ]);
+     grunt.registerTask('istanbul', ['mocha_istanbul']);
 
 
 };

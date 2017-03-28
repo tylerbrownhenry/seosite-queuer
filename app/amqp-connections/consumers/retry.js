@@ -1,15 +1,35 @@
-var retry = require("../../settings/requests").types.retry;
+var retryInit = require("../../settings/requests").types.retry,
+     notify = require('../../actions/notify'),
+     retry =  require('../../settings/requests/retry').publish;
+
 /**
  * consumer of a retry request from rabbitMQ
  * @param  {object} msg content of rabbitMQ message
  * @param  {object} ch rabbitMQ channel object
  */
 function processRequest(msg,ch) {
-    console.log('consumers/retry.js processRequest');
-    retry(msg).then(function (response) {
-         ch.ack(msg);
+    console.log('consumers/retry.js processRequest',msg);
+    retryInit(msg,ch).then(function (response) {
+          console.log('consumers/retry.js request success');
+          console.log('response', response);
+          if (response && response.notify === true) {
+               notify(response)
+          }
+          ch.ack(msg);
     }).catch(function (err) {
-         ch.ack(msg);
+        console.log('consumers/retry.js request failed',err);
+          if (err && err.notify === true) {
+               notify(err);
+          }
+          if (err && err.softRetry === true) {
+               return ch.nack(msg);
+          } else if (err && err.retry === true) {
+                console.log('retry');
+                err.objectType = 'request';
+                retry(msg);
+          }
+          console.log('ACK!');
+          ch.ack(msg);
     });
 }
 module.exports = processRequest;

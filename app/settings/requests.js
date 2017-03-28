@@ -18,7 +18,7 @@ function _authorize(req, res) {
                     message: [{
                          parent: 'form',
                          title: 'Rats... ',
-                         message: 'Failed to authenticate token.'
+                         message: 'error:bad:token'
                     }]
                });
           } else {
@@ -29,7 +29,7 @@ function _authorize(req, res) {
                          message: [{
                               parent: 'form',
                               title: 'Shucks... ',
-                              message: 'Invalid user/token combination.'
+                              message: 'error:invalid:token'
                          }]
                     });
                } else {
@@ -50,11 +50,11 @@ function checkOptions(req) {
                message: [{
                     parent: 'url',
                     title: 'Whoops! ',
-                    message: 'Url is required.'
+                    message: 'error:missing:required:url'
                }, {
                     parent: 'options',
                     title: 'Doh! ',
-                    message: 'Options are required.'
+                    message: 'error:missing:required:options'
                }]
           });
      } else {
@@ -81,7 +81,8 @@ function checkRequirements(requirements, input) {
                messages.push({
                     parent: param,
                     title: 'Oops!',
-                    message: 'Missing required parameter: ' + param + '.'
+                    param:param,
+                    message: 'error:missing:required:param'
                })
           });
           promise.reject({
@@ -150,7 +151,8 @@ function validate(user, request, permissions) {
                success: false,
                message: [{
                     parent: 'form',
-                    message: 'Cannot make a request of this type:' + request.type
+                    param: request.type,
+                    message: 'error:invalid:request'
                }]
           });
           return promise.promise;
@@ -180,95 +182,100 @@ function pageRequestValidate(user, request, permissions) {
           problems.push({
                parent: 'type',
                hint: 'upgrade',
-               message: 'Your current plan does not allow requests of this type: ' + request.type + '.'
+               param:request.type,
+               message: 'error:invalid:request:plan'
           });
      }
      if (user.activity[request.type + 's'].daily.count >= perm.limits.daily[request.type]) {
           problems.push({
                parent: 'form',
                hint: 'upgrade',
-               message: 'Your have performed the maximum number of ' + [request.type] + ' requests (' + user.activity[request.type + 's'].daily.count + ') your current plan allows for the day.'
+               param: request.type + ' requests (' + user.activity[request.type + 's'].daily.count + ')',
+               message: 'error:daily:limit:type'
           });
      }
      if (user.activity[request.type + 's'].monthly.count >= perm.limits.monthly[request.type]) {
           problems.push({
                parent: 'form',
                hint: 'upgrade',
-               message: 'Your have performed the maximum number of ' + [request.type] + ' requests (' + user.activity[request.type + 's'].monthly.count + ') your current plan allows for the month.'
+               param: request.type + ' requests (' + user.activity[request.type + 's'].monthly.count,
+               message: 'error:monthly:limit:type'
           });
      }
      if (user.activity.requests.monthly.count >= perm.limits.monthly.requests) {
           problems.push({
                parent: 'form',
                hint: 'upgrade',
-               message: 'Your have performed the maximum number of requests (' + perm.limits.monthly.requests + ') your current plan allows for the month.'
+               param:perm.limits.monthly.requests,
+               message: 'error:monthly:limit:request'
           });
      }
      if (user.activity.requests.daily.count >= perm.limits.daily.requests) {
           problems.push({
                parent: 'form',
                hint: 'upgrade',
-               message: 'Your have performed the maximum number of requests (' + perm.limits.daily.requests + ') your current plan allows for the day.'
+               param: perm.limits.daily.requests,
+               message: 'error:daily:limit:request'
           });
      }
-     if (request.filterLevel >= perm.restrictions.filterLimit) {
-          problems.push({
-               parent: 'filterLimit',
-               hint: 'upgrade',
-               message: 'You have selected a filter level of "' + request.filterLevel + '". Your current plan allows a maximum filter level of "' + perm.restictions.filterLimit + '".'
-          });
-     }
-     if (request.digDepth >= perm.restrictions.digDepth) {
-          problems.push({
-               parent: 'digDepth',
-               hint: 'upgrade',
-               message: 'You have selected a dig depth of "' + request.digDepth + '". Your current plan allows a maximum dig depth of "' + perm.restictions.digLimit + '".'
-          });
-     }
-     if (request.honorRobotExclusions === false && perm.restrictions.honorRobotExclusions.canDisable === false) {
-          problems.push({
-               parent: 'honorRobotExclusions',
-               hint: 'upgrade',
-               message: 'Your current plan does not allow disabling honor robot exclusions '
-          });
-     }
-     if (request.excludeExternalLinks === true && perm.restrictions.excludeExternalLinks.canDisable === false) {
-          problems.push({
-               parent: 'excludeExternalLinks',
-               hint: 'upgrade',
-               message: 'Your current plan does not allow enabling of including external links.'
-          });
-     }
+    //  if (request.filterLevel >= perm.restrictions.filterLimit) {
+    //       problems.push({
+    //            parent: 'filterLimit',
+    //            hint: 'upgrade',
+    //            message: 'You have selected a filter level of "' + request.filterLevel + '". Your current plan allows a maximum filter level of "' + perm.restictions.filterLimit + '".'
+    //       });
+    //  }
+    //  if (request.digDepth >= perm.restrictions.digDepth) {
+    //       problems.push({
+    //            parent: 'digDepth',
+    //            hint: 'upgrade',
+    //            message: 'You have selected a dig depth of "' + request.digDepth + '". Your current plan allows a maximum dig depth of "' + perm.restictions.digLimit + '".'
+    //       });
+    //  }
+    //  if (request.honorRobotExclusions === false && perm.restrictions.honorRobotExclusions.canDisable === false) {
+    //       problems.push({
+    //            parent: 'honorRobotExclusions',
+    //            hint: 'upgrade',
+    //            message: 'Your current plan does not allow disabling honor robot exclusions '
+    //       });
+    //  }
+    //  if (request.excludeExternalLinks === true && perm.restrictions.excludeExternalLinks.canDisable === false) {
+    //       problems.push({
+    //            parent: 'excludeExternalLinks',
+    //            hint: 'upgrade',
+    //            message: 'Your current plan does not allow enabling of including external links.'
+    //       });
+    //  }
      // if(typeof request.excludedSchemes !== 'undefined' && perm.restrictions.excludedSchemes.canUse === false){
      //     problems.push({response: false, selection: 'excludeExternalLinks', message:'Your current plan does not allow change excluded schemas.'});
      // }
 
-     if (request.acceptedSchemes.indexOf('https') !== -1 && perm.restrictions.acceptedSchemes['https'] === false) {
-          problems.push({
-               parent: 'acceptedSchemes',
-               hint: 'upgrade',
-               message: 'Your current plan does not allow acceptedSchemes ' + request.acceptedSchemes + '.'
-          });
-     }
-     var failed = false;
-     var linkInfo = [];
-     _.each(_.keys(request.linkInformation), function (infoSelect) {
-          if (perm.restrictions.linkInformation[infoSelect] === false && request.linkInformation[infoSelect] === true) {
-               failed = true;
-               linkInfo.push(infoSelect);
-          }
-     });
-     if (failed === true) {
-          problems.push({
-               parent: 'linkInformation',
-               hint: 'upgrade',
-               subSelections: linkInfo,
-               message: 'Your current plan does not allow fetching this link information.'
-          });
-     }
+    //  if (request.acceptedSchemes.indexOf('https') !== -1 && perm.restrictions.acceptedSchemes['https'] === false) {
+    //       problems.push({
+    //            parent: 'acceptedSchemes',
+    //            hint: 'upgrade',
+    //            message: 'Your current plan does not allow acceptedSchemes ' + request.acceptedSchemes + '.'
+    //       });
+    //  }
+    //  var failed = false;
+    //  var linkInfo = [];
+    //  _.each(_.keys(request.linkInformation), function (infoSelect) {
+    //       if (perm.restrictions.linkInformation[infoSelect] === false && request.linkInformation[infoSelect] === true) {
+    //            failed = true;
+    //            linkInfo.push(infoSelect);
+    //       }
+    //  });
+    //  if (failed === true) {
+    //       problems.push({
+    //            parent: 'linkInformation',
+    //            hint: 'upgrade',
+    //            subSelections: linkInfo,
+    //            message: 'Your current plan does not allow fetching this link information.'
+    //       });
+    //  }
      if (problems.length > 0) {
           var selections = [];
-          var subSelections = [];
+          // var subSelections = [];
           var messages = [];
           _.each(problems, function (_e) {
                messages.push({
@@ -277,19 +284,19 @@ function pageRequestValidate(user, request, permissions) {
                     hint: _e.hint,
                     title: _e.title
                });
-               if (typeof _e.subSelections !== 'undefined') {
-                    _.each(_e.subSelections, function (__e) {
-                         subSelections.push({
-                              parent: _e.parent,
-                              selection: __e,
-                              message: _e.message
-                         });
-                    });
-               }
+              //  if (typeof _e.subSelections !== 'undefined') {
+              //       _.each(_e.subSelections, function (__e) {
+              //            subSelections.push({
+              //                 parent: _e.parent,
+              //                 selection: __e,
+              //                 message: _e.message
+              //            });
+              //       });
+              //  }
           });
           promise.reject({
                success: false,
-               subSelections: subSelections,
+              //  subSelections: subSelections,
                message: messages
           });
      } else {
@@ -303,6 +310,7 @@ var approvedRequestTypes = {
      page: pageRequestValidate,
      summary: pageRequestValidate,
      freeSummary: pageRequestValidate,
+    //  link: linkRequestValidate,
      link: linkRequestValidate,
      capture: captureRequestValidate
 }

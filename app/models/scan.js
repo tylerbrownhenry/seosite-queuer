@@ -14,6 +14,9 @@ var scanSchema = new dynamoose.Schema({
      resources: {
           type: Object
      },
+     issues: {
+          type: Object
+     },
      emails: {
           type: Object
      },
@@ -24,10 +27,14 @@ var scanSchema = new dynamoose.Schema({
           type: String
      },
      url: {
-          type: Object
+          type: Object,
+          default:{}
      },
      redirects: {
           type: Number
+     },
+     completedTime: {
+       type:Date
      },
      message: {
           type: String

@@ -2,7 +2,7 @@ var http = require('http'),
 sh = require('shorthash'),
      querystring = require('querystring'),
      publisher = require('../amqp-connections/publisher'),
-     Alert = require('../models/alert');
+     Update = require('../models/update');
 
 function callback(data) {
      console.log('actions/callback.js callback',data);
@@ -36,8 +36,8 @@ function callback(data) {
 
      console.log('postData', postData);
 
-     publisher.publish("", "alert", new Buffer(JSON.stringify({uid:data.uid}))).then(function (e) {
-          console.log('actions/callback.js published alert for uid',e);
+     publisher.publish("", "update", new Buffer(JSON.stringify({uid:data.uid}))).then(function (e) {
+          console.log('actions/callback.js published alert for uid',data.uid);
      });
 
      return

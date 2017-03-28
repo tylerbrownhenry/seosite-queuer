@@ -1,0 +1,722 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/sniff/process/createPage.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../index.html">all files</a> / <a href="index.html">app/actions/sniff/process/</a> createPage.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.08% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>12/119</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/25</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">10.08% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>12/119</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var _ = require('underscore');
+var q = require('q');
+var scrapeHtml = require("../linkChecker/initScrapeHtml");
+var saveImage = require("../../mobileCaptures/index").saveImage;
+var createHAR = require('./createHAR');
+var errors = require('../errors');
+&nbsp;
+<span class="fstat-no" title="function not covered" >function extractEmails(text) {</span>
+<span class="cstat-no" title="statement not covered" >     return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function findMime(page) {</span>
+<span class="cstat-no" title="statement not covered" >     if (page.resources &amp;&amp; page.resources['1'] &amp;&amp; page.resources['1'].endReply &amp;&amp; page.resources['1'].endReply.contentType) {</span>
+<span class="cstat-no" title="statement not covered" >          if (page.resources['1'].endReply.contentType) {</span>
+<span class="cstat-no" title="statement not covered" >               return page.resources['1'].endReply.contentType['1']</span>
+          }
+     }
+<span class="cstat-no" title="statement not covered" >     return null;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function saveThumb(page, opts) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     saveImage(page, 'thumb' + opts.options.requestId + '.png', <span class="fstat-no" title="function not covered" >function (thumb) {</span></span>
+<span class="cstat-no" title="statement not covered" >          promise.resolve(thumb);</span>
+     }, <span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >          promise.resolve(null);</span>
+     });
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+<span class="fstat-no" title="function not covered" >function run(page, promise, ph, options) {</span>
+<span class="cstat-no" title="statement not covered" >  console.log('run options',options);</span>
+<span class="cstat-no" title="statement not covered" >     page.address = options.url;</span>
+<span class="cstat-no" title="statement not covered" >     page.customHeaders = {</span>
+          'Cache-Control': 'no-cache',
+          'Pragma': 'no-cache'
+     };
+<span class="cstat-no" title="statement not covered" >     page.resources = {};</span>
+<span class="cstat-no" title="statement not covered" >     page.types = {};</span>
+<span class="cstat-no" title="statement not covered" >     page.options = options;</span>
+     // page.onResourceTimeout = function(e) {
+     //     console.log('timeout!');
+     //   console.log(e.errorCode);   // it'll probably be 408
+     //   console.log(e.errorString); // it'll probably be 'Network timeout on resource'
+     //   console.log(e.url);         // the url whose request timed out
+     //   phantom.exit(1);
+     // };
+<span class="cstat-no" title="statement not covered" >     var contentWaitTimeout = '';</span>
+<span class="cstat-no" title="statement not covered" >     var connectWaitTimeout = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >          console.log('done yet?');</span>
+<span class="cstat-no" title="statement not covered" >          page.get("content", <span class="fstat-no" title="function not covered" >function (content) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log('done yet?',content);</span>
+          }, <span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('done yet?');</span>
+          })
+     }, 5000)
+<span class="cstat-no" title="statement not covered" >     try {</span>
+<span class="cstat-no" title="statement not covered" >          page.set("viewportSize", {</span>
+               width: 1920,
+               height: 1080
+          });
+<span class="cstat-no" title="statement not covered" >          page.open(page.address, <span class="fstat-no" title="function not covered" >function (err, status) {</span></span>
+<span class="cstat-no" title="statement not covered" >                console.log('open',status,'err',err);</span>
+&nbsp;
+&nbsp;
+              //  var thumb = saveThumb(page, opts);
+              // var thumg = 'test...';
+<span class="cstat-no" title="statement not covered" >               console.log('status', status, 'err', err);</span>
+<span class="cstat-no" title="statement not covered" >               if (status !== 'success') {</span>
+<span class="cstat-no" title="statement not covered" >                    var statusMessage = '';</span>
+<span class="cstat-no" title="statement not covered" >                    if (status) {</span>
+<span class="cstat-no" title="statement not covered" >                         statusMessage = '( Status : ' + status + ' )';</span>
+                    }
+<span class="cstat-no" title="statement not covered" >                    promise.reject(new errors.ConnectionError('Failed to load the URL ' + statusMessage));</span>
+               }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >              contentWaitTimeout = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >                    console.log('yo!');</span>
+<span class="cstat-no" title="statement not covered" >                    page.get('cookies', <span class="fstat-no" title="function not covered" >function (err, cookies) {</span></span>
+<span class="cstat-no" title="statement not covered" >                         if (err) {</span>
+<span class="cstat-no" title="statement not covered" >                              return console.error("Error occurred running `page.get('cookies')`:\n" + err);</span>
+                         }
+<span class="cstat-no" title="statement not covered" >                         page.get('content', <span class="fstat-no" title="function not covered" >function (err, content) {</span></span>
+<span class="cstat-no" title="statement not covered" >                              ph.exit();</span>
+<span class="cstat-no" title="statement not covered" >                              clearTimeout(connectWaitTimeout);</span>
+<span class="cstat-no" title="statement not covered" >                              clearTimeout(contentWaitTimeout);</span>
+<span class="cstat-no" title="statement not covered" >                              if (err) {</span>
+<span class="cstat-no" title="statement not covered" >                                   return console.error("Error occurred running `page.get('content')`:\n" + err);</span>
+                              }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                              page.cookies = (cookies || []).map(<span class="fstat-no" title="function not covered" >function (cookie) {</span></span>
+<span class="cstat-no" title="statement not covered" >                                   if ('expiry' in cookie) {</span>
+<span class="cstat-no" title="statement not covered" >                                        cookie.expires = new Date(cookie.expiry * 1000).toISOString();</span>
+<span class="cstat-no" title="statement not covered" >                                        delete cookie.expiry;</span>
+                                   }
+<span class="cstat-no" title="statement not covered" >                                   return cookie;</span>
+                              });
+&nbsp;
+&nbsp;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                              page.content = {</span>
+                                   mimeType: findMime(page),
+                                   size: content.length,
+                              };
+<span class="cstat-no" title="statement not covered" >                              var emails = extractEmails(content);</span>
+<span class="cstat-no" title="statement not covered" >                              var passedEmails = [];</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                              console.log('actions/sniff/index.js');</span>
+                              // console.log('thumb',thumb);
+<span class="cstat-no" title="statement not covered" >                              scrapeHtml(content, page.address, page.customHeaders).then(<span class="fstat-no" title="function not covered" >function (instance) {</span></span>
+<span class="cstat-no" title="statement not covered" >                                   console.log('test');</span>
+<span class="cstat-no" title="statement not covered" >                                   var har = createHAR(page);</span>
+<span class="cstat-no" title="statement not covered" >                                   har.links = instance.foundLinks;</span>
+<span class="cstat-no" title="statement not covered" >                                   har.url = {</span>
+                                        resolvedUrl: page.finalUrl,
+                                        url: page.address
+                                   };
+<span class="cstat-no" title="statement not covered" >                                   har.emails = passedEmails;</span>
+<span class="cstat-no" title="statement not covered" >                                   har.redirects = page.redirects;</span>
+                                  //  thumb.then(function (res) {
+                                        // har.thumb = res;
+<span class="cstat-no" title="statement not covered" >                                        har.thumb = 'this.jpg';</span>
+<span class="cstat-no" title="statement not covered" >                                        promise.resolve(har);</span>
+                                  //  });
+                              }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >                                   console.log('err', err);</span>
+<span class="cstat-no" title="statement not covered" >                                   promise.reject(err);</span>
+                              });
+                         });
+                    });
+               }, options.delay * 1000);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >               console.log('options.delay', options.delay);</span>
+          });
+     } catch (err) {
+<span class="cstat-no" title="statement not covered" >          clearTimeout(connectWaitTimeout);</span>
+<span class="cstat-no" title="statement not covered" >          clearTimeout(contentWaitTimeout);</span>
+<span class="cstat-no" title="statement not covered" >          console.log('err', err);</span>
+     }
+}
+&nbsp;
+&nbsp;
+<span class="fstat-no" title="function not covered" >function createPage(opts) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     try {</span>
+<span class="cstat-no" title="statement not covered" >          opts = opts || {};</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var options = opts.options || {};</span>
+<span class="cstat-no" title="statement not covered" >          options.delay = options.delay || 0;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var page = opts.page;</span>
+<span class="cstat-no" title="statement not covered" >          var ph = opts.ph;</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          page.onLoadStarted = <span class="fstat-no" title="function not covered" >function (req) {</span></span>
+<span class="cstat-no" title="statement not covered" >               this.startTime = new Date();</span>
+          };
+<span class="cstat-no" title="statement not covered" >          page.onResourceRequested = <span class="fstat-no" title="function not covered" >function (req) {</span></span>
+<span class="cstat-no" title="statement not covered" >               var r = req[0];</span>
+<span class="cstat-no" title="statement not covered" >               this.resources[r.id] = {</span>
+                    request: r,
+                    startReply: null,
+                    endReply: null
+               };
+          };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          page.onResourceReceived = <span class="fstat-no" title="function not covered" >function (res) {</span></span>
+<span class="cstat-no" title="statement not covered" >               this.endTime = new Date();</span>
+<span class="cstat-no" title="statement not covered" >               if (typeof this.resources[res.id] === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >                    this.resources[res.id] = {</span>
+                         request: res,
+                         startReply: null,
+                         endReply: null
+                    };
+               }
+<span class="cstat-no" title="statement not covered" >               if (res.stage === 'start') {</span>
+<span class="cstat-no" title="statement not covered" >                    this.resources[res.id].startReply = res;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               if (res.stage === 'end') {</span>
+<span class="cstat-no" title="statement not covered" >                    this.resources[res.id].endReply = res;</span>
+               }
+          };
+<span class="cstat-no" title="statement not covered" >          page.finalUrl = page.address;</span>
+<span class="cstat-no" title="statement not covered" >          page.redirects = 0;</span>
+<span class="cstat-no" title="statement not covered" >          page.onUrlChanged = <span class="fstat-no" title="function not covered" >function (targetUrl) {</span></span>
+<span class="cstat-no" title="statement not covered" >               page.redirects++</span>
+<span class="cstat-no" title="statement not covered" >                    page.finalUrl = targetUrl;</span>
+          };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          page.onResourceError = <span class="fstat-no" title="function not covered" >function (resourceError) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');</span>
+<span class="cstat-no" title="statement not covered" >               console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);</span>
+          };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          page.onLoadError = <span class="fstat-no" title="function not covered" >function (_casper, url) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log("[onLoadError]: ", url);</span>
+          }
+<span class="cstat-no" title="statement not covered" >          page.onTimeout = <span class="fstat-no" title="function not covered" >function (err) {</span></span>
+<span class="cstat-no" title="statement not covered" >               console.log("[Timeout]: ", err);</span>
+          };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          page.onLoadFinished = <span class="fstat-no" title="function not covered" >function (status) {</span></span>
+<span class="cstat-no" title="statement not covered" >               var url = page.address;</span>
+               // for (var i = 100 - 1; i &gt;= 0; i--) {
+               //     console.log('page.address',page);
+               // }
+<span class="cstat-no" title="statement not covered" >               console.log("status: " + status);</span>
+               // page.render("google.png");
+               // phantom.exit();
+          };
+<span class="cstat-no" title="statement not covered" >          console.log('createPage3');</span>
+<span class="cstat-no" title="statement not covered" >          run(page, promise, ph, options);</span>
+     } catch (err) {
+<span class="cstat-no" title="statement not covered" >          console.log('createPage err', err);</span>
+<span class="cstat-no" title="statement not covered" >          promise.reject(err)</span>
+     }
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+module.exports = createPage;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 19:57:22 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../sorter.js"></script>
+</body>
+</html>
