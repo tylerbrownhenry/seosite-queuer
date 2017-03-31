@@ -320,7 +320,7 @@ module.exports = {
      validate: validate,
      types: {
           page: require('./requests/page'),
-          link: require('./requests/link'),
+          link: require('./requests/link').init,
           retry: require('./requests/retry').init,
           // site: require('./requests/link'),
           summary: require('./requests/summary').init,

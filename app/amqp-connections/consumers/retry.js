@@ -13,7 +13,7 @@ function processRequest(msg,ch) {
           console.log('consumers/retry.js request success');
           console.log('response', response);
           if (response && response.notify === true) {
-               notify(response)
+               notify(response);
           }
           ch.ack(msg);
     }).catch(function (err) {
@@ -26,10 +26,16 @@ function processRequest(msg,ch) {
           } else if (err && err.retry === true) {
                 console.log('retry');
                 err.objectType = 'request';
-                retry(msg);
+                retry(err).then(function(){
+                  ch.ack(msg);
+                }).catch(function(e){
+                  if(typeof e === 'object' && e.retry === true){
+                    ch.nack(msg);
+                  } else {
+                    ch.ack();
+                  }
+                });
           }
-          console.log('ACK!');
-          ch.ack(msg);
     });
 }
 module.exports = processRequest;

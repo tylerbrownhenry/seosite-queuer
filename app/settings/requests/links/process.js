@@ -1,4 +1,4 @@
-var  dynamoose = require('dynamoose'),
+var dynamoose = require('dynamoose'),
      linkSchema = require("../../../models/link"),
      Link = dynamoose.model('Link', linkSchema),
      _updateCount = require("../page/updateCount"),
@@ -29,14 +29,90 @@ function updateCount(requestId, updatedCount, response) {
      return _updateCount(requestId, updatedCount, putObject);
 }
 
+function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input) {
+  console.log('TEST__>');
+     updateCount(requestId, updatedCount, newScan).then(function (resp) {
+          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
+          _.each(commands, function (command) {
+               var id = command._id;
+               var buffer = new Buffer(JSON.stringify({
+                    url: linkObj[id].resolvedUrl,
+                    requestId: requestId,
+                    linkId: linkObj[id]._id,
+                    uid: input.uid,
+                    baseUrl: newScan.url.resolvedUrl,
+                    _link: linkObj[id]
+               }));
+               publisher.publish("", "links", buffer).then(function (err) {
+                    if(err){
+                      console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
+                      promise.reject({
+                           page: input.page,
+                           requestId: requestId,
+                           uid: input.uid,
+                           statusType: 'failed',
+                           status: 'error',
+                           message: 'error:publish:link',
+                           type: 'page:request',
+                           retry: true,
+                           retryCommand: 'publish:link',
+                           retryOptions: {
+                                buffer: buffer,
+                                type: newScan.url.resolvedUrl,
+                                messageId: linkObj[id]._id,
+                                uid: input.uid
+                           }
+                      });
+                    } else {
+                      console.log('summary.js successfully published to queue');
+                      promise.resolve({
+                           page: input.page,
+                           requestId: requestId,
+                           uid: input.uid,
+                           statusType: 'update',
+                           notify: true,
+                           status: 'success',
+                           param: commands.length,
+                           message: 'success:found:links'
+                      });
+                    }
+               });
+          });
+     }).catch(function (err) {
+          promise.reject({
+               page: input.page,
+               requestId: requestId,
+               uid: input.uid,
+               statusType: 'failed',
+               status: 'error',
+               message: 'error:update:link:count',
+               notify: true,
+               retry: true,
+               type: 'page:request',
+               retryCommand: 'settings.request.links.updateCount',
+               retryOptions: {
+                    commands: commands,
+                    updatedCount: updatedCount,
+                    requestId: requestId,
+                    newScan: newScan,
+                    linkObj:linkObj,
+                    input: {
+                      page:input.page,
+                      uid:input.uid
+                    }
+               }
+          });
+     });
+}
+
 /**
  * saves any link found during scan in database, and marks it on the scan object
  * @param  {Object} input message from rabbitMQ
  * @param  {Object} res   scan response object
  * @return {Promise}
  */
-function processLinks(input, res, requestId, newScan) {
-     console.log('request/links/process.js');
+function init(input, res, requestId, newScan) {
+     console.log('request/links/process.js', newScan);
      var promise = q.defer();
      var links = res.links;
      res.links = undefined;
@@ -74,104 +150,54 @@ function processLinks(input, res, requestId, newScan) {
      var updatedCount = 0;
      utils.batchPut(Link, commands, function (err, e) {
           if (err !== null) {
-               console.log('request/links/process.js --> build commands:passed --> batchPut:failed');
+            promise.reject({
+                 page: input.page,
+                 requestId: requestId,
+                 uid: input.uid,
+                 statusType: 'failed',
+                 status: 'error',
+                 message: 'error:update:link:count',
+                 notify: true,
+                 retry: true,
+                 type: 'page:request',
+                 retryCommand: 'settings.request.links.process.init', /* Add to retryables */
+                 retryOptions: {
+                      commands: commands,
+                      updatedCount: updatedCount,
+                      requestId: requestId,
+                      newScan: newScan,
+                      linkObj:linkObj,
+                      input: {
+                        page:input.page,
+                        uid:input.uid
+                      }
+                 }
+            });
+               console.log('request/links/process.js --> build commands:passed --> batchPut:failed',err);
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
-               return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
-                    requestId: requestId,
-                    updatedCount: updatedCount,
-                    newScan: newScan,
-                    commands: commands,
-                    parentLink: parentLink,
-                    requestId: requestId
-               });
+              //  return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
+              //       requestId: requestId,
+              //       updatedCount: updatedCount,
+              //       newScan: newScan,
+              //       commands: commands,
+              //       parentLink: parentLink,
+              //       requestId: requestId
+              //  });
           }
           console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
           /*
           checkcheck if e is undeinfed...
           */
           updatedCount = commands.length;
-          updateCount(requestId, updatedCount, newScan).then(function (resp) {
-               console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
-               _.each(commands, function (command) {
-                    var id = command._id;
-                    var buffer = new Buffer(JSON.stringify({
-                         url: linkObj[id].resolvedUrl,
-                         requestId: requestId,
-                         linkId: linkObj[id]._id,
-                         uid: input.uid,
-                         baseUrl: parentLink,
-                         _link: linkObj[id]
-                    }));
-                    publisher.publish("", "links", buffer, {
-                         type: parentLink,
-                         messageId: linkObj[id]._id,
-                         uid: input.uid
-                    }).catch(function (err) {
-                      console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed');
-                      console.error('summary.js error publishing to queue');
-                      /*
-                      3 Send to retry (Rarely should happen)
-                      3 does publish send back a promise?
-                      3 does publish send back a promise?
-                      3 does publish send back a promise?
-                      3 does publish send back a promise?
-                       */
-                      // promise.reject(err);
-                    });
-                 });
-                 console.log('summary.js successfully published to queue');
-                 var add = '';
-                 if (commands.length > 1) {
-                   add = 's';
-                 }
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 // 4 check if this is even listended to
-                 promise.resolve({
-                      statusType: 'update',
-                      status: 'success',
-                      message: 'Found ' + commands.length + ' link' + add
-                 });
-              //  });
-          }).catch(function (err) {
-              console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:failed');
-               /*
-               Update count is only thing to fail here
-               */
-
-                //2 Check that this works...
-                //2 Check that this works...
-                //2 Check that this works...
-                //2 Check that this works...
-                //2 Check that this works...
-                //2 Check that this works...
-               promise.reject({
-                    statusType: 'failed',
-                    status: 'error',
-                    message: 'Trouble updating link count for request.',
-                    notify:true,
-                    retry: true,
-                    type:'page:request',
-                    retryCommand: 'settings.request.links.updateCount',
-                    retryOptions: {
-                      input:input,
-                      res:res,
-                      requestId: requestId,
-                      newScan: newScan
-                    }
-               });
-
-          });
+          saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input);
      });
      return promise.promise;
-}
-module.exports = processLinks;
+};
+
+module.exports.init = init;
+module.exports.saveUpdatedCount = saveUpdatedCount;

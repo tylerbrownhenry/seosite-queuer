@@ -7,7 +7,7 @@ var dynamoose = require('dynamoose'),
      utils = require("../../utils"),
      processResources = require("./resources/process").processResources,
      processMetaData = require("./meta/process"),
-     processLinks = require("./links/process"),
+     processLinks = require("./links/process").init,
      publishCaptures = require("./capture/publish"),
      //  notify = require('../../actions/callback'),
      publisher = require("../../amqp-connections/publisher"),
@@ -43,7 +43,7 @@ function notify(opts) {
  * @param  {Object} input   request data
  */
 function reject(promise, input) {
-     console.log('request/summary.js init -> failed -> reject', input, 'promise', promise);
+     console.log('request/summary.js -> failed -> reject', input, 'promise', promise);
      if (typeof input === 'undefined') {
           input = {}
      }
@@ -101,7 +101,7 @@ function resolve(promise, input) {
           msg.notify = true;
      }
      console.log('requests/summary.js --> resolve!');
-     return promise.resolve(msg);
+     promise.resolve(msg);
 }
 
 /**
@@ -131,7 +131,7 @@ function markedRequstAsFailed(input) {
                return reject(input.promise,
                     _.extend({
                          statusType: 'failed',
-                         message: 'Unable to save failed scan',
+                         message: 'error:save:failed:scan',
                          notify: true,
                          retry: true,
                          retryCommand: 'request.summary.markedRequstAsFailed',
@@ -169,7 +169,7 @@ function _saveAsActive(opts) {
                     type: 'page:request',
                     status: 'success',
                     statusType: 'update',
-                    message: 'Scan initiated.'
+                    message: 'success:scan:init'
                }, opts));
                promise.resolve(opts);
           }
@@ -185,13 +185,7 @@ function saveAsActive(opts) {
      console.log('request/summary.js init -> saveAsActive ->');
      _saveAsActive(opts).then(function (res) {
           console.log('request/summary.js init -> saveAsActive:passed', res);
-          try {
-               processUrl(res);
-
-          } catch (e) {
-               console.log('ERROR HERE', e);
-          }
-
+          processUrl(res);
      }).catch(function (err) {
           console.log('request/summary.js init -> saveAsActive:failed', err);
           savingAsActiveError(opts);
@@ -211,7 +205,7 @@ function savingAsActiveError(opts) {
                status: 'error',
                statusType: 'database',
                notify: true,
-               message: 'Trouble saving request...  checking connections then trying again.',
+               message: 'error:save:scan:active',
                retry: true,
                retryCommand: 'request.summary.saveAsActive',
                retryOptions: opts
@@ -224,7 +218,7 @@ function savingAsActiveError(opts) {
  * @param  {Object} res   information returned from page scan
  */
 function processHar(input, res) {
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar');
+     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar',res);
      var url = input.url,
           options = input.options,
           promise = input.promise,
@@ -233,7 +227,6 @@ function processHar(input, res) {
           page = input.page,
           url = input.url,
           isRetry = input.isRetry;
-     console.log('summary.js sniff.har responded');
      console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> publishCaptures');
      publishCaptures(input, res);
      /* CHECK */
@@ -246,57 +239,46 @@ function processHar(input, res) {
      Handle Errors!!!
      */
      var newScan = new Scan(res);
-     try {
-          console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> processHtml');
 
-          newScan.requestId = requestId;
-          resources = processResources(input, res);
-          /* CHECK *?
-          /* CHECK *?
-          /* CHECK *?
-          /* CHECK *?
-          /* CHECK */
+     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> processHtml');
 
-          if (options && options.save && options.save.resources === true) {
-               newScan.resources = resources;
-          }
+     newScan.requestId = requestId;
+     resources = processResources(input, res);
+     /* CHECK *?
+     /* CHECK *?
+     /* CHECK *?
+     /* CHECK *?
+     /* CHECK */
 
-          if (options && options.save && options.save.security === true) {
-               newScan.emails = res.emails;
-          }
-          newScan.thumb = res.thumb;
-          /* FIX */
-          /* FIX */
-          /* FIX */
-          /* FIX */
-          /* FIX */
-
-          newScan = processMetaData(newScan, input, res);
-          /* CHECK */
-          /* CHECK */
-          /* CHECK */
-          /* CHECK */
-
-          newScan.completedTime = Date();
-          /* SERVER TIME */
-          /* SERVER TIME */
-          /* SERVER TIME */
-          /* SERVER TIME */
-
-          delete newScan.log;
-          newScan.uid = input.uid;
-
-     } catch (err) {
-          /** Handle this error??? */
-          console.log('err', err);
-          return reject(input.promise, _.extend({
-               status: 'error',
-               statusType: 'system',
-               notify: true,
-               retry: false,
-               message: 'An error occured while processing the html of your page.'
-          }, input));
+     if (options && options.save && options.save.resources === true) {
+          newScan.resources = resources;
      }
+
+     if (options && options.save && options.save.security === true) {
+          newScan.emails = res.emails;
+     }
+     newScan.thumb = res.thumb;
+     /* FIX */
+     /* FIX */
+     /* FIX */
+     /* FIX */
+     /* FIX */
+
+     newScan = processMetaData(newScan, input, res);
+     /* CHECK */
+     /* CHECK */
+     /* CHECK */
+     /* CHECK */
+
+     newScan.completedTime = Date();
+     /* SERVER TIME */
+     /* SERVER TIME */
+     /* SERVER TIME */
+     /* SERVER TIME */
+
+     delete newScan.log;
+     newScan.uid = input.uid;
+
      console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save ->');
      utils.saveScan(newScan, function (err) {
           console.log('huh?');
@@ -307,7 +289,7 @@ function processHar(input, res) {
                */
                return reject(promise, _.extend({
                     statusType: 'database',
-                    message: 'Trouble saving scan. We\'re checking our connections then trying again.',
+                    message: 'error:save:scan',
                     notify: true,
                     retry: true,
                     retryCommand: 'request.summary.processHar',
@@ -349,6 +331,7 @@ function processHar(input, res) {
                          /* Check */
                          /* Check */
                     }).catch(function (err) {
+                         console.log('ERROR', err);
                          console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:failed');
 
                          /* Check how this err is sent back ... */
@@ -362,20 +345,17 @@ function processHar(input, res) {
                          /* Check how this err is sent back ... */
                          // reject(promise, uid, input.requestId, input.page, 'error', statusType, message, notify);
                          return reject(promise, {
-                              //  statusType: 'database',
-                              //  message: 'Trouble saving scan. We\'re checking our connections, then we will retry.',
-                              //  message: 'Trouble saving links...'
-                              //  requestId: requestId,
+                              statusType: err.statusType,
+                              status: err.status,
+                              message: err.message,
+                              requestId: requestId,
                               uid: input.uid,
                               url: input.url,
                               page: input.page,
-                              retry: true,
-                              notify: true,
-                              //  retryCommand: 'request.summary.processHar',
-                              //  retryOptions:{
-                              //  res:res,
-                              //  input:input
-                              //  }
+                              retry: err.retry,
+                              notify: err.notify,
+                              retryCommand: err.retryCommand,
+                              retryOptions: err.retryOptions
                          });
                     });
 
@@ -384,7 +364,7 @@ function processHar(input, res) {
                     utils.updateBy(Request, {
                          requestId: requestId
                     }, {
-                         $set: {
+                         $PUT: {
                               status: 'complete'
                          }
                     }, function (err) {
@@ -402,7 +382,7 @@ function processHar(input, res) {
                               return reject(promise, _.extend({
                                    status: 'error',
                                    statusType: 'complete',
-                                   message: 'Trouble saving scan. We\'re checking our connections then trying again.',
+                                   message: 'error:save:scan',
                                    notify: true,
                                    retry: true,
                                    retryCommand: 'utils.updateBy',
@@ -424,7 +404,7 @@ function processHar(input, res) {
                                    _.extend({
                                         status: 'success',
                                         statusType: 'complete',
-                                        message: 'Scan Complete',
+                                        message: 'success:scan:complete',
                                         notify: true
                                    }, input));
                               /* Check */
@@ -438,6 +418,7 @@ function processHar(input, res) {
                }
           }
      });
+     return promise.promise;
 }
 
 /**
@@ -475,7 +456,7 @@ function processUrl(input) {
           if (shouldRetry(input, err)) {
                return reject(input.promise,
                     _.extend({
-                         message: 'First scan failed. Retrying.',
+                         message: 'error:scan:retry',
                          statusType: 'scan',
                          notify: true,
                          retry: true,
@@ -485,7 +466,7 @@ function processUrl(input) {
           }
           console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed -> is a retry');
           markedRequstAsFailed(_.extend({
-               message: 'Unable to scan url provided',
+               message: 'error:unable:to:scan',
           }, input));
           promise.reject();
      });
@@ -498,7 +479,7 @@ function processUrl(input) {
  * @return {Promise} promise function
  */
 function init(msg) {
-     console.log('request/summary.js init');
+     console.log('request/summary.js init', msg);
      var promise = q.defer();
      var input = preFlight(promise, msg, reject);
      if (input === false) {
@@ -509,7 +490,7 @@ function init(msg) {
           console.log('request/summary.js init -> checkRequirements : failed');
           reject(promise,
                _.extend({
-                    message: 'Missing required fields',
+                    message: 'error:missing:required:fields',
                     statusType: 'failed',
                     status: 'error',
                     notify: true

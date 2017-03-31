@@ -5,27 +5,28 @@ var _ = require('underscore');
  */
 
 function processMetaData(newScan,input,res) {
+  console.log('result--');
      if (input.options && input.options.save && input.options.save.metaData === true) {
           newScan.meta = {
                title: {
-                    message: 'No title found',
+                    message: 'error:meta:no:title',
                     text: '',
                     found: false
                },
                description: {
-                    message: 'No meta description found.',
+                    message: 'error:meta:no:meta:desc',
                     element: null,
                     text: '',
                     found: false
                },
                h1: {
-                    message: 'No h1 found.',
+                    message: 'error:meta:no:h1',
                     element: null,
                     text: '',
                     found: false
                },
                h2: {
-                    message: 'No h2 found.',
+                    message: 'error:meta:no:h2',
                     element: null,
                     text: '',
                     found: false
@@ -81,6 +82,7 @@ function processMetaData(newScan,input,res) {
           }
 
           var resourceIssueCount = 0;
+          console.log('1');
           _.each(newScan.resources, function (resource) {
                if (resource.gzip === null) {
                     resourceIssueCount += 1;
@@ -96,9 +98,10 @@ function processMetaData(newScan,input,res) {
                }
           });
 
+          console.log('2', links);
           var linkIssueCount = 0;
 
-          var tooManyLinks = (links >= 100) ? true : false;
+          var tooManyLinks = (links && links.length >= 100) ? true : false;
           if (tooManyLinks) {
                linkIssueCount++
           }
@@ -106,7 +109,7 @@ function processMetaData(newScan,input,res) {
                linkIssueCount === 0 &&
                resourceIssueCount === 0 &&
                metaIssueCount === 0 &&
-               (newScan.emails && newScan.emails.length === 0)) {
+               (!newScan.emails || (newScan.emails && newScan.emails.length === 0))) {
                newScan.issues = {
                     noIssues: true
                };
@@ -121,7 +124,7 @@ function processMetaData(newScan,input,res) {
           }
           newScan.grade = {
                letter: 'B',
-               message: 'Could be better'
+               message: 'grade:b:message'
           };
      }
      return newScan;

@@ -4,12 +4,85 @@ var chai = require('chai'),
      sniff = require('../../../../app/actions/sniff/index'),
      Request = require('../../../../app/models/request'),
      phantom = require('node-phantom-simple'),
+     publisher = require('../../../../app/amqp-connections/publisher'),
      dynamoose = require('dynamoose'),
+     q = require('q'),
+     _ = require('underscore'),
      summaryRequest = require('../../../../app/settings/requests/summary').init,
+     processHar = require('../../../../app/settings/requests/summary').processHar,
      markedRequstAsFailed = require('../../../../app/settings/requests/summary').markedRequstAsFailed,
      resolve = require('../../../../app/settings/requests/summary').resolve,
      reject = require('../../../../app/settings/requests/summary').reject,
      sinon = require('sinon');
+
+
+var harResponseData = {
+          url:{
+            resolvedUrl:'test'
+          },
+          log: {
+               entries: [{
+                         request: {
+                              url: 'http://whatever.com'
+                         },
+                         response: {
+                              headers: [{
+                                        name: 'Content-Encoding',
+                                        value: 'gzip'
+                                   },
+                                   {
+                                        name: 'Content-Type',
+                                        value: 'application/x-javascript'
+                                   },
+                                   {
+                                        name: "Cache-Control",
+                                        value: true
+                                   }
+                              ]
+                         }
+                    },
+                    {
+                         request: {
+                              url: "http://www.uncached.unecoded.invalidcontenttype.com.index.js"
+                         },
+                         response: {
+                              headers: [{
+                                        name: 'Content-Encoding',
+                                        value: 'fakenonesense'
+                                   },
+                                   {
+                                        name: 'Content-Type',
+                                        value: 'fakenonesense'
+                                   },
+                                   {
+                                        name: "Cache-Control",
+                                        value: false
+                                   }
+                              ]
+                         }
+                    },
+                    {
+                         nothing: 'useful'
+                    }
+               ]
+          },
+          links: [{
+            url:{
+              resolvedUrl:'someinthg'
+            }
+          }]
+     }
+var harResponse =  {
+        then: function (fn) {
+             console.log()
+             fn(_.clone(harResponseData));
+             return {
+               catch: function(){
+
+               }
+             }
+        }
+   };
 
 describe('app/settings/requests/summary.js invalid because:', function () {
      it('no input', function (done) {
@@ -42,6 +115,7 @@ describe('app/settings/requests/summary.js invalid because:', function () {
           summaryRequest({
                content: new Buffer(JSON.stringify({}))
           }).catch(function (response) {
+            console.log('response',response);
                expect(response.status === 'error').to.equal(true);
                done();
           });
@@ -154,14 +228,14 @@ describe('app/settings/requests/summary.js valid request setActive success', fun
                     options: {}
                }))
           }).catch(function (response) {
-               expect(response.retry === true).to.equal(true);
-               expect(response.notify === true).to.equal(true);
-               expect(response.message === true).to.not.be.undefined;
-               expect(response.page === true).to.not.be.undefined;
-               expect(response.uid === true).to.not.be.undefined;
-               expect(response.status === true).to.not.be.undefined;
-               expect(response.statusType === true).to.not.be.undefined;
-               expect(response.requestId === true).to.not.be.undefined;
+               expect(response.retry).to.equal(true);
+               expect(response.notify).to.equal(true);
+               expect(response.message).to.not.be.undefined;
+               expect(response.page).to.not.be.undefined;
+               expect(response.uid).to.not.be.undefined;
+               expect(response.status).to.not.be.undefined;
+               expect(response.statusType).to.not.be.undefined;
+               expect(response.requestId).to.not.be.undefined;
                done();
           });
      });
@@ -184,7 +258,7 @@ describe('app/settings/requests/summary.js markedRequstAsFailed', function () {
                requestId: 'fakehash',
                promise: {
                     reject: function (response) {
-                         expect(response.retry === true).to.equal(true);
+                         expect(response.retry).to.equal(true);
                          done();
                     }
                }
@@ -271,7 +345,7 @@ describe('app/settings/requests/summary.js markedRequstAsFailed', function () {
                requestId: 'fakehash',
                promise: {
                     reject: function (response) {
-                         expect(response.retry === true).to.equal(true);
+                         expect(response.retry).to.equal(true);
                          done();
                     }
                }
@@ -312,14 +386,14 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
                     options: {}
                }))
           }).catch(function (response) {
-               expect(response.retry !== true).to.equal(true);
-               expect(response.message === true).to.not.be.undefined;
-               expect(response.page === true).to.not.be.undefined;
-               expect(response.uid === true).to.not.be.undefined;
-               expect(response.status === true).to.not.be.undefined;
-               expect(response.statusType === true).to.not.be.undefined;
-               expect(response.requestId === true).to.not.be.undefined;
-               expect(response.notify === true).to.equal(true);
+               expect(response.message).to.not.be.undefined;
+               expect(response.retry).to.be.undefined;
+               expect(response.page).to.not.be.undefined;
+               expect(response.uid).to.not.be.undefined;
+               expect(response.status).to.not.be.undefined;
+               expect(response.statusType).to.not.be.undefined;
+               expect(response.requestId).to.not.be.undefined;
+               expect(response.notify).to.equal(true);
                done();
           });
      });
@@ -329,7 +403,6 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
      var stubHar, stubScan, stubUtils;
      beforeEach(function () {
           stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
-               console.log('cb?');
                return cb(null);
           });
 
@@ -340,58 +413,7 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
           stubHar = sinon.stub(sniff, 'har', function () {
                return {
                     then: function (fn) {
-                         fn({
-                              log: {
-                                   entries: [{
-                                             request: {
-                                                  url: 'http://whatever.com'
-                                             },
-                                             response: {
-                                                  headers: [{
-                                                            name: 'Content-Encoding',
-                                                            value: 'gzip'
-                                                       },
-                                                       {
-                                                            name: 'Content-Type',
-                                                            value: 'application/x-javascript'
-                                                       },
-                                                       {
-                                                            name: "Cache-Control",
-                                                            value: true
-                                                       }
-                                                  ]
-                                             }
-                                        },
-                                        {
-                                             request: {
-                                                  url: "http://www.uncached.unecoded.invalidcontenttype.com.index.js"
-                                             },
-                                             response: {
-                                                  headers: [{
-                                                            name: 'Content-Encoding',
-                                                            value: 'fakenonesense'
-                                                       },
-                                                       {
-                                                            name: 'Content-Type',
-                                                            value: 'fakenonesense'
-                                                       },
-                                                       {
-                                                            name: "Cache-Control",
-                                                            value: false
-                                                       }
-                                                  ]
-                                             }
-                                        },
-                                        {
-                                             nothing: 'useful'
-                                        }
-                                   ]
-                              },
-                              links: [{
-
-                              }]
-                         });
-
+                         fn(_.clone(harResponseData));
                          return {
                               catch: function () {
                                    console.log('failed');
@@ -415,24 +437,24 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
                     options: {}
                }))
           }).catch(function (response) {
-               expect(response.retry === true).to.equal(true);
-               expect(response.notify === true).to.equal(true);
-               expect(response.message === true).to.not.be.undefined;
-               expect(response.retryOptions === true).to.not.be.undefined;
-               expect(response.retryCommand === true).to.not.be.undefined;
-               expect(response.page === true).to.not.be.undefined;
-               expect(response.uid === true).to.not.be.undefined;
-               expect(response.status === true).to.not.be.undefined;
-               expect(response.statusType === true).to.not.be.undefined;
-               expect(response.requestId === true).to.not.be.undefined;
+            console.log('TEST',response);
+               expect(response.retry).to.equal(true);
+               expect(response.notify).to.equal(true);
+               expect(response.message).to.not.be.undefined;
+               expect(response.retryOptions).to.not.be.undefined;
+               expect(response.retryCommand).to.not.be.undefined;
+               expect(response.page).to.not.be.undefined;
+               expect(response.uid).to.not.be.undefined;
+               expect(response.status).to.not.be.undefined;
+               expect(response.statusType).to.not.be.undefined;
+               expect(response.requestId).to.not.be.undefined;
                done();
           });
      });
 });
 
 describe('app/settings/requests/summary.js retrying a valid request with save resources and save security set', function () {
-     return
-     var stubHar, stubScan, stubUtils, stubBatchPut;
+     var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
      beforeEach(function () {
           stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
                cb(null);
@@ -442,78 +464,31 @@ describe('app/settings/requests/summary.js retrying a valid request with save re
                cb(null);
           });
 
+          stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
+               return {
+                    then: function (fn, a) {
+                         fn(true);
+                    }
+               }
+          });
+
           stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
                console.log('batchPut');
                cb(null, []);
           });
 
           stubHar = sinon.stub(sniff, 'har', function () {
-               return {
-                    then: function (fn) {
-                         console.log()
-                         fn({
-                              url: {
-                                   resolvedUrl: 'http://test.com'
-                              },
-                              log: {
-                                   entries: [{
-                                             request: {
-                                                  url: 'Http://whatever.com'
-                                             },
-                                             response: {
-                                                  headers: [{
-                                                            name: 'Content-Encoding',
-                                                            value: 'gzip'
-                                                       },
-                                                       {
-                                                            name: 'Content-Type',
-                                                            value: 'application/x-javascript'
-                                                       },
-                                                       {
-                                                            name: "Cache-Control",
-                                                            value: true
-                                                       }
-                                                  ]
-                                             }
-                                        },
-                                        {
-                                             request: {
-                                                  url: "http://www.uncached.unecoded.invalidcontenttype.com.index.js"
-                                             },
-                                             response: {
-                                                  headers: [{
-                                                            name: 'Content-Encoding',
-                                                            value: 'fakenonesense'
-                                                       },
-                                                       {
-                                                            name: 'Content-Type',
-                                                            value: 'fakenonesense'
-                                                       },
-                                                       {
-                                                            name: "Cache-Control",
-                                                            value: false
-                                                       }
-                                                  ]
-                                             }
-                                        },
-                                        {
-                                             nothing: 'useful'
-                                        }
-                                   ]
-                              },
-                              links: []
-                         });
-                    }
-               }
+              return harResponse;
           });
      });
      afterEach(function () {
           stubUtils.restore();
           stubHar.restore();
           stubScan.restore();
+          stubPublish.restore();
           stubBatchPut.restore();
      });
-     it('with successful har...', function (done) {
+     it('with successful har but failed publish', function (done) {
           summaryRequest({
                content: new Buffer(JSON.stringify({
                     url: 'http://www.myurl.com',
@@ -528,22 +503,330 @@ describe('app/settings/requests/summary.js retrying a valid request with save re
                     }
                }))
           }).catch(function (response) {
-               console.log('HERE?');
-               expect(response.retry === true).to.equal(true);
-               expect(response.notify === true).to.equal(true);
-               expect(response.message === true).to.not.be.undefined;
-               expect(response.retryOptions === true).to.not.be.undefined;
-               expect(response.retryCommand === true).to.not.be.undefined;
-               expect(response.page === true).to.not.be.undefined;
-               expect(response.uid === true).to.not.be.undefined;
-               expect(response.status === true).to.not.be.undefined;
-               expect(response.statusType === true).to.not.be.undefined;
-               expect(response.requestId === true).to.not.be.undefined;
+               expect(response.retry).to.equal(true);
+               expect(response.retryOptions).to.not.be.undefined;
+               expect(response.retryCommand).to.not.be.undefined;
+               expect(response.page).to.not.be.undefined;
+               expect(response.uid).to.not.be.undefined;
+               expect(response.status).to.not.be.undefined;
+               expect(response.statusType).to.not.be.undefined;
+               expect(response.requestId).to.not.be.undefined;
                done();
           });
      });
 });
 
+
+
+describe('app/settings/requests/summary.js process har with save resources and save security', function () {
+     var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
+     beforeEach(function () {
+          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+               cb(null);
+          });
+
+          stubScan = sinon.stub(utils, 'saveScan', function (a, cb) {
+               cb(null);
+          });
+
+          stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
+               cb(null, []);
+          });
+
+          stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
+               return {
+                    then: function (fn, a) {
+                      fn(null);
+                    }
+               }
+          });
+          stubHar = sinon.stub(sniff, 'har', function () {
+              return {
+                      then: function (fn) {
+                           console.log('har har har');
+                           fn(_.clone(harResponseData));
+                           return {
+                             catch:function(fun){
+                               return(fn);
+                             }
+                           }
+                      }
+                 };
+          });
+     });
+     afterEach(function () {
+          stubUtils.restore();
+          stubPublish.restore();
+          stubHar.restore();
+          stubScan.restore();
+          stubBatchPut.restore();
+     });
+
+     it('with successful har...', function (done) {
+          var promise = q.defer();
+          processHar({
+                    promise:  promise,
+                    url: 'http://www.myurl.com',
+                    requestId: 'fakehash',
+                    uid: 'fakeUid',
+                    options: {
+                         save: {
+                              resources: true,
+                              security: true,
+                              links: true
+                         }
+                    }
+               },_.clone(harResponseData))
+               .then(function(r){
+                 expect(r.status === 'success').to.equal(true);
+                 done();
+               });
+     });
+
+});
+
+
+
+
+describe('app/settings/requests/summary.js process har with not saving links', function () {
+     var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
+     beforeEach(function () {
+          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+               cb(null);
+          });
+
+          stubScan = sinon.stub(utils, 'saveScan', function (a, cb) {
+               cb(null);
+          });
+
+          stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
+               console.log('batchPut');
+               cb(null, []);
+          });
+
+          stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
+               return {
+                    then: function (fn, a) {
+                        //  resBuffer = {
+                        //       content: c
+                        //  };
+                        //  fn(c);
+                         return {
+                              catch: function (fn) {
+                                fn(c)
+                              }
+                         }
+                    }
+               }
+          });
+          stubHar = sinon.stub(sniff, 'har', function () {
+              return {
+                      then: function (fn) {
+                           console.log('har har har');
+                           fn(_.clone(harResponseData));
+                           return {
+                             catch:function(fun){
+                               return(fn);
+                             }
+                           }
+                      }
+                 };
+          });
+     });
+     afterEach(function () {
+          stubUtils.restore();
+          stubPublish.restore();
+          stubHar.restore();
+          stubScan.restore();
+          stubBatchPut.restore();
+     });
+
+     it('not saving links completing scan', function (done) {
+          var promise = q.defer();
+          processHar({
+                    promise:  promise,
+                    url: 'http://www.myurl.com',
+                    requestId: 'fakehash',
+                    uid: 'fakeUid',
+                    options: {
+                         save: {
+                              resources: false,
+                              security: false,
+                              links: false
+                         }
+                    }
+               },_.clone(harResponseData));
+              //  .then(function(){
+                //  console.log('2',promise.promise.then);
+              //  })
+               promise.promise.then(function(e){
+                 console.log('e',e,e.statusType === 'complete',e.notify);
+                expect(e.statusType === 'complete').to.equal(true);
+                expect(e.notify).to.equal(true);
+                // expect(e.retryCommand).to.be.defined;
+                // expect(e.retryOptions).to.be.defined;
+                done();
+              });
+     });
+
+});
+
+
+
+
+describe('app/settings/requests/summary.js process har with not saving links', function () {
+     var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
+     beforeEach(function () {
+          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+            console.log('a',a,'b',b,'c',c,'cb',cb);
+            if(c.$PUT.status === 'complete'){
+              cb(true);
+            } else {
+              cb(null);
+            }
+          });
+
+          stubScan = sinon.stub(utils, 'saveScan', function (a, cb) {
+               cb(null);
+          });
+
+          stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
+               console.log('batchPut');
+               cb(null, []);
+          });
+
+          stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
+               return {
+                    then: function (fn, a) {
+                        //  resBuffer = {
+                        //       content: c
+                        //  };
+                        //  fn(c);
+                         return {
+                              catch: function (fn) {
+                                fn(c)
+                              }
+                         }
+                    }
+               }
+          });
+          stubHar = sinon.stub(sniff, 'har', function () {
+              return {
+                      then: function (fn) {
+                           console.log('har har har');
+                           fn(_.clone(harResponseData));
+                           return {
+                             catch:function(fun){
+                               return(fn);
+                             }
+                           }
+                      }
+                 };
+          });
+     });
+     afterEach(function () {
+          stubUtils.restore();
+          stubPublish.restore();
+          stubHar.restore();
+          stubScan.restore();
+          stubBatchPut.restore();
+     });
+
+     it('not saving links completing scan', function (done) {
+          var promise = q.defer();
+          processHar({
+                    promise:  promise,
+                    url: 'http://www.myurl.com',
+                    requestId: 'fakehash',
+                    uid: 'fakeUid',
+                    options: {
+                         save: {
+                              resources: false,
+                              security: false,
+                              links: false
+                         }
+                    }
+               },_.clone(harResponseData));
+              //  .then(function(){
+                //  console.log('2',promise.promise.then);
+              //  })
+               promise.promise.catch(function(e){
+                 console.log('e!!',e);
+                expect(e.statusType === 'complete').to.equal(true);
+                expect(e.notify).to.equal(true);
+                done();
+              });
+     });
+
+});
+
+
+describe('app/settings/requests/summary.js process har', function () {
+     var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
+     beforeEach(function () {
+          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+              cb(null);
+          });
+
+          stubScan = sinon.stub(utils, 'saveScan', function (a, cb) {
+               cb(null);
+          });
+
+          stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
+               cb(null, []);
+          });
+
+          stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
+               return {
+                    then: function (fn, a) {
+                      console.log('fn',fn,'a',a);
+                         fn(null);
+                         return {
+                              catch: function (fn) {}
+                         }
+                    }
+               }
+          });
+          stubHar = sinon.stub(sniff, 'har', function () {
+              return {
+                      then: function (fn) {
+                           fn(_.clone(harResponseData));
+                      }
+                 };
+          });
+     });
+     afterEach(function () {
+          stubUtils.restore();
+          stubPublish.restore();
+          stubHar.restore();
+          stubScan.restore();
+          stubBatchPut.restore();
+     });
+
+     it('saving links after completing scan', function (done) {
+          var promise = q.defer();
+          processHar({
+                    promise:  promise,
+                    url: 'http://www.myurl.com',
+                    requestId: 'fakehash',
+                    uid: 'fakeUid',
+                    options: {
+                         save: {
+                              resources: false,
+                              security: false,
+                              links: true
+                         }
+                    }
+               },_.clone(harResponseData));
+               promise.promise.then(function(e){
+                 console.log('!-e-!',e);
+                expect(e.statusType === 'update').to.equal(true);
+                expect(e.notify).to.equal(true);
+                done();
+              });
+     });
+
+});
 // summaryRequest(new Buffer(JSON.stringify({}))).catch(function(response){
 // console.log('test');
 // //  expect(response.status === 'error').to.equal(true);

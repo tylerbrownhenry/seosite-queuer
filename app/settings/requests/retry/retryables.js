@@ -77,7 +77,7 @@ function updateBy(promise, opts) {
 
 function processLinks(promise, opts){
   console.log('retrables.js --> processUrl', opts);
-  var _updateCount = require('../links/process'),
+  var _updateCount = require('../links/process').saveUpdatedCount,
   requestId = opts.requestId,
   newScan = opts.newScan,
   input = opts.input,
@@ -91,6 +91,62 @@ function processLinks(promise, opts){
     _notify(err);
     promise.reject(err);
   })
+  return promise.promise;
+}
+
+function processLinksInit(promise, opts){
+  console.log('retrables.js --> processUrl', opts);
+  var _updateCount = require('../links/process').saveUpdatedCount,
+  requestId = opts.requestId,
+  newScan = opts.newScan,
+  input = opts.input,
+  res = opts.res;
+  _updateCount(input,res,requestId,newScan).then(function(res){
+    console.log('not sure if this works');
+     _notify(res);
+     promise.resolve(res);
+  }).catch(function(err){
+    console.log('not sure if this works');
+    _notify(err);
+    promise.reject(err);
+  })
+  return promise.promise;
+}
+
+function completeLink(promise, opts){
+  console.log('retrables.js --> processUrl', opts);
+  var _completeLink = require('../link').completeLink,
+  link = opts.link,
+  resp = opts.resp;
+  _completeLink(promise,link,resp);
+  return promise.promise;
+}
+
+
+function publishLink(promise,opts){
+  publisher.publish("", "links", opts.buffer, {
+       type: opts.type,
+       messageId: opts.messageId,
+       uid: opts.uid
+  }).then(function(){
+    promise.resolve();
+  }).catch(function (err) {
+    promise.reject(err);
+  });
+  return promise.promise;
+}
+
+function updateCount(promise,opts){
+  console.log('retrables.js --> processUrl', opts);
+  var _saveUpdatedCount = require('../links/process').saveUpdatedCount,
+  updatedCount = opts.updatedCount,
+  requestId = opts.requestId,
+  newScan = opts.newScan,
+  commands = opts.commands,
+  linkObj = opts.linkObj,
+  input = opts.input;
+  _saveUpdatedCount(promise,requestId,updatedCount,newScan,commands,linkObj,input);
+  return promise.promise;
 }
 
 /**
@@ -98,11 +154,15 @@ function processLinks(promise, opts){
  * @type {Object}
  */
 var commands = {
+     'settings.request.links.updateCount':updateCount,
      'request.summary.markedRequstAsFailed': markedRequstAsFailed,
      'request.summary.processUrl': processUrl,
      'request.summary.saveAsActive': saveAsActive,
      'request.summary.processHar': processHar,
+     'request.link.completeLink': completeLink,
      'processLinks': processLinks,
+     'settings.request.links.process.init':processLinksInit,
+     'publish:link': publishLink,
      'utils.updateBy': updateBy,
      'link.request.completeRequest': completeRequest,
      'notify': notify,

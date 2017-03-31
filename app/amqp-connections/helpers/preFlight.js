@@ -6,12 +6,12 @@
  * @return {Object}            parsed msg
  */
 function preFlight(promise, msg, callback) {
-     console.log('_preFlight ->');
+     console.log('_preFlight ->',msg);
      var input = {};
      if (!msg || !msg.content) {
           callback(promise, {
                statusType: 'invalidInput',
-               message: 'No content provided'
+               message: 'error:no:content'
           });
           return false;
      }
@@ -21,7 +21,7 @@ function preFlight(promise, msg, callback) {
           console.log('_preFlight:failed');
           callback(promise, {
                statusType: 'invalidInput',
-               message: 'Content cannot be parsed to JSON'
+               message: 'error:unparsable'
           });
           return false;
      }

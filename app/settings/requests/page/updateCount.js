@@ -1,9 +1,8 @@
 var utils = require("../../../utils"),
      requestSchema = require("../../../models/request"),
      dynamoose = require('dynamoose'),
-     Request = dynamoose.model('Request', requestSchema);
-
-q = require('q');
+     Request = dynamoose.model('Request', requestSchema),
+     q = require('q');
 /**
  * common error message for updated count
  * @param  {promise} promise
@@ -12,15 +11,23 @@ q = require('q');
  * @param  {number} updatedCount  value of count that was attempting to save
  * @return {promise}              the rejected promise
  */
-function handleError(promise, err, requestId, updatedCount) {
-     return promise.reject(err, {
-          system: 'AWS',
+function handleError(promise, err, requestId, updatedCount, putObject) {
+     return promise.reject({
+          system: 'database',
           requestId: requestId,
           status: 'warning',
-          message: 'Error occured while updating request count. Error: ' + err.message,
+          statusType: 'failed',
+          notify: true,
+          message: 'error:update:link:count',
           requestId: requestId,
           updatedCount: updatedCount,
-          func: 'updateCount'
+          retry: true,
+          retryCommand: 'request:page:update:count',
+          retryOptions: {
+               putObject: putObject,
+               requestId: requestId,
+               updatedCount: updatedCount
+          }
      });
 }
 
@@ -32,28 +39,24 @@ function handleError(promise, err, requestId, updatedCount) {
  * @return {promise}
  */
 function updateCount(requestId, updatedCount, putObject) {
-     console.log('updateCount', putObject);
+     console.log('app/settings/requests/page/updateCount.js:init');
      var promise = q.defer();
-     try {
-          utils.updateBy(Request, {
-               requestId: requestId
-          }, {
-               $PUT: putObject
-          }, function (err) {
-            console.log('DONE?');
-               if (err) {
-                    handleError(promise, err, requestId, updatedCount)
-               } else {
-                    promise.resolve({
-                         requestId: requestId,
-                         updatedCount: updatedCount
-                    });
-               }
-          });
-     } catch (err) {
-       console.log('err',err);
-          handleError(promise, err, requestId, updatedCount)
-     }
+     utils.updateBy(Request, {
+          requestId: requestId
+     }, {
+          $PUT: putObject
+     }, function (err) {
+          if (err) {
+               console.log('app/settings/requests/page/updateCount.js:failed');
+               return handleError(promise, err, requestId, updatedCount, putObject)
+          } else {
+               console.log('app/settings/requests/page/updateCount.js:passed');
+               promise.resolve({
+                    requestId: requestId,
+                    updatedCount: updatedCount
+               });
+          }
+     });
      return promise.promise;
 }
 

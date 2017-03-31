@@ -48,24 +48,19 @@ function publish(input) {
           isRetry: true
      };
      console.log('retry.js --> publish -->', input);
-     console.log('publisher', publisher);
+    //  console.log('publisher', publisher);
      msg.retryCommand = input.retryCommand;
      if (input.retryOptions.promise) {
           delete input.retryOptions.promise;
      }
      msg.retryOptions = input.retryOptions;
      console.log('publisher', msg);
-     publisher.publish("", "retry", new Buffer(JSON.stringify(msg))).then(function (e) {
-          console.log('retry -> success', e);
-          promise.resolve(msg);
+     publisher.publish("", "retry", new Buffer(JSON.stringify(msg))).then(function (res) {
+          console.log('retry -> success', res);
+          promise.resolve(res);
      }).catch(function (e) {
-          promise.reject(msg);
-          /**
-           * RETRY HERE?
-           */
-          console.log('retry -> error', e);
+          promise.reject({retry:true});
      });
-
      return promise.promise;
 }
 
@@ -74,10 +69,10 @@ function publish(input) {
  * @param  {Object} input message from RabbitMQ
  */
 function init(msg, ch) {
-     console.log('requests/retry.js -->');
+     console.log('requests/retry.js -->',msg);
      var promise = q.defer();
      var input = preFlight(promise, msg, function (promise, err) {
-          console.log('requests/retry.js --> preFlight:failed');
+          console.log('requests/retry.js --> preFlight:failed',err);
           logError({
                where: 'retry.js:preFlight',
                with: msg,

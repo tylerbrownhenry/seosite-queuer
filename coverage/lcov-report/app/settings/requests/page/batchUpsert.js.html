@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">27.27% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/11</span>
+        <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -30,18 +30,18 @@
         <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/3</span>
+        <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">27.27% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/11</span>
+        <span class='fraction'>0/0</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -93,8 +93,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -114,17 +112,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
  * constructor for a batchPut command
  * @param {string} baseUrl     where we think the url actually points to
@@ -134,45 +134,45 @@
  * @param {string} requestId   unique id of page request
  * @param {string} link        the information gather about this link and it's html element
  */
-<span class="fstat-no" title="function not covered" >function Command(baseUrl, originalUrl, linkId, parentLink, requestId, link) {</span>
-<span class="cstat-no" title="statement not covered" >     return {</span>
-          "resolvedUrl": baseUrl,
-          "url": originalUrl,
-          "_id": linkId,
-          "site": parentLink,
-          "requestId": requestId,
-          "status": 'pending',
-          "__scan": {},
-          "uid": input.user,
-          "found": Date.now(),
-          "scanned": null,
-          "__link": link
-     }
-}
+// function Command(baseUrl, originalUrl, linkId, parentLink, requestId, link,uid) {
+//      return {
+//           "resolvedUrl": baseUrl,
+//           "url": originalUrl,
+//           "_id": linkId,
+//           "site": parentLink,
+//           "requestId": requestId,
+//           "status": 'pending',
+//           "__scan": {},
+//           "uid": uid,
+//           "found": Date.now(),
+//           "scanned": null,
+//           "__link": link
+//      }
+// }
 &nbsp;
 /**
  * constructs bulk editing commands for links
  * @param  {object} linkObj   tracks the data of links with an easy to reference object
  * @return {commands}         array of the commands to send to batchPut
  */
-<span class="fstat-no" title="function not covered" >function createBulkUpdateCommands(linkObj, requestId, parentLink, foundLinks, baseUrl) {</span>
-<span class="cstat-no" title="statement not covered" >     var commands = [];</span>
-<span class="cstat-no" title="statement not covered" >     _.each(foundLinks, <span class="fstat-no" title="function not covered" >function (link) {</span></span>
-<span class="cstat-no" title="statement not covered" >          var linkId = sh.unique(link.url.original + requestId);</span>
-<span class="cstat-no" title="statement not covered" >          commands.push(new Command(baseUrl, link.url.original, linkId, parentLink, requestId, link));</span>
-<span class="cstat-no" title="statement not covered" >          link._id = linkId;</span>
-<span class="cstat-no" title="statement not covered" >          linkObj[linkId] = link;</span>
-     });
-<span class="cstat-no" title="statement not covered" >     return commands;</span>
-}
-module.exports = createBulkUpdateCommands;
+// function createBulkUpdateCommands(linkObj, requestId, parentLink, foundLinks, baseUrl,uid) {
+//      var commands = [];
+//      _.each(foundLinks, function (link) {
+//           var linkId = sh.unique(link.url.original + requestId);
+//           commands.push(new Command(baseUrl, link.url.original, linkId, parentLink, requestId, link,uid));
+//           link._id = linkId;
+//           linkObj[linkId] = link;
+//      });
+//      return commands;
+// }
+// module.exports = createBulkUpdateCommands;
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Mar 27 2017 19:57:22 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 14:32:43 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>
