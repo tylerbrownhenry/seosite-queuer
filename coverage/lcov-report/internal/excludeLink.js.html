@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for internal/excludeLink.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">internal/</a> excludeLink.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>18/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">22.22% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>10/45</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/1</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">50% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>18/36</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line medium'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">    var linkTypes = require("link-types").map,
+         maybeCallback = require("maybe-callback"),
+         RobotDirectives = require("robot-directives");
+    var matchUrl = require("../internal/matchUrl");
+    var isString = require("is-string");
+&nbsp;
+    function excludeLink(link, instance) {
+&nbsp;
+         var attrSupported, externalFilter;
+         var attrName = link.html.attrName;
+         var tagName = link.html.tagName;
+         var tagGroup = instance.options.tags[instance.options.filterLevel][tagName];
+         console.log('excludeLink', instance.options.filterLevel);
+         <span class="missing-if-branch" title="else path not taken" >E</span>if (tagGroup != null) {
+              attrSupported = tagGroup[attrName];
+         }
+&nbsp;
+         <span class="missing-if-branch" title="if path not taken" >I</span>if (attrSupported !== true) {
+<span class="cstat-no" title="statement not covered" >              return "BLC_HTML";</span>
+         }
+         <span class="missing-if-branch" title="if path not taken" >I</span>if (instance.options.excludeExternalLinks === true &amp;&amp; link.internal === false) {
+<span class="cstat-no" title="statement not covered" >              return "BLC_EXTERNAL";</span>
+         }
+         <span class="missing-if-branch" title="if path not taken" >I</span>if (instance.options.excludeInternalLinks === true &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >link.internal === true)</span> {
+<span class="cstat-no" title="statement not covered" >              return "BLC_INTERNAL";</span>
+         }
+         <span class="missing-if-branch" title="if path not taken" >I</span>if (instance.options.excludeLinksToSamePage === true &amp;&amp; link.samePage === true) {
+<span class="cstat-no" title="statement not covered" >              return "BLC_SAMEPAGE";</span>
+         }
+         console.log('link', link);
+         if (instance.options.excludedSchemes[link.url.parsed.extra.protocolTruncated] === true) {
+<span class="cstat-no" title="statement not covered" >              return "BLC_SCHEME";</span>
+         }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >         if (instance.options.honorRobotExclusions === true) {</span>
+<span class="cstat-no" title="statement not covered" >              if (instance.robots.oneIs([RobotDirectives.NOFOLLOW, RobotDirectives.NOINDEX]) === true) {</span>
+<span class="cstat-no" title="statement not covered" >                   return "BLC_ROBOTS";</span>
+              }
+<span class="cstat-no" title="statement not covered" >              if (instance.robots.is(RobotDirectives.NOIMAGEINDEX) === true) {</span>
+<span class="cstat-no" title="statement not covered" >                   if (</span>
+                        (tagName === "img" &amp;&amp; attrName === "src") ||
+                        (tagName === "input" &amp;&amp; attrName === "src") ||
+                        (tagName === "menuitem" &amp;&amp; attrName === "icon") ||
+                        (tagName === "video" &amp;&amp; attrName === "poster")
+                   ) {
+<span class="cstat-no" title="statement not covered" >                        return "BLC_ROBOTS";</span>
+                   }
+              }
+<span class="cstat-no" title="statement not covered" >              if (!link || !link.html || link.html.attrs != null &amp;&amp; link.html.attrs.rel != null &amp;&amp; linkTypes(link.html.attrs.rel).nofollow === true) {</span>
+<span class="cstat-no" title="statement not covered" >                   return "BLC_ROBOTS";</span>
+              }
+         }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >         if (matchUrl(link.url.resolved, instance.options.excludedKeywords) === true) {</span>
+<span class="cstat-no" title="statement not covered" >              return "BLC_KEYWORD";</span>
+         }
+&nbsp;
+         // Undocumented handler for custom constraints
+        //  externalFilter = maybeCallback(instance.handlers._filter)(link);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >         if (isString(externalFilter) === true) {</span>
+<span class="cstat-no" title="statement not covered" >              return externalFilter;</span>
+         }
+<span class="cstat-no" title="statement not covered" >         return false;</span>
+    }
+    module.exports = excludeLink;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Apr 08 2017 14:56:20 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

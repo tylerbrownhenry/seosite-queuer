@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">14.29% </span>
+        <span class="strong">15.73% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>14/98</span>
+        <span class='fraction'>14/89</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/24</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">14.43% </span>
+        <span class="strong">15.91% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>14/97</span>
+        <span class='fraction'>14/88</span>
       </div>
     </div>
   </div>
@@ -371,9 +371,7 @@
 326
 327
 328
-329
-330
-331</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+329</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -472,29 +470,29 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -549,7 +547,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -689,9 +687,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -802,29 +798,29 @@ var _ = require('underscore');
 <span class="fstat-no" title="function not covered" >function checkApiCall(req, res, params) {</span>
 <span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     checkOptions(req).then(<span class="fstat-no" title="function not covered" >function () {</span></span>
-<span class="cstat-no" title="statement not covered" >          console.log('server.js checkOptions success');</span>
+          //console.log('server.js checkOptions success');
 <span class="cstat-no" title="statement not covered" >          checkRequirements(params, req.body).then(<span class="fstat-no" title="function not covered" >function () {</span></span>
-<span class="cstat-no" title="statement not covered" >               console.log('server.js checkRequirements success');</span>
+               //console.log('server.js checkRequirements success');
 <span class="cstat-no" title="statement not covered" >               _authorize(req).then(<span class="fstat-no" title="function not covered" >function (user) {</span></span>
-<span class="cstat-no" title="statement not covered" >                    console.log('server.js _authorize success');</span>
+                    //console.log('server.js _authorize success');
 <span class="cstat-no" title="statement not covered" >                    var options = JSON.parse(req.body.options);</span>
 <span class="cstat-no" title="statement not covered" >                    validate(user, options, permissions[user.stripe.plan]).then(<span class="fstat-no" title="function not covered" >function (passed) {</span></span>
-<span class="cstat-no" title="statement not covered" >                         console.log('server.js checkRequestPermissions success');</span>
+                         //console.log('server.js checkRequestPermissions success');
 <span class="cstat-no" title="statement not covered" >                         promise.resolve(user, options);</span>
                     }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >                         console.log('server.js checkApiCall checkRequestPermissions err', err);</span>
+                         //console.log('server.js checkApiCall checkRequestPermissions err', err);
 <span class="cstat-no" title="statement not covered" >                         promise.reject(err);</span>
                     })
                }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >                    console.log('server.js checkApiCall _authorize err', err);</span>
+                    //console.log('server.js checkApiCall _authorize err', err);
 <span class="cstat-no" title="statement not covered" >                    promise.reject(err);</span>
                });
           }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >               console.log('server.js checkApiCall checkRequirements err', err);</span>
+               //console.log('server.js checkApiCall checkRequirements err', err);
 <span class="cstat-no" title="statement not covered" >               promise.reject(err);</span>
           });
      }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('server.js checkApiCall checkOptions err', err);</span>
+          //console.log('server.js checkApiCall checkOptions err', err);
 <span class="cstat-no" title="statement not covered" >          promise.reject(err);</span>
      });
 <span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
@@ -878,8 +874,8 @@ var _ = require('underscore');
 <span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
 }
 &nbsp;
-<span class="fstat-no" title="function not covered" >function pageRequestValidate(user, request, permissions) {</span>
-<span class="cstat-no" title="statement not covered" >     console.log('######', request, user);</span>
+<span class="fstat-no" title="function not covered" >function summaryRequestValidate(user, request, permissions) {</span>
+     //console.log('######', request, user);
 <span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     var perm = permissions;</span>
 <span class="cstat-no" title="statement not covered" >     var problems = [];</span>
@@ -1012,9 +1008,8 @@ var _ = require('underscore');
 &nbsp;
 var approvedRequestTypes = {
      // site: siteRequestValidate,
-     page: pageRequestValidate,
-     summary: pageRequestValidate,
-     freeSummary: pageRequestValidate,
+     summary: summaryRequestValidate,
+     freeSummary: summaryRequestValidate,
     //  link: linkRequestValidate,
      link: linkRequestValidate,
      capture: captureRequestValidate
@@ -1024,7 +1019,6 @@ module.exports = {
      _preFlight: _preFlight,
      validate: validate,
      types: {
-          page: require('./requests/page'),
           link: require('./requests/link').init,
           retry: require('./requests/retry').init,
           // site: require('./requests/link'),
@@ -1039,7 +1033,7 @@ module.exports = {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 16:57:40 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Apr 11 2017 00:53:32 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../prettify.js"></script>

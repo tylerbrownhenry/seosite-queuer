@@ -84,7 +84,6 @@ describe('app/settings/requests/meta/process.js: without meta data', function ()
      it('will show 4 meta data errors', function (done) {
           var result = processMetaData(harResponseData, input, res);
           expect(result.issues.tooManyLinks === false).to.equal(true);
-          expect(result.issues.resources === 0).to.equal(true);
           expect(result.issues.security === 0).to.equal(true);
           expect(result.issues.meta === 4).to.equal(true);
           expect(result.issues.links === 0).to.equal(true);
@@ -284,7 +283,7 @@ describe('app/settings/requests/meta/process.js with meta data:', function () {
      data.emails = [];
      it('finds all expected meta values', function (done){
           var result = processMetaData(data, input, res);
-          console.log('result',result);
+          //console.log('result',result);
           expect(result.issues.noIssues).to.equal(true);
           done();
      });
@@ -417,7 +416,7 @@ describe('app/settings/requests/meta/process.js with resources:', function () {
             }
           ];
           var result = processMetaData(data, input, res);
-          console.log('result--',result);
+          //console.log('result--',result);
           expect(result.issues.resources === 4).to.equal(true);
           done();
      });

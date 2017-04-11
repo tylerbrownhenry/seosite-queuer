@@ -2,7 +2,6 @@ var dynamoose = require('dynamoose'),
      requestSchema = require("../../models/request"),
      Request = dynamoose.model('Request', requestSchema),
      Scan = require("../../models/scan"),
-     pageScanner = require("../../actions/scanPage/index"),
      preFlight = require("../../amqp-connections/helpers/preFlight"),
      utils = require("../../utils"),
      processResources = require("./resources/process").processResources,
@@ -24,7 +23,7 @@ var dynamoose = require('dynamoose'),
  * @param  {Object} opts information about scan and current status
  */
 function notify(opts) {
-     console.log('requests/summary.js --> notify!');
+     //console.log('requests/summary.js --> notify!');
      var msg = {
           uid: opts.uid,
           requestId: opts.requestId,
@@ -43,13 +42,14 @@ function notify(opts) {
  * @param  {Object} input   request data
  */
 function reject(promise, input) {
-     console.log('request/summary.js -> failed -> reject', input, 'promise', promise);
+     //console.log('request/summary.js -> failed -> reject', input, 'promise', promise);
      if (typeof input === 'undefined') {
           input = {}
      }
      var msg = {
           uid: input.uid || null,
           requestId: input.requestId || null,
+          i_id: input.i_id || input.requestId || null,
           url: input.url || null,
           page: input.page || null,
           type: input.type || 'page:request',
@@ -64,6 +64,13 @@ function reject(promise, input) {
                msg.retryCommand = input.retryCommand;
                input.retryOptions.isRetry = true;
                msg.retryOptions = input.retryOptions;
+               if(input.isRetry === true){
+                 msg.isRetry = true;
+               }
+               if(typeof msg.retryOptions.promise !== 'undefined'){
+                  msg.retryOptions.promise = null;
+                  console.log('msg',msg.retryOptions.promise);
+               }
           }
      } else {
           msg.completedTime = Date.now();
@@ -100,7 +107,7 @@ function resolve(promise, input) {
      if (input.notify === true) {
           msg.notify = true;
      }
-     console.log('requests/summary.js --> resolve!');
+     //console.log('requests/summary.js --> resolve!');
      promise.resolve(msg);
 }
 
@@ -109,7 +116,7 @@ function resolve(promise, input) {
  * @param  {Object} input
  */
 function markedRequstAsFailed(input) {
-     console.log('request/summary.js --> markedRequstAsFailed ->', input);
+    //  console.log('request/summary.js --> markedRequstAsFailed ->');
      utils.updateBy(Request, {
           requestId: input.requestId
      }, {
@@ -119,7 +126,7 @@ function markedRequstAsFailed(input) {
           }
      }, function (_err) {
           if (_err === null) {
-               console.log('request/summary.js --> markedRequstAsFailed:passed');
+               //console.log('request/summary.js --> markedRequstAsFailed:passed');
                return reject(input.promise,
                     _.extend({
                          statusType: 'failed',
@@ -127,7 +134,7 @@ function markedRequstAsFailed(input) {
                          notify: true
                     }, input))
           } else {
-               console.log('request/summary.js --> markedRequstAsFailed:failed');
+               //console.log('request/summary.js --> markedRequstAsFailed:failed');
                return reject(input.promise,
                     _.extend({
                          statusType: 'failed',
@@ -135,7 +142,10 @@ function markedRequstAsFailed(input) {
                          notify: true,
                          retry: true,
                          retryCommand: 'request.summary.markedRequstAsFailed',
-                         retryOptions: input
+                         retryOptions: {
+                           message:input.message,
+                           requestId: input.requestId
+                         }
                     }, input));
           }
      });
@@ -147,7 +157,7 @@ function markedRequstAsFailed(input) {
  * @return {Promise}     promise
  */
 function _saveAsActive(opts) {
-     console.log('request/summary.js init -> _saveAsActive -> !!', opts);
+     //console.log('request/summary.js init -> _saveAsActive -> !!', opts);
      var promise = q.defer();
      utils.updateBy(Request, {
           requestId: opts.requestId
@@ -157,10 +167,10 @@ function _saveAsActive(opts) {
           }
      }, function (err) {
           if (err !== null) {
-               console.log('request/summary.js init -> _saveAsActive -> updateBy:failed');
+               //console.log('request/summary.js init -> _saveAsActive -> updateBy:failed');
                promise.reject(opts);
           } else {
-               console.log('request/summary.js init -> _saveAsActive -> updateBy:passed', opts);
+               //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed', opts);
                //  resolve(opts);
                //  notify(response);
                //
@@ -182,12 +192,12 @@ function _saveAsActive(opts) {
  * @param  {Object} opts request Options
  */
 function saveAsActive(opts) {
-     console.log('request/summary.js init -> saveAsActive ->');
+     //console.log('request/summary.js init -> saveAsActive ->');
      _saveAsActive(opts).then(function (res) {
-          console.log('request/summary.js init -> saveAsActive:passed', res);
+          //console.log('request/summary.js init -> saveAsActive:passed', res);
           processUrl(res);
      }).catch(function (err) {
-          console.log('request/summary.js init -> saveAsActive:failed', err);
+          //console.log('request/summary.js init -> saveAsActive:failed', err);
           savingAsActiveError(opts);
      });
 }
@@ -197,7 +207,7 @@ function saveAsActive(opts) {
  * @param  {Object} opts request options
  */
 function savingAsActiveError(opts) {
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:failed -> savingAsActiveError', opts);
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:failed -> savingAsActiveError', opts);
      var promise = opts.promise;
      opts.promise = undefined;
      return reject(promise,
@@ -218,7 +228,7 @@ function savingAsActiveError(opts) {
  * @param  {Object} res   information returned from page scan
  */
 function processHar(input, res) {
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar',res);
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar',res);
      var url = input.url,
           options = input.options,
           promise = input.promise,
@@ -227,28 +237,13 @@ function processHar(input, res) {
           page = input.page,
           url = input.url,
           isRetry = input.isRetry;
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> publishCaptures');
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> publishCaptures');
      publishCaptures(input, res);
-     /* CHECK */
-     /* CHECK */
-     /* CHECK */
-     /* CHECK */
-     /* CHECK */
-
-     /*
-     Handle Errors!!!
-     */
      var newScan = new Scan(res);
-
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> processHtml');
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> processHtml');
 
      newScan.requestId = requestId;
      resources = processResources(input, res);
-     /* CHECK *?
-     /* CHECK *?
-     /* CHECK *?
-     /* CHECK *?
-     /* CHECK */
 
      if (options && options.save && options.save.resources === true) {
           newScan.resources = resources;
@@ -279,11 +274,11 @@ function processHar(input, res) {
      delete newScan.log;
      newScan.uid = input.uid;
 
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save ->');
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save ->');
      utils.saveScan(newScan, function (err) {
-          console.log('huh?');
+          //console.log('huh?');
           if (err !== null) {
-               console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:failed');
+               //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:failed');
                /*
                Here we should send the unsaved scan to rabbitMQ, and suggest restarting from here
                */
@@ -300,12 +295,12 @@ function processHar(input, res) {
                }, input));
 
           } else {
-               console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed');
+               //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed');
                if (options && options.save && options.save.links === true && typeof res.links !== 'undefined' && res.links.length !== 0) {
-                    console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks');
+                    //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks');
                     res.linkCount = res.links.length;
                     processLinks(input, res, requestId, newScan).then(function (_res) {
-                         console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:passed');
+                         //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:passed');
 
                          /* Check */
                          /* Check */
@@ -331,8 +326,8 @@ function processHar(input, res) {
                          /* Check */
                          /* Check */
                     }).catch(function (err) {
-                         console.log('ERROR', err);
-                         console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:failed');
+                         //console.log('ERROR', err);
+                         //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:failed');
 
                          /* Check how this err is sent back ... */
                          /* Check how this err is sent back ... */
@@ -360,7 +355,7 @@ function processHar(input, res) {
                     });
 
                } else {
-                    console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed --> No Links Found');
+                    //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed --> No Links Found');
                     utils.updateBy(Request, {
                          requestId: requestId
                     }, {
@@ -368,7 +363,7 @@ function processHar(input, res) {
                               status: 'complete'
                          }
                     }, function (err) {
-                         console.log('error?', err);
+                         //console.log('error?', err);
                          if (err) {
                               /* Check */
                               /* Check */
@@ -399,7 +394,7 @@ function processHar(input, res) {
                                    }
                               }, input));
                          } else {
-                              console.log('resolve ack?');
+                              //console.log('resolve ack?');
                               resolve(input.promise,
                                    _.extend({
                                         status: 'success',
@@ -428,7 +423,7 @@ function processHar(input, res) {
  * @return {Boolean}
  */
 function shouldRetry(input, err) {
-     console.log('shouldRetry ** should have better logic eventually');
+     //console.log('shouldRetry ** should have better logic eventually');
      if (input.isRetry === true) {
           return false;
      }
@@ -441,18 +436,18 @@ function shouldRetry(input, err) {
  */
 function processUrl(input) {
      var promise = q.defer();
-     console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har');
+     //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har');
      sniff.har({
           url: input.url,
           uid: input.uid,
           options: input.options,
           requestId: input.requestId
      }).then(function (res) {
-          console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed');
+          //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed');
           processHar(input, res);
           return promise.resolve();
      }).catch(function (err) {
-          console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed', err);
+          //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed', err);
           if (shouldRetry(input, err)) {
                return reject(input.promise,
                     _.extend({
@@ -464,7 +459,7 @@ function processUrl(input) {
                          retryOptions: input
                     }, input));
           }
-          console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed -> is a retry');
+          //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed -> is a retry');
           markedRequstAsFailed(_.extend({
                message: 'error:unable:to:scan',
           }, input));
@@ -479,7 +474,7 @@ function processUrl(input) {
  * @return {Promise} promise function
  */
 function init(msg) {
-     console.log('request/summary.js init', msg);
+     //console.log('request/summary.js init', msg);
      var promise = q.defer();
      var input = preFlight(promise, msg, reject);
      if (input === false) {
@@ -487,7 +482,7 @@ function init(msg) {
      }
      var page = '/dashboard';
      if (utils.checkRequirements(input, ['url', 'requestId', 'uid', 'options']) === true) {
-          console.log('request/summary.js init -> checkRequirements : failed');
+          //console.log('request/summary.js init -> checkRequirements : failed');
           reject(promise,
                _.extend({
                     message: 'error:missing:required:fields',
@@ -496,7 +491,7 @@ function init(msg) {
                     notify: true
                }, input));
      } else {
-          console.log('request/summary.js init -> checkRequirements : passed ->');
+          //console.log('request/summary.js init -> checkRequirements : passed ->');
           input.page = page;
           input.promise = promise;
           saveAsActive(input);

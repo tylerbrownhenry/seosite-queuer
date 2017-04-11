@@ -97,29 +97,29 @@ function checkRequirements(requirements, input) {
 function checkApiCall(req, res, params) {
      var promise = q.defer();
      checkOptions(req).then(function () {
-          console.log('server.js checkOptions success');
+          //console.log('server.js checkOptions success');
           checkRequirements(params, req.body).then(function () {
-               console.log('server.js checkRequirements success');
+               //console.log('server.js checkRequirements success');
                _authorize(req).then(function (user) {
-                    console.log('server.js _authorize success');
+                    //console.log('server.js _authorize success');
                     var options = JSON.parse(req.body.options);
                     validate(user, options, permissions[user.stripe.plan]).then(function (passed) {
-                         console.log('server.js checkRequestPermissions success');
+                         //console.log('server.js checkRequestPermissions success');
                          promise.resolve(user, options);
                     }).catch(function (err) {
-                         console.log('server.js checkApiCall checkRequestPermissions err', err);
+                         //console.log('server.js checkApiCall checkRequestPermissions err', err);
                          promise.reject(err);
                     })
                }).catch(function (err) {
-                    console.log('server.js checkApiCall _authorize err', err);
+                    //console.log('server.js checkApiCall _authorize err', err);
                     promise.reject(err);
                });
           }).catch(function (err) {
-               console.log('server.js checkApiCall checkRequirements err', err);
+               //console.log('server.js checkApiCall checkRequirements err', err);
                promise.reject(err);
           });
      }).catch(function (err) {
-          console.log('server.js checkApiCall checkOptions err', err);
+          //console.log('server.js checkApiCall checkOptions err', err);
           promise.reject(err);
      });
      return promise.promise;
@@ -173,8 +173,8 @@ function captureRequestValidate() {
      return promise.promise;
 }
 
-function pageRequestValidate(user, request, permissions) {
-     console.log('######', request, user);
+function summaryRequestValidate(user, request, permissions) {
+     //console.log('######', request, user);
      var promise = q.defer();
      var perm = permissions;
      var problems = [];
@@ -307,9 +307,8 @@ function pageRequestValidate(user, request, permissions) {
 
 var approvedRequestTypes = {
      // site: siteRequestValidate,
-     page: pageRequestValidate,
-     summary: pageRequestValidate,
-     freeSummary: pageRequestValidate,
+     summary: summaryRequestValidate,
+     freeSummary: summaryRequestValidate,
     //  link: linkRequestValidate,
      link: linkRequestValidate,
      capture: captureRequestValidate
@@ -319,7 +318,6 @@ module.exports = {
      _preFlight: _preFlight,
      validate: validate,
      types: {
-          page: require('./requests/page'),
           link: require('./requests/link').init,
           retry: require('./requests/retry').init,
           // site: require('./requests/link'),

@@ -30,11 +30,13 @@ function updateCount(requestId, updatedCount, response) {
 }
 
 function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input) {
-  console.log('TEST__>');
+  //console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands,linkObj,input);
      updateCount(requestId, updatedCount, newScan).then(function (resp) {
-          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
+          //console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
+          //console.log('commands',commands);
           _.each(commands, function (command) {
                var id = command._id;
+
                var buffer = new Buffer(JSON.stringify({
                     url: linkObj[id].resolvedUrl,
                     requestId: requestId,
@@ -45,7 +47,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                }));
                publisher.publish("", "links", buffer).then(function (err) {
                     if(err){
-                      console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
+                      //console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
                       promise.reject({
                            page: input.page,
                            requestId: requestId,
@@ -64,7 +66,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                            }
                       });
                     } else {
-                      console.log('summary.js successfully published to queue');
+                      //console.log('summary.js successfully published to queue');
                       promise.resolve({
                            page: input.page,
                            requestId: requestId,
@@ -79,6 +81,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                });
           });
      }).catch(function (err) {
+       //console.log('request/links/process.js --> saveUpdatedCount:failed',err);
           promise.reject({
                page: input.page,
                requestId: requestId,
@@ -112,7 +115,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
  * @return {Promise}
  */
 function init(input, res, requestId, newScan) {
-     console.log('request/links/process.js', newScan);
+     //console.log('request/links/process.js', newScan);
      var promise = q.defer();
      var links = res.links;
      res.links = undefined;
@@ -122,7 +125,7 @@ function init(input, res, requestId, newScan) {
      var commands = [];
      var linkObj = {};
 
-     console.log('request/links/process.js --> build commands');
+     //console.log('request/links/process.js --> build commands');
      _.each(links, function (link) {
           if (link.url) {
                var linkId = sh.unique(link.url.original + requestId);
@@ -146,7 +149,7 @@ function init(input, res, requestId, newScan) {
                }
           }
      });
-     console.log('request/links/process.js --> build commands:passed --> batchPut');
+     //console.log('request/links/process.js --> build commands:passed --> batchPut');
      var updatedCount = 0;
      utils.batchPut(Link, commands, function (err, e) {
           if (err !== null) {
@@ -162,18 +165,16 @@ function init(input, res, requestId, newScan) {
                  type: 'page:request',
                  retryCommand: 'settings.request.links.process.init', /* Add to retryables */
                  retryOptions: {
-                      commands: commands,
-                      updatedCount: updatedCount,
+                      res: res,
                       requestId: requestId,
                       newScan: newScan,
-                      linkObj:linkObj,
                       input: {
                         page:input.page,
                         uid:input.uid
                       }
                  }
             });
-               console.log('request/links/process.js --> build commands:passed --> batchPut:failed',err);
+               //console.log('request/links/process.js --> build commands:passed --> batchPut:failed',err);
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
@@ -189,7 +190,7 @@ function init(input, res, requestId, newScan) {
               //       requestId: requestId
               //  });
           }
-          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
+          //console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
           /*
           checkcheck if e is undeinfed...
           */

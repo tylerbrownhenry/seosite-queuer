@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">14.29% </span>
+        <span class="strong">18.75% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/21</span>
+        <span class='fraction'>3/16</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">14.29% </span>
+        <span class="strong">18.75% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/21</span>
+        <span class='fraction'>3/16</span>
       </div>
     </div>
   </div>
@@ -76,8 +76,7 @@
 31
 32
 33
-34
-35</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+34</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -86,24 +85,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -120,24 +118,23 @@
  * @param  {object} cj  rabbitMQ channel
  */
 <span class="fstat-no" title="function not covered" >function processSummary(msg, ch) {</span>
-<span class="cstat-no" title="statement not covered" >     console.log('consumers/summary.js -&gt; processSummary');</span>
+     //console.log('consumers/summary.js -&gt; processSummary');
 <span class="cstat-no" title="statement not covered" >     var type = 'summary';</span>
 <span class="cstat-no" title="statement not covered" >     summary(msg).then(<span class="fstat-no" title="function not covered" >function (response) {</span></span>
-<span class="cstat-no" title="statement not covered" >          console.log('consumers/summary.js request success');</span>
-<span class="cstat-no" title="statement not covered" >          console.log('response', response);</span>
+          //console.log('consumers/summary.js request success',response);
 <span class="cstat-no" title="statement not covered" >          if (response.notify === true) {</span>
 <span class="cstat-no" title="statement not covered" >               notify(response);</span>
           }
 <span class="cstat-no" title="statement not covered" >          ch.ack(msg);</span>
      }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('consumers/summary.js request failed');</span>
+          //console.log('consumers/summary.js request failed');
 <span class="cstat-no" title="statement not covered" >          if (err.notify === true) {</span>
 <span class="cstat-no" title="statement not covered" >               notify(err);</span>
           }
 <span class="cstat-no" title="statement not covered" >          if (err.softRetry === true) {</span>
 <span class="cstat-no" title="statement not covered" >               ch.nack(msg);</span>
           } else <span class="cstat-no" title="statement not covered" >if (err.retry === true) {</span>
-<span class="cstat-no" title="statement not covered" >                console.log('retry');</span>
+                //console.log('retry');
 <span class="cstat-no" title="statement not covered" >                err.objectType = 'request';</span>
 <span class="cstat-no" title="statement not covered" >                retry(err);</span>
           }
@@ -151,7 +148,7 @@ module.exports = processSummary;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 16:57:40 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Apr 11 2017 00:53:32 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

@@ -1,10 +1,8 @@
-// var phantom = require('phantom');
-// var phantom = require('node-phantom');
 var phantom = require('node-phantom-simple');
-var processResponses = require('./process/processResponses');
-var createPage = require('./process/createPage');
-var utils = require('./utils');
-var q = require('q');
+processResponses = require('./process/processResponses'),
+createPage = require('./process/createPage'),
+utils = require('./utils'),
+q = require('q');
 
 if (!Date.prototype.toISOString) {
      Date.prototype.toISOString = function () {
@@ -25,38 +23,36 @@ if (!Date.prototype.toISOString) {
      }
 }
 
-// phantom.create = utils.promisify(phantom.create);
-
 function openPage(opts) {
-  console.log('actions/sniff/index.js har -> openPage -> phantom.create ->');
+  //console.log('actions/sniff/index.js har -> openPage -> phantom.create ->');
      var promise = q.defer();
      var phantomInstance;
      phantom.create(function (err, ph) {
           if (err) {
-               console.log('actions/sniff/index.js har -> openPage -> phantom.create:failed');
-               console.log('err', err);
+               //console.log('actions/sniff/index.js har -> openPage -> phantom.create:failed');
+               //console.log('err', err);
                promise.reject(err);
                if (typeof ph !== 'undefined' && typeof ph.exit === 'function') {
                     return ph.exit(); // Abort PhantomJS when an error occurs.
                }
           }
-          console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage');
+          //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage');
           phantomInstance = ph;
           ph.createPage(function (err, page) {
                if (err) {
-                    console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:failed');
+                    //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:failed');
                     promise.reject(err);
                } else {
-                    console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed');
+                    //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed');
                     createPage({
                          options: opts,
                          page: page,
                          ph: ph
                     }).then(function (res) {
-                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:passed');
+                         //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:passed');
                          promise.resolve(res);
                     }).catch(function (err) {
-                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed');
+                         //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed');
                          promise.reject(err);
                          if (typeof ph !== 'undefined' && typeof ph.exit === 'function') {
                               ph.exit(); // Abort PhantomJS when an error occurs.
@@ -69,23 +65,22 @@ function openPage(opts) {
 }
 
 function har(opts) {
-  console.log('actions/sniff/index.js har -> openPage ->');
+  //console.log('actions/sniff/index.js har -> openPage ->');
      var promise = q.defer();
      openPage(opts).then(function (data) {
-         console.log('actions/sniff/index.js har ->');
-          console.log('success');
+         //console.log('actions/sniff/index.js processResponses ->');
           processResponses({
                data: data,
                options: opts
           }).then(function (res) {
-               console.log('res', res);
+              //console.log('actions/sniff/index.js -> processResponses -> then',res);
                promise.resolve(res);
           }).catch(function (err) {
-               console.log('res', res);
+               //console.log('actions/sniff/index.js -> processResponses -> catch',err);
                promise.reject(err);
           })
      }).catch(function (err) {
-          console.log('--error', err, 'error');
+          //console.log('--error', err, 'error');
           promise.reject(err);
      });
      return promise.promise;

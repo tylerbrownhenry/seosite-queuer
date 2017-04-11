@@ -12,7 +12,7 @@ var maxFilterLevel = tags[tags.length - 1];
     Scrape a parsed HTML document/tree for links.
 */
 function scrapeHtml(document, robots) {
-     console.log('document', document);
+     //console.log('document', document);
      var link, links, preliminaries, rootNode;
      var title = '';
      var description = '';
@@ -59,7 +59,7 @@ function findLinks(rootNode, callback) {
 
      walk(rootNode, function (node) {
           linkAttrs = maxFilterLevel[node.nodeName];
-          console.log('linkAttrs',linkAttrs,'maxFilterLevel',maxFilterLevel);
+          //console.log('linkAttrs',linkAttrs,'maxFilterLevel',maxFilterLevel);
           // If a supported element
           if (linkAttrs != null) {
                if (node && node.attrs) {
@@ -81,7 +81,7 @@ function findLinks(rootNode, callback) {
                                    url = parseMetaRefresh(node.attrMap[attrName]).url;
                               }
                          } else if (node.nodeName === "meta" && attrName === "name" && node.attrs[i].value === "description") {
-                              console.log('node3', node.attrs)
+                              //console.log('node3', node.attrs)
 
                               callback(node, attrName, url, 'description');
                          } else {

@@ -9,7 +9,7 @@ var worker = require('./worker'),
   * @param  {object} amqpConn RabbitMQ connection object
   */
  function whenConnected(amqpConn,done) {
-      console.log('connected to queue');
+      //console.log('connected to queue');
        publisher.start(amqpConn);
        worker.start(amqpConn);
        if(done && typeof done === 'function'){
@@ -24,19 +24,19 @@ function start(done) {
      /* Local queue I thought? In case not connected?*/
      amqp.connect(process.env.CLOUDAMQP_URL + "?heartbeat=60", function (err, conn) {
           if (err) {
-               console.error("[AMQP]", err.message);
+               //console.error("[AMQP]", err.message);
                return setTimeout(start, 1000);
           }
           conn.on("error", function (err) {
                if (err.message !== "Connection closing") {
-                    console.error("[AMQP] conn error", err.message);
+                    //console.error("[AMQP] conn error", err.message);
                }
           });
           conn.on("close", function () {
-               console.error("[AMQP] reconnecting");
+               //console.error("[AMQP] reconnecting");
                return setTimeout(start, 1000);
           });
-          console.log("[AMQP] connected");
+          //console.log("[AMQP] connected");
           amqpConn = conn;
 
           whenConnected(amqpConn,done);

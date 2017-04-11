@@ -24,7 +24,7 @@ describe('retry init should fail if', function (done) {
 
      it('no message is provided', function (done) {
           retry.init().then(function (e) {
-            console.log('test');
+            //console.log('test');
                expect(e === undefined).to.equal(true);
                done();
           });
@@ -179,7 +179,7 @@ describe('calledRetry linkRequest', function (done) {
           _linksRequest({
                content: buffer
           }).catch(function (e) {
-               console.log('22--> made it :()', e);
+               //console.log('22--> made it :()', e);
                expect(e.retry === true);
 
                done();
@@ -191,14 +191,14 @@ describe('calledRetry linkRequest', function (done) {
           _consumeLink({
                content: buffer
           }, channel).catch(function (e) {
-               //  console.log('--!!> made it :()', e);
-               //  console.log('resBuffer', resBuffer);
+               //  //console.log('--!!> made it :()', e);
+               //  //console.log('resBuffer', resBuffer);
                //  _retry -->amqp-connections/consumers/retry
                //  requests/retry.js --> init
                //  -->amqp-connections/helpers/preFlight
                _retry(resBuffer, {
                     ack: function (res) {
-                         console.log('HERE', res);
+                         //console.log('HERE', res);
                          expect(res.retry = true).to.equal(true);
                          done();
                     }

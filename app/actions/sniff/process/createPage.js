@@ -10,6 +10,7 @@ function extractEmails(text) {
 }
 
 function findMime(page) {
+  console.log('page--->',page.resources);
      if (page.resources && page.resources['1'] && page.resources['1'].endReply && page.resources['1'].endReply.contentType) {
           if (page.resources['1'].endReply.contentType) {
                return page.resources['1'].endReply.contentType['1']
@@ -29,7 +30,7 @@ function saveThumb(page, opts) {
 }
 
 function run(page, promise, ph, options) {
-  console.log('run options',options);
+  // console.log('page',page);
      page.address = options.url;
      page.customHeaders = {
           'Cache-Control': 'no-cache',
@@ -38,20 +39,11 @@ function run(page, promise, ph, options) {
      page.resources = {};
      page.types = {};
      page.options = options;
-     // page.onResourceTimeout = function(e) {
-     //     console.log('timeout!');
-     //   console.log(e.errorCode);   // it'll probably be 408
-     //   console.log(e.errorString); // it'll probably be 'Network timeout on resource'
-     //   console.log(e.url);         // the url whose request timed out
-     //   phantom.exit(1);
-     // };
-     var contentWaitTimeout = '';
      var connectWaitTimeout = setTimeout(function () {
-          console.log('done yet?');
           page.get("content", function (content) {
-               console.log('done yet?',content);
+               //console.log('done yet?',content);
           }, function () {
-               console.log('done yet?');
+               //console.log('done yet?');
           })
      }, 5000)
      try {
@@ -60,12 +52,11 @@ function run(page, promise, ph, options) {
                height: 1080
           });
           page.open(page.address, function (err, status) {
-                console.log('open',status,'err',err);
 
 
               //  var thumb = saveThumb(page, opts);
               // var thumg = 'test...';
-               console.log('status', status, 'err', err);
+               //console.log('status', status, 'err', err);
                if (status !== 'success') {
                     var statusMessage = '';
                     if (status) {
@@ -75,19 +66,22 @@ function run(page, promise, ph, options) {
                }
 
               contentWaitTimeout = setTimeout(function () {
-                    console.log('yo!');
+                    //// console.log('yo!');
                     page.get('cookies', function (err, cookies) {
+                      //console.log('cookies--->',JSON.stringify(cookies));
                          if (err) {
-                              return console.error("Error occurred running `page.get('cookies')`:\n" + err);
+                              //// return //console.error("Error occurred running `page.get('cookies')`:\n" + err);
                          }
                          page.get('content', function (err, content) {
+                              // console.log('content--->');
                               ph.exit();
                               clearTimeout(connectWaitTimeout);
                               clearTimeout(contentWaitTimeout);
                               if (err) {
-                                   return console.error("Error occurred running `page.get('content')`:\n" + err);
+                                  ////  return //console.error("Error occurred running `page.get('content')`:\n" + err);
                               }
 
+                              //// console.log('content--->',err);
                               page.cookies = (cookies || []).map(function (cookie) {
                                    if ('expiry' in cookie) {
                                         cookie.expires = new Date(cookie.expiry * 1000).toISOString();
@@ -95,6 +89,7 @@ function run(page, promise, ph, options) {
                                    }
                                    return cookie;
                               });
+                              //// console.log('content--->',err);
 
 
 
@@ -105,11 +100,17 @@ function run(page, promise, ph, options) {
                               var emails = extractEmails(content);
                               var passedEmails = [];
 
-                              console.log('actions/sniff/index.js');
-                              // console.log('thumb',thumb);
+                              // console.log('actions/sniff/index.js');
+                              //// console.log('thumb',thumb);
                               scrapeHtml(content, page.address, page.customHeaders).then(function (instance) {
-                                   console.log('test');
-                                   var har = createHAR(page);
+                                  // console.log('createHAR');
+                                   try {
+                                     var har = createHAR(page);
+
+                                   } catch (e) {
+                                   } finally {
+
+                                   }
                                    har.links = instance.foundLinks;
                                    har.url = {
                                         resolvedUrl: page.finalUrl,
@@ -123,24 +124,25 @@ function run(page, promise, ph, options) {
                                         promise.resolve(har);
                                   //  });
                               }).catch(function (err) {
-                                   console.log('err', err);
+                                   //console.log('err', err);
                                    promise.reject(err);
                               });
                          });
                     });
                }, options.delay * 1000);
 
-               console.log('options.delay', options.delay);
+               //console.log('options.delay', options.delay);
           });
      } catch (err) {
           clearTimeout(connectWaitTimeout);
           clearTimeout(contentWaitTimeout);
-          console.log('err', err);
+          //console.log('err', err);
      }
 }
 
 
 function createPage(opts) {
+  //// console.log('createPage opts',opts);
      var promise = q.defer();
      try {
           opts = opts || {};
@@ -187,30 +189,30 @@ function createPage(opts) {
           };
 
           page.onResourceError = function (resourceError) {
-               console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
-               console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
+               //console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
+               //console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
           };
 
           page.onLoadError = function (_casper, url) {
-               console.log("[onLoadError]: ", url);
+               //console.log("[onLoadError]: ", url);
           }
           page.onTimeout = function (err) {
-               console.log("[Timeout]: ", err);
+               //console.log("[Timeout]: ", err);
           };
 
           page.onLoadFinished = function (status) {
                var url = page.address;
                // for (var i = 100 - 1; i >= 0; i--) {
-               //     console.log('page.address',page);
+                  ////  console.log('page.address',page);
                // }
-               console.log("status: " + status);
+               //console.log("status: " + status);
                // page.render("google.png");
                // phantom.exit();
           };
-          console.log('createPage3');
+          // console.log('createPage3',page);
           run(page, promise, ph, options);
      } catch (err) {
-          console.log('createPage err', err);
+          //console.log('createPage err', err);
           promise.reject(err)
      }
      return promise.promise;

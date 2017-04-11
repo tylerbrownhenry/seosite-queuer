@@ -10,11 +10,12 @@ var defaultOptions = {
      cacheExpiryTime: 3600000,
      cacheResponses: true,
      excludedKeywords: [],
+     defaultPorts: ['https', 'http'],
      excludedSchemes: ["data", "geo", "javascript", "mailto", "sms", "tel"],
-     excludeExternalLinks: false,
+     excludeExternalLinks: true,
      excludeInternalLinks: false,
      excludeLinksToSamePage: true,
-     filterLevel: 2,
+     filterLevel: 1,
      // filterLevels = {
      //     0: true, // clickable links
      //     1: true, // clickable links, media, iframes, meta refreshes

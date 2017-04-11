@@ -16,9 +16,9 @@ function publishCaptures(input, res) {
                url: res.url.resolvedUrl,
                requestId: requestId
           }).then(function (err, data) {
-               console.log('Capture published');
+               //console.log('Capture published');
           }).catch(function (err) {
-               console.log('Error publishing capture');
+               //console.log('Error publishing capture');
           });
      }
      return;

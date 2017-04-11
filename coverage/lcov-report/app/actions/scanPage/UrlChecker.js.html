@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">31.13% </span>
+        <span class="strong">26.95% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>47/151</span>
+        <span class='fraction'>38/141</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">3.33% </span>
@@ -30,14 +30,14 @@
         <span class='fraction'>2/60</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">6.9% </span>
+        <span class="strong">7.69% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/29</span>
+        <span class='fraction'>2/26</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">32.64% </span>
+        <span class="strong">28.36% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>47/144</span>
+        <span class='fraction'>38/134</span>
       </div>
     </div>
   </div>
@@ -359,29 +359,15 @@
 314
 315
 316
-317
-318
-319
-320
-321
-322
-323
-324
-325
-326
-327
-328
-329
-330</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+317</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -401,7 +387,6 @@
 <span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">2×</span>
 <span class="cline-any cline-yes">2×</span>
@@ -445,6 +430,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -655,10 +641,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -678,14 +660,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
@@ -703,14 +677,13 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
 &nbsp;
-var checkUrl = require("./internal/checkUrl");
-var linkObj = require("./internal/linkObj");
-var parseOptions = require("./internal/parseOptions");
-var isString = require("is-string");
-var maybeCallback = require("maybe-callback");
-// var UrlCache = require("./internal/urlcache");
-var urlobj = require("urlobj");
-var getHostKey = require("./internal/getHostKey");
+var checkUrl = require("./internal/checkUrl"),
+     linkObj = require("./internal/linkObj"),
+     parseOptions = require("./internal/parseOptions"),
+     isString = require("is-string"),
+     maybeCallback = require("maybe-callback"),
+     urlobj = require("urlobj"),
+     getHostKey = require("./internal/getHostKey");
 &nbsp;
 var defaultOptions = {
      defaultPorts: {
@@ -730,7 +703,6 @@ function RequestQueue(options, handlers) {
      this.activeHosts = {}; // Socket counts stored by host
      this.items = {}; // Items stored by ID
      this.priorityQueue = []; // List of IDs
-&nbsp;
      this.activeSockets = 0;
      this.counter = 0;
      this.handlers = handlers || <span class="branch-1 cbranch-no" title="branch not covered" >{};</span>
@@ -775,6 +747,7 @@ RequestQueue.prototype.enqueue = <span class="fstat-no" title="function not cove
 */
 <span class="fstat-no" title="function not covered" >function enqueue(input, instance) {</span>
 <span class="cstat-no" title="statement not covered" >     var hostKey = getHostKey(input.url, instance.options);</span>
+<span class="cstat-no" title="statement not covered" >     console.log('hostKey',hostKey);</span>
 <span class="cstat-no" title="statement not covered" >     var id = input.id;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >     if (hostKey === false) {</span>
@@ -983,10 +956,6 @@ function UrlChecker(a, b) {
      });
 }
 &nbsp;
-UrlChecker.prototype.clearCache = <span class="fstat-no" title="function not covered" >function () {</span>
-     // return this.cache.clear();
-};
-&nbsp;
 UrlChecker.prototype.dequeue = <span class="fstat-no" title="function not covered" >function (a) {</span>
 <span class="cstat-no" title="statement not covered" >     return this.linkQueue.dequeue(a);</span>
 };
@@ -1009,14 +978,6 @@ UrlChecker.prototype.enqueue = <span class="fstat-no" title="function not covere
      });
 };
 &nbsp;
-UrlChecker.prototype.numActiveLinks = <span class="fstat-no" title="function not covered" >function () {</span>
-<span class="cstat-no" title="statement not covered" >     return this.linkQueue.numActive();</span>
-};
-&nbsp;
-UrlChecker.prototype.numQueuedLinks = <span class="fstat-no" title="function not covered" >function () {</span>
-<span class="cstat-no" title="statement not covered" >     return this.linkQueue.numQueued();</span>
-};
-&nbsp;
 UrlChecker.prototype.pause = <span class="fstat-no" title="function not covered" >function () {</span>
 <span class="cstat-no" title="statement not covered" >     return this.linkQueue.pause();</span>
 };
@@ -1036,7 +997,7 @@ module.exports = UrlChecker;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 16:57:40 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Apr 08 2017 16:01:20 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

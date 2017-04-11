@@ -32,6 +32,7 @@ function enqueueLink(link, instance) {
 var RobotDirectives = require("robot-directives");
 
 function scan(html, baseUrl, robots, instance) {
+    //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js scan html:',html,'baseUrl:',baseUrl,'robots:',robots,'instance:',instance);
 
      var promise = q.defer();
      var tree;
@@ -44,7 +45,7 @@ function scan(html, baseUrl, robots, instance) {
           tree = document;
           return scrapeHtml(document, robots);
      }).then(function (links) {
-
+          //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js parseHtml:links',links)
           instance.foundLinks = links;
           instance._tree = tree;
 

@@ -11,7 +11,7 @@ var User = require('./models/user'),
  * @return {Boolean}
  */
 function checkRequirements(input, props) {
-     console.log('utils.js -> checkRequirements', props, input);
+     //console.log('utils.js -> checkRequirements');
      var failed = false;
      _.each(props, function (prop) {
           if (typeof input[prop] === 'undefined') {
@@ -117,7 +117,7 @@ function checkAvailActivity(oid, plan, type, callback) {
  */
 function findUser(args, callback) {
      try {
-          console.log('User', args)
+          //console.log('User', args)
           User.scan(args).exec(function (err, user) {
                if (err) {
                     if (typeof callback === 'function') {
@@ -145,7 +145,7 @@ function findUser(args, callback) {
  */
 function findOneUser(args, callback) {
      try {
-          console.log('User', args)
+          //console.log('User', args)
           User.scan(args).exec(function (err, user) {
                if (err) {
                     if (typeof callback === 'function') {
@@ -173,24 +173,24 @@ function findOneUser(args, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function updateBy(model, args, updates, callback) {
-     console.log('updateBy');
+     //console.log('updateBy');
      try {
-         console.log('utils.js --> updateBy')
+          //console.log('utils.js --> updateBy')
           model.update(args, updates, function (err) {
-            console.log('utils.js --> updateBy -> response');
+               //console.log('utils.js --> updateBy -> response');
                if (err) {
-                   console.log('utils.js --> updateBy:failed');
+                    //console.log('utils.js --> updateBy:failed');
                     if (typeof callback === 'function') {
                          return callback(err);
                     }
                }
-               console.log('utils.js --> updateBy:passed');
+               //console.log('utils.js --> updateBy:passed');
                if (typeof callback === 'function') {
                     return callback(null);
                }
           });
      } catch (err) {
-           console.log('utils.js --> updateBy:error',err);
+          //console.log('utils.js --> updateBy:error', err);
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:update:item'
@@ -208,7 +208,7 @@ function updateBy(model, args, updates, callback) {
 function updateUser(args, updates, callback) {
      try {
           User.update(args, updates, function (err) {
-               console.log('ERR---UPDATE', err, callback);
+               //console.log('ERR---UPDATE', err, callback);
                if (err) {
                     if (typeof callback === 'function') {
                          return callback(err);
@@ -225,6 +225,16 @@ function updateUser(args, updates, callback) {
                });
           }
      }
+}
+
+/**
+ * saves a model in dynamo
+ * @param  {Object}   model     identifier(s) for the user
+ * @param  {Function} callback callback accepts one paramater, err
+ */
+function saveModel(model, callback) {
+     //console.log('test saveModel');
+     model.save(callback);
 }
 
 /**
@@ -261,11 +271,10 @@ function deleteUser(uid, cb) {
  * @param  {Function} cb    callback accepts one paramaters, err
  */
 function saveScan(scan, cb) {
-     console.log('saving scan');
+     //console.log('saving scan');
      try {
-
           scan.save(function (err) {
-               console.log('utils.js saveScan response', err);
+               //console.log('utils.js saveScan response', err);
                if (err) {
                     if (typeof cb === 'function') {
                          return cb(err);
@@ -276,7 +285,7 @@ function saveScan(scan, cb) {
                }
           });
      } catch (e) {
-          console.log('utils.js saveScan catch error', e);
+          //console.log('utils.js saveScan catch error', e);
      }
 }
 
@@ -330,14 +339,12 @@ function deleteBy(model, args, cb) {
           });
      } catch (err) {
           return cb({
-               message:'error:delete:item'
+               message: 'error:delete:item'
           });
      }
 }
 
 function batchPut(model, commands, cb) {
-     console.log('here!');
-
      model.batchPut(commands, function (err, e) {
           cb(err, e);
      });
@@ -354,4 +361,5 @@ module.exports.findOneUser = findOneUser;
 module.exports.updateUser = updateUser;
 module.exports.deleteUser = deleteUser;
 module.exports.saveScan = saveScan;
+module.exports.saveModel = saveModel;
 module.exports.checkRequirements = checkRequirements;

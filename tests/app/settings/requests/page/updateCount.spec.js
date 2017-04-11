@@ -16,7 +16,7 @@ describe('app/settings/requests/page/updateCount.js:fails:', function () {
      })
      it('returns retry if update', function (done) {
           updateCount(null, null, null).catch(function (e) {
-            console.log('test',e);
+            //console.log('test',e);
                expect(e.retry).to.equal(true);
                done();
           });

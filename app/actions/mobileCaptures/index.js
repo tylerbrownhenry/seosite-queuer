@@ -38,7 +38,7 @@ function saveImage(page, filename, callback, errorCallback) {
 
 function doit(url, requestId, inputSizes) {
      var promise = q.defer();
-     console.log('url2', url);
+     //console.log('url2', url);
      var sizes = ['1920x1080', '1600x1200', '1400x900', '1024x768', '800x600', '420x360'];
      if (typeof inputSizes !== 'undefined') {
           sizes = inputSizes;
@@ -58,7 +58,7 @@ function doit(url, requestId, inputSizes) {
                     });
                     page.set("zoomFactor", 1);
                     page.open(siteURL, function (status) {
-                         console.log('Opened!');
+                         //console.log('Opened!');
                          var filename = siteName + size[0] + 'x' + size[1] + '.png';
                          saveImage(filename, page, function (url) {
                               callback({
@@ -76,23 +76,23 @@ function doit(url, requestId, inputSizes) {
                          });
                     });
                }).then(function () {
-                    console.log('done 2');
+                    //console.log('done 2');
                     // ph.exit();
                }).finally(function () {
-                    console.log('done');
+                    //console.log('done');
                })
           })
      }
 
      async.eachSeries(sizes, scrot, function (res) {
-          console.log('done', res);
+          //console.log('done', res);
           if (res && res.err) {
                promise.reject({
                     status: 'error',
                     data: 'Captures not taken'
                });
           } else {
-               console.log('done, quitting');
+               //console.log('done, quitting');
           }
           promise.resolve({
                status: 'success',

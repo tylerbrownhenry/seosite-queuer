@@ -13,10 +13,10 @@ module.exports.start = function (amqpConn) {
                return;
           }
           ch.on("error", function (err) {
-               console.error("[AMQP] channel error", err.message);
+               //console.error("[AMQP] channel error", err.message);
           });
           ch.on("close", function () {
-               console.log("[AMQP] channel closed");
+               //console.log("[AMQP] channel closed");
           });
 
           pubChannel = ch;
@@ -39,15 +39,15 @@ module.exports.start = function (amqpConn) {
  * @return {promise}           promise object
  */
 function publish(exchange, routingKey, content, options) {
-     console.log('publish');
+     //console.log('publish');
      var promise = q.defer();
      var opts = (typeof options !== 'undefined') ? options : {};
      opts.persistent = true;
      try {
-          console.log('publisher.js -> publish');
+          //console.log('publisher.js -> publish');
           pubChannel.publish(exchange, routingKey, content, opts, function (err, ok) {
                if (err) {
-                    console.error("[AMQP] publish", err);
+                    //console.error("[AMQP] publish", err);
                     offlinePubQueue.push([exchange, routingKey, content]);
                     pubChannel.connection.close();
                     promise.reject({
@@ -56,12 +56,12 @@ function publish(exchange, routingKey, content, options) {
                          message: 'error:offline:queue'
                     })
                } else {
-                    console.log('publisher.js -> publish:pass');
+                    //console.log('publisher.js -> publish:pass');
                     promise.resolve();
                }
           });
      } catch (e) {
-          console.error("[AMQP] publish", e.message);
+          //console.error("[AMQP] publish", e.message);
           promise.reject({
                system: 'amqp',
                status: 'warning',

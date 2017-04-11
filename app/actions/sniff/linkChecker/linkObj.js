@@ -54,7 +54,10 @@ function linkObj(url) {
 	Remove unnecessary keys for public use.
 */
 linkObj.clean = function (link) {
-     delete link.html.base; // TODO :: don't clean this?
+     //console.log('link', link);
+     if(link && link.html) {
+          delete link.html.base; // TODO :: don't clean this?
+     }
      delete link.resolved;
      return link;
 };

@@ -9,9 +9,9 @@ var settings = require("../../settings/requests");
 function processCapture(msg,ch) {
      var type = 'capture';
      settings.types[type](msg).then(function (response) {
-          console.log('consumers/capture.js callback');
+          //console.log('consumers/capture.js callback');
           var propName = 'captures[' + response.size + ']';
-          console.warn('UPDATE USER AND SCAN WHEN CAPTURES ARE TAKEN');
+          //console.warn('UPDATE USER AND SCAN WHEN CAPTURES ARE TAKEN');
           // User.collection.findOneAndUpdate({
           //      uid: msg.uid
           // }, {
@@ -20,7 +20,7 @@ function processCapture(msg,ch) {
           //           'activity.captures.daily.count': 1
           //      }
           // }, function (err, user) {
-          //      console.log('processCapture err?', err);
+          //      //console.log('processCapture err?', err);
           // });
           //
           // Scan.collection.findOneAndUpdate({
@@ -35,7 +35,7 @@ function processCapture(msg,ch) {
           //      });
 
      }).catch(function (err) {
-          console.log('consumers/capture.js error happened making capture');
+          //console.log('consumers/capture.js error happened making capture');
           ch.ack(msg);
      })
 }

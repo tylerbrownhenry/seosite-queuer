@@ -5,7 +5,7 @@ sh = require('shorthash'),
      Update = require('../models/update');
 
 function callback(data) {
-     console.log('actions/callback.js callback',data);
+     //console.log('actions/callback.js callback',data);
 
      var alert = new Alert({
         alertId: sh.unique(new Date() + data.uid),
@@ -20,7 +20,7 @@ function callback(data) {
      });
 
      alert.save(function (err, model) {
-          console.log('Alert saved!');
+          //console.log('Alert saved!');
      });
 
      var postData = querystring.stringify({
@@ -34,10 +34,10 @@ function callback(data) {
           // postClass: data.postClass
      });
 
-     console.log('postData', postData);
+     //console.log('postData', postData);
 
      publisher.publish("", "update", new Buffer(JSON.stringify({uid:data.uid}))).then(function (e) {
-          console.log('actions/callback.js published alert for uid',data.uid);
+          //console.log('actions/callback.js published alert for uid',data.uid);
      });
 
      return
@@ -58,21 +58,21 @@ function callback(data) {
     //  }
      //
     //  var req = http.request(options, (res) => {
-    //       console.log(`STATUS: ${res.statusCode}`);
-    //       console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
+    //       //console.log(`STATUS: ${res.statusCode}`);
+    //       //console.log(`HEADERS: ${JSON.stringify(res.headers)}`);
     //       res.setEncoding('utf8');
     //       res.on('data', (chunk) => {
-    //            console.log(`BODY: ${chunk}`);
+    //            //console.log(`BODY: ${chunk}`);
     //       });
     //       res.on('end', () => {
-    //            console.log('No more data in response.');
+    //            //console.log('No more data in response.');
     //       });
     //  });
      //
-    //  console.log('dfdsfs', postData);
+    //  //console.log('dfdsfs', postData);
     //  req.on('error', (e) => {
     //       /* Do sometihng if not responsive? */
-    //       console.log(`problem with request: ${e.message}`);
+    //       //console.log(`problem with request: ${e.message}`);
     //  });
      //
     //  // write data to request body

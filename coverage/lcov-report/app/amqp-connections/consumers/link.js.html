@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">73.33% </span>
+        <span class="strong">75% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>22/30</span>
+        <span class='fraction'>15/20</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">37.5% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>2/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">73.33% </span>
+        <span class="strong">75% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>22/30</span>
+        <span class='fraction'>15/20</span>
       </div>
     </div>
   </div>
@@ -89,22 +89,7 @@
 44
 45
 46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+47</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -115,21 +100,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -138,84 +112,71 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var dynamoose = require('dynamoose'),
-settings = require("../../settings/requests"),
-notify = require('../../actions/notify'),
-retry = require('../../settings/requests/retry').publish,
-q =  require('q');
+     settings = require("../../settings/requests"),
+     notify = require('../../actions/notify'),
+     retry = require('../../settings/requests/retry').publish,
+     q = require('q');
 &nbsp;
-// var requestSchema = require("../../models/request");
-// var Request = dynamoose.model('Request', requestSchema);
 /**
  * consumer of a link request from rabbitMQ
  * @param  {object} msg content of rabbitMQ message
  */
-function processLink(msg,ch) {
-     console.log('consumer/link.js processLink');
+function processLink(msg, ch) {
+     //console.log('consumer/link.js processLink');
      var type = 'link';
      var promise = q.defer();
      settings.types.link(msg).then(<span class="fstat-no" title="function not covered" >function (response) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('consumer/link.js ackking message processLink');</span>
-          // console.warn('CREDIT THE USER FOR CONSUMPTION',ch,JSON.parse(msg).requestId);
-          // User.collection.findOneAndUpdate({
-          //      uid: msg.uid
-          // }, {
-          //      $inc: {
-          //           'activity.links.monthly.count': 1,
-          //           'activity.links.daily.count': 1
-          //      }
-          // }, function (err, user) {
-          //      console.log('consumer/link.js  user');
-          // });
+          //console.log('consumer/link.js ackking message processLink', response);
 <span class="cstat-no" title="statement not covered" >          if (response.notify === true) {</span>
-<span class="cstat-no" title="statement not covered" >              notify(response);</span>
+<span class="cstat-no" title="statement not covered" >               notify(response);</span>
           }
 <span class="cstat-no" title="statement not covered" >          ch.ack(msg);</span>
 <span class="cstat-no" title="statement not covered" >          promise.resolve(response);</span>
 &nbsp;
      }).catch(function (err) {
-          console.log('consumer/link.js  failed message',err);
+          //console.log('consumer/link.js  failed message', err);
           <span class="missing-if-branch" title="else path not taken" >E</span>if (err.notify === true) {
                notify(err);
           }
           <span class="missing-if-branch" title="if path not taken" >I</span>if (err.softRetry === true) {
-<span class="cstat-no" title="statement not covered" >            console.log('break0');</span>
+               //console.log('break0');
 <span class="cstat-no" title="statement not covered" >               ch.nack(msg);</span>
-<span class="cstat-no" title="statement not covered" >               console.log('break4');</span>
+               //console.log('break4');
           } else <span class="missing-if-branch" title="else path not taken" >E</span>if (err.retry === true) {
-                console.log('retry');
-                err.objectType = 'link';
-                console.log('break2',typeof retry);
-                retry(err);
-                console.log('break3');
+               //console.log('retry');
+               err.objectType = 'link';
+               //console.log('break2', typeof retry);
+               retry(err);
+               //console.log('break3');
           }
-          console.log('break4');
+          //console.log('break4');
           ch.ack(msg);
           promise.reject(err);
-          console.log('consumer/link.js  failed message',err);
+          //console.log('consumer/link.js  failed message', err);
      });
      return promise.promise;
 }
@@ -226,7 +187,7 @@ module.exports = processLink;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 16:57:40 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Tue Apr 11 2017 00:53:32 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

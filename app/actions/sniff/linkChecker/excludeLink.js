@@ -1,15 +1,15 @@
-var linkTypes = require("link-types").map;
-var RobotDirectives = require("robot-directives");
-var matchUrl = require("./matchUrl");
+var linkTypes = require("link-types").map,
+     maybeCallback = require("maybe-callback"),
+     RobotDirectives = require("robot-directives");
+var matchUrl = require("../linkChecker/matchUrl");
 var isString = require("is-string");
 
 function excludeLink(link, instance) {
 
-     var attrSupported, externalFilter;
+     var attrSupported;
      var attrName = link.html.attrName;
      var tagName = link.html.tagName;
      var tagGroup = instance.options.tags[instance.options.filterLevel][tagName];
-
      if (tagGroup != null) {
           attrSupported = tagGroup[attrName];
      }
@@ -17,6 +17,7 @@ function excludeLink(link, instance) {
      if (attrSupported !== true) {
           return "BLC_HTML";
      }
+     //console.log('link.internal',link.internal,'instance.options.excludeExternalLinks',instance.options.excludeExternalLinks);
      if (instance.options.excludeExternalLinks === true && link.internal === false) {
           return "BLC_EXTERNAL";
      }
@@ -26,10 +27,9 @@ function excludeLink(link, instance) {
      if (instance.options.excludeLinksToSamePage === true && link.samePage === true) {
           return "BLC_SAMEPAGE";
      }
-     if (instance.options.excludedSchemes[link.url.parsed.extra.protocolTruncated] === true) {
+     if (instance.options.excludedSchemes && instance.options.excludedSchemes.indexOf(link.url.parsed.extra.protocolTruncated) !== -1) {
           return "BLC_SCHEME";
      }
-
      if (instance.options.honorRobotExclusions === true) {
           if (instance.robots.oneIs([RobotDirectives.NOFOLLOW, RobotDirectives.NOINDEX]) === true) {
                return "BLC_ROBOTS";

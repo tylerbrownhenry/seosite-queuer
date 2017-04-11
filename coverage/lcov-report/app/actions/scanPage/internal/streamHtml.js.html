@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">10.34% </span>
+        <span class="strong">18.75% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/29</span>
+        <span class='fraction'>3/16</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/24</span>
+        <span class='fraction'>0/6</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">10.34% </span>
+        <span class="strong">18.75% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/29</span>
+        <span class='fraction'>3/16</span>
       </div>
     </div>
   </div>
@@ -86,39 +86,8 @@
 41
 42
 43
-44
-45
-46
-47
-48
-49
-50
-51
-52
-53
-54
-55
-56
-57
-58
-59
-60
-61
-62
-63
-64
-65
-66
-67
-68
-69
-70
-71</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+44</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -126,28 +95,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -155,24 +119,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,15 +136,10 @@ var errors = require("./messages").errors,
      bhttp = require("bhttp"),
      q = require("q");
 &nbsp;
-/*
-Request a URL for its HTML contents and return a stream.
-*/
-&nbsp;
-<span class="fstat-no" title="function not covered" >function stream(url, cache, options) {</span>
-<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
-<span class="cstat-no" title="statement not covered" >     var result;</span>
-<span class="cstat-no" title="statement not covered" >     console.log('streamhtml...', 'url', url, 'userAgent', options.userAgent);</span>
-<span class="cstat-no" title="statement not covered" >     bhttp.get(url, { // TODO :: https://github.com/joepie91/node-bhttp/issues/3   // Always gets the URL because response bodies are never cached</span>
+<span class="fstat-no" title="function not covered" >function stream(url, options) {</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer(),</span>
+          result;
+<span class="cstat-no" title="statement not covered" >     bhttp.get(url, {</span>
           discardResponse: true,
           headers: {
                "user-agent": options.userAgent
@@ -213,37 +154,15 @@ Request a URL for its HTML contents and return a stream.
                     response: response,
                     stream: orgResponse
                };
-<span class="cstat-no" title="statement not covered" >               if (options.cacheResponses === true &amp;&amp; response.url !== url) {</span>
-<span class="cstat-no" title="statement not covered" >                    cache.set(response.url, response);</span>
-               }
           }
-<span class="cstat-no" title="statement not covered" >          console.log('result', result);</span>
-<span class="cstat-no" title="statement not covered" >          if (response instanceof Error === true) {</span>
+<span class="cstat-no" title="statement not covered" >          if (response instanceof Error) {</span>
 <span class="cstat-no" title="statement not covered" >               throw response;</span>
           }
-<span class="cstat-no" title="statement not covered" >          if (result instanceof Error === true) {</span>
+<span class="cstat-no" title="statement not covered" >          if (result instanceof Error) {</span>
 <span class="cstat-no" title="statement not covered" >               throw result;</span>
           }
 <span class="cstat-no" title="statement not covered" >          return promise.resolve(result);</span>
      }).catch(<span class="fstat-no" title="function not covered" >function (error) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('Typeof Error ', typeof error, error);</span>
-<span class="cstat-no" title="statement not covered" >          if (typeof error === 'MultipartError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'bhttpError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ConflictingOptionsError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'UnsupportedProtocolError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'RedirectError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ConnectionTimeoutError') {</span>
-&nbsp;
-          } else <span class="cstat-no" title="statement not covered" >if (typeof error === 'ResponseTimeoutError') {</span>
-&nbsp;
-          } else {
-&nbsp;
-          }
 <span class="cstat-no" title="statement not covered" >          promise.reject({</span>
                status: 'error',
                message: error
@@ -259,7 +178,7 @@ module.exports = stream;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 30 2017 16:57:40 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Apr 08 2017 16:01:20 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>

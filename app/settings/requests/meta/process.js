@@ -5,7 +5,7 @@ var _ = require('underscore');
  */
 
 function processMetaData(newScan,input,res) {
-  console.log('result--');
+  //console.log('result--');
      if (input.options && input.options.save && input.options.save.metaData === true) {
           newScan.meta = {
                title: {
@@ -82,7 +82,7 @@ function processMetaData(newScan,input,res) {
           }
 
           var resourceIssueCount = 0;
-          console.log('1');
+          //console.log('1');
           _.each(newScan.resources, function (resource) {
                if (resource.gzip === null) {
                     resourceIssueCount += 1;
@@ -98,7 +98,7 @@ function processMetaData(newScan,input,res) {
                }
           });
 
-          console.log('2', links);
+          //console.log('2', links);
           var linkIssueCount = 0;
 
           var tooManyLinks = (links && links.length >= 100) ? true : false;

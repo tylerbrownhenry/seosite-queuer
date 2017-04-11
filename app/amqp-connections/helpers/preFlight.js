@@ -6,7 +6,7 @@
  * @return {Object}            parsed msg
  */
 function preFlight(promise, msg, callback) {
-     console.log('_preFlight ->',msg);
+     //console.log('amqp-connections/helpers/preFlight.js ->');
      var input = {};
      if (!msg || !msg.content) {
           callback(promise, {
@@ -18,14 +18,14 @@ function preFlight(promise, msg, callback) {
      try {
           input = JSON.parse(msg.content);
      } catch (e) {
-          console.log('_preFlight:failed');
+          //console.log('amqp-connections/helpers/preFlight.js:failed');
           callback(promise, {
                statusType: 'invalidInput',
                message: 'error:unparsable'
           });
           return false;
      }
-     console.log('_preFlight:passed');
+     //console.log('amqp-connections/helpers/preFlight.js:passed');
      return input;
 }
 

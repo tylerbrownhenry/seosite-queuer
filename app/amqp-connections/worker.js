@@ -1,19 +1,18 @@
-var errorHandler = require('../settings/errorHandler');
-var dynamoose = require('dynamoose');
-var settings = require("../settings/requests");
-var requestSchema = require("../models/request");
-var Request = dynamoose.model('Request', requestSchema);
-var Scan = require("../models/scan");
-var User = require("../models/user");
+var errorHandler = require('../settings/errorHandler'),
+     dynamoose = require('dynamoose'),
+     settings = require("../settings/requests"),
+     requestSchema = require("../models/request"),
+     Request = dynamoose.model('Request', requestSchema),
+     Scan = require("../models/scan"),
+     User = require("../models/user");
 
 /*
 Consumer Actions
 */
-var consumeSummary = require("./consumers/summary");
-var consumeLink = require("./consumers/link");
-var consumePage = require("./consumers/page");
-var consumeCapture = require("./consumers/capture");
-var consumeRetry = require("./consumers/retry");
+var consumeSummary = require("./consumers/summary"),
+     consumeLink = require("./consumers/link"),
+     consumeCapture = require("./consumers/capture"),
+     consumeRetry = require("./consumers/retry");
 
 /**
  * initilizes rabbitMQ consumer
@@ -26,22 +25,21 @@ module.exports.start = function (amqpConn) {
                return; /* Restart or something? */
           }
           ch.on("drain", function (err) {
-               console.error("[AMQP] channel drgain", err);
+               //console.error("[AMQP] channel drgain", err);
           });
 
           ch.on("error", function (err) {
-               console.error("[AMQP] channel error", err); /* Restart or something? */
+               //console.error("[AMQP] channel error", err); /* Restart or something? */
           });
 
           ch.on("close", function () {
-               console.log("[AMQP] channel closed");
+               //console.log("[AMQP] channel closed");
           });
 
           ch.prefetch(10);
 
           // init('summary', consumeSummary, 'freeSummary', false, ch);
           init('links', consumeLink, 'links', true, ch);
-          init('pages', consumePage, 'pages', true, ch);
           init('summary', consumeSummary, 'summary', true, ch);
           init('capture', consumeCapture, 'capture', true, ch);
           init('retry', consumeRetry, 'retry', true, ch);
@@ -55,26 +53,20 @@ module.exports.start = function (amqpConn) {
            * @return {[type]}            [description]
            */
           function init(assertName, queueFunc, queueName, ack, ch) {
-               console.log('ch init');
-               //  console.log('ch init', ch);
+               //console.log('ch init');
                ch.assertQueue(queueName, {
                     durable: true
                }, function (err, _ok) {
                     if (errorHandler(amqpConn, err)) {
-                         console.log('amqpConn', amqpConn, 'err', err); /* Restart or something? */
+                         //console.log('amqpConn', amqpConn, 'err', err);
+                         /* Restart or something? */
                          return;
                     }
-
-                    // var _queueFunc = new PreConsumer(queueFunc,ch);
-                    // if (ack) {
-                         ch.consume(assertName,function(e){
-                           queueFunc(e,ch);
-                         }, {
-                              noAck: false
-                         });
-                    // } else {
-                        //  ch.consume(assertName, _queueFunc.func);
-                    // }
+                    ch.consume(assertName, function (e) {
+                         queueFunc(e, ch);
+                    }, {
+                         noAck: false
+                    });
                });
           }
      });

@@ -23,23 +23,24 @@ function processHar(promise, opts) {
 }
 
 function notify(promise, msg) {
+      ////console.log('here');
      var _notify = require('../../../actions/notify');
      promise.resolve();
      _notify(msg);
      return promise.promise;
 }
 
-function markedRequstAsFailed(promise, msg) {
+function markedRequstAsFailed(promise, opts) {
+  console.log('test');
      var _markedRequstAsFailed = require('../summary').markedRequstAsFailed;
-     opts.promise = promise;
-     opts.isRetry = true;
-     opts.requestId = opts.i_id;
-     _markedRequstAsFailed(opts);
-     return opts.promise.promise;
+     _markedRequstAsFailed({isRetry: true,promise:promise,requestId:opts.requestId,message:opts.message});
+     console.log('test');
+
+     return promise.promise;
 }
 
 function processUrl(promise, opts) {
-     console.log('retrables.js --> processUrl', opts);
+     ////console.log('retrables.js --> processUrl', opts);
      var _processUrl = require('../summary').processUrl;
      opts.promise = promise;
      opts.isRetry = true;
@@ -54,7 +55,7 @@ function completeRequest(promise,opts){
 }
 
 function updateBy(promise, opts) {
-     console.log('retrables.js --> updateBy ->', opts);
+     ////console.log('retrables.js --> updateBy ->', opts);
      var dynamoose = require('dynamoose');
      var updateBy = require('../../../utils').updateBy;
      if (opts.model === 'Request') {
@@ -68,7 +69,7 @@ function updateBy(promise, opts) {
                }
           });
      } else {
-          console.log('retrayables.js updateBy --> Not a supported model', opts.model)
+          ////console.log('retrayables.js updateBy --> Not a supported model', opts.model)
           promise.reject();
      }
      return promise.promise;
@@ -76,18 +77,18 @@ function updateBy(promise, opts) {
 
 
 function processLinks(promise, opts){
-  console.log('retrables.js --> processUrl', opts);
+  ////console.log('retrables.js --> processUrl', opts);
   var _updateCount = require('../links/process').saveUpdatedCount,
   requestId = opts.requestId,
   newScan = opts.newScan,
   input = opts.input,
   res = opts.res;
   _updateCount(input,res,requestId,newScan).then(function(res){
-    console.log('not sure if this works');
+    ////console.log('not sure if this works');
      _notify(res);
      promise.resolve(res);
   }).catch(function(err){
-    console.log('not sure if this works');
+    ////console.log('not sure if this works');
     _notify(err);
     promise.reject(err);
   })
@@ -102,19 +103,23 @@ function processLinksInit(promise, opts){
   input = opts.input,
   res = opts.res;
   _updateCount(input,res,requestId,newScan).then(function(res){
-    console.log('not sure if this works');
+    ////console.log('not sure if this works');
      _notify(res);
      promise.resolve(res);
   }).catch(function(err){
-    console.log('not sure if this works');
+    ////console.log('not sure if this works');
     _notify(err);
     promise.reject(err);
   })
   return promise.promise;
 }
 
+function updateRequest(promise,model,identifier,commands){
+
+}
+
 function completeLink(promise, opts){
-  console.log('retrables.js --> processUrl', opts);
+  ////console.log('retrables.js --> completeLink', opts);
   var _completeLink = require('../link').completeLink,
   link = opts.link,
   resp = opts.resp;
@@ -136,8 +141,23 @@ function publishLink(promise,opts){
   return promise.promise;
 }
 
+
+
+function updatePageCount(promise,opts){
+  console.log('retrables.js --> updatePageCount', opts);
+  var _updatePageCount = require('../page/updateCount');
+  _updatePageCount(opts.requestId, opts.updatedCount, opts.putObject).then(function(){
+    promise.resolve();
+  }).catch(function (err) {
+    promise.reject(err);
+  });
+  return promise.promise;
+}
+
+
+
 function updateCount(promise,opts){
-  console.log('retrables.js --> processUrl', opts);
+  ////console.log('retrables.js --> processUrl', opts);
   var _saveUpdatedCount = require('../links/process').saveUpdatedCount,
   updatedCount = opts.updatedCount,
   requestId = opts.requestId,
@@ -154,6 +174,7 @@ function updateCount(promise,opts){
  * @type {Object}
  */
 var commands = {
+     'request:page:update:count': updatePageCount,
      'settings.request.links.updateCount':updateCount,
      'request.summary.markedRequstAsFailed': markedRequstAsFailed,
      'request.summary.processUrl': processUrl,
@@ -164,6 +185,7 @@ var commands = {
      'settings.request.links.process.init':processLinksInit,
      'publish:link': publishLink,
      'utils.updateBy': updateBy,
+     'updateRequest':updateRequest,
      'link.request.completeRequest': completeRequest,
      'notify': notify,
 }

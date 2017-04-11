@@ -61,7 +61,7 @@ var harResponseData = {
      }]
 }
 
-describe.only('app/settings/requests/page/updateCount.js:fails:', function () {
+describe('app/settings/requests/page/updateCount.js:fails:', function () {
      //  var stubUtils;
      //  beforeEach(function () {
      //       stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
@@ -93,7 +93,7 @@ describe.only('app/settings/requests/page/updateCount.js:fails:', function () {
      }
 
      var result = processMetaData(harResponseData, input, res);
-     console.log('test', result);
+     //console.log('test', result);
 
      done();
 

@@ -9,7 +9,7 @@ function doit(filenameFull, callback, requestId, size) {
      //load the saved file
      fs.readFile(filenameFull, function (err, temp_png_data) {
           if (err != null) {
-               console.log("Error loading saved screenshot: " + err.message);
+               //console.log("Error loading saved screenshot: " + err.message);
                return callback('error', "Error loading saved screenshot: " + err.message);
           } else {
                upload_params = {
@@ -21,7 +21,7 @@ function doit(filenameFull, callback, requestId, size) {
                //start uploading
                s3.putObject(upload_params, function (err, s3_data) {
                     if (err != null) {
-                         console.log("Error uploading to s3: " + err.message);
+                         //console.log("Error uploading to s3: " + err.message);
                          callback('error', err.message);
                          // return response.json(500, { 'error': 'Problem uploading to S3.' + err.message });
                     } else {

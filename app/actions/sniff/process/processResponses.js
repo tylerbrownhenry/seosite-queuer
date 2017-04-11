@@ -10,7 +10,7 @@ function processResponses(opts) {
      if (!data) {
           promise.reject('PhantomJS could not process the page');
      }
-     console.log('processResponses -->');
+     //console.log('processResponses -->');
      _.each(_.keys(data.log.entries), function (key, idx) {
           try {
                var entry = data.log.entries[key];
@@ -26,7 +26,7 @@ function processResponses(opts) {
           });
           promise.resolve(data);
      }).catch(function (err) {
-          console.log('processResponses err');
+          //console.log('processResponses err');
           promise.reject(err);
      });
      return promise.promise;

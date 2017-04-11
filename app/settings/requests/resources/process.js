@@ -25,7 +25,7 @@ function Resource(e) {
      var gZippable = null;
      var contentType = null;
      var cached = false;
-     console.log('processResponse.js resource ', e);
+     //console.log('processResponse.js resource ', e);
      if (!e || !e.response || !e.request) {
           return {
                status: 'failed'

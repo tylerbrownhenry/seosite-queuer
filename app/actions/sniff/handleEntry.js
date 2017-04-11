@@ -31,7 +31,7 @@ module.exports = function entryHandler(entry, idx, key, options) {
 
      request(reqOpts)
           .on('error', function (err) {
-               console.log('entry error', err);
+               //console.log('entry error', err);
                promise.resolve({
                     idx: idx,
                     url: entry.request.url,
@@ -41,7 +41,7 @@ module.exports = function entryHandler(entry, idx, key, options) {
                });
           })
           .on('response', function (res) {
-               console.log('entry response');
+               //console.log('entry response');
                try {
                     var rawResHeaders = ('HTTP/' + res.httpVersion + ' ' + res.statusCode + ' ' + http.STATUS_CODES[res.statusCode] + '\r\n');
                     rawResHeaders = handleHeaders(rawResHeaders, res.headers);

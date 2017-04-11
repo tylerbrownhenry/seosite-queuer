@@ -159,7 +159,7 @@ describe('app/settings/requests/link/saveUpdatedCount.js:passes:', function () {
 
           processLinkData.saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input)
           promise.promise.then(function (r) {
-            console.log('RRRRR',r);
+            //console.log('RRRRR',r);
             /*
             Is missing parameters okay?
             Is missing parameters okay?
@@ -213,7 +213,7 @@ describe('app/settings/requests/link/saveUpdatedCount.js:fails:', function () {
 
           processLinkData.saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input)
           promise.promise.catch(function (r) {
-            console.log('RRR',r);
+            //console.log('RRR',r);
                expect(r.status === 'error').to.equal(true);
                expect(typeof r.uid !== 'undefined').to.equal(true);
                expect(typeof r.requestId !== 'undefined').to.equal(true);
@@ -233,14 +233,14 @@ describe('app/settings/requests/link/saveUpdatedCount.js:fails:', function () {
           updatedCount = 1,
           newScan = _newScan;
 
-     stubBatchPut = sinon.stub(utils, 'batchPut', function (a, b, c, cb){
-    //  console.log('a,b,c,d',a,'b',b,'c',c,'cb',cb);
-          c(true);
-     });
      // stubFindBy = sinon.stub(utils, 'findBy', function (a, b, cb) {
      //      cb(null);
      // });
      beforeEach(function () {
+         stubBatchPut = sinon.stub(utils, 'batchPut', function (a, b, c, cb){
+           //  //console.log('a,b,c,d',a,'b',b,'c',c,'cb',cb);
+           c(true);
+         });
           stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
                cb(true);
           });

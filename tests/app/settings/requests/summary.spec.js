@@ -74,7 +74,7 @@ var harResponseData = {
      }
 var harResponse =  {
         then: function (fn) {
-             console.log()
+             //console.log()
              fn(_.clone(harResponseData));
              return {
                catch: function(){
@@ -93,6 +93,7 @@ describe('app/settings/requests/summary.js invalid because:', function () {
      });
      it(':empty object input', function (done) {
           summaryRequest({}).catch(function (response) {
+              //console.log('response--?',response);
                expect(response.status === 'error').to.equal(true);
                done();
           });
@@ -115,7 +116,7 @@ describe('app/settings/requests/summary.js invalid because:', function () {
           summaryRequest({
                content: new Buffer(JSON.stringify({}))
           }).catch(function (response) {
-            console.log('response',response);
+            //console.log('response',response);
                expect(response.status === 'error').to.equal(true);
                done();
           });
@@ -220,6 +221,8 @@ describe('app/settings/requests/summary.js valid request setActive success', fun
           stubHar.restore();
      });
      it('failing har should return retry', function (done) {
+       this.timeout(1000);
+
           summaryRequest({
                content: new Buffer(JSON.stringify({
                     url: 'http://www.myurl.com',
@@ -258,6 +261,7 @@ describe('app/settings/requests/summary.js markedRequstAsFailed', function () {
                requestId: 'fakehash',
                promise: {
                     reject: function (response) {
+                      //console.log('test');
                          expect(response.retry).to.equal(true);
                          done();
                     }
@@ -341,6 +345,7 @@ describe('app/settings/requests/summary.js markedRequstAsFailed', function () {
           stubUtils.restore();
      });
      it('failing should reject promise but mark to retry', function (done) {
+         this.timeout(1000);
           markedRequstAsFailed({
                requestId: 'fakehash',
                promise: {
@@ -377,6 +382,7 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
           stubHar.restore();
      });
      it('with failing har should not return retry', function (done) {
+       this.timeout(1000);
           summaryRequest({
                content: new Buffer(JSON.stringify({
                     url: 'http://www.myurl.com',
@@ -400,23 +406,23 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
 });
 
 describe('app/settings/requests/summary.js retrying a valid request setActive success', function () {
-     var stubHar, stubScan, stubUtils;
+     var stubHar3, stubScan3, stubUtils3;
      beforeEach(function () {
-          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+          stubUtils3 = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
                return cb(null);
           });
 
-          stubScan = sinon.stub(utils, 'saveScan', function (a, cb) {
+          stubScan3 = sinon.stub(utils, 'saveScan', function (a, cb) {
                return cb(true);
           });
 
-          stubHar = sinon.stub(sniff, 'har', function () {
+          stubHar3 = sinon.stub(sniff, 'har', function () {
                return {
                     then: function (fn) {
                          fn(_.clone(harResponseData));
                          return {
                               catch: function () {
-                                   console.log('failed');
+                                   //console.log('failed');
                               }
                          }
                     }
@@ -424,11 +430,13 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
           });
      });
      afterEach(function () {
-          stubUtils.restore();
-          stubHar.restore();
-          stubScan.restore();
+          stubUtils3.restore();
+          stubHar3.restore();
+          stubScan3.restore();
      });
+
      it('with successful har.....', function (done) {
+       this.timeout(1000);
           summaryRequest({
                content: new Buffer(JSON.stringify({
                     url: 'http://www.myurl.com',
@@ -437,7 +445,7 @@ describe('app/settings/requests/summary.js retrying a valid request setActive su
                     options: {}
                }))
           }).catch(function (response) {
-            console.log('TEST',response);
+            //console.log('TEST',response);
                expect(response.retry).to.equal(true);
                expect(response.notify).to.equal(true);
                expect(response.message).to.not.be.undefined;
@@ -473,7 +481,7 @@ describe('app/settings/requests/summary.js retrying a valid request with save re
           });
 
           stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
-               console.log('batchPut');
+               //console.log('batchPut');
                cb(null, []);
           });
 
@@ -489,6 +497,7 @@ describe('app/settings/requests/summary.js retrying a valid request with save re
           stubBatchPut.restore();
      });
      it('with successful har but failed publish', function (done) {
+       this.timeout(1000);
           summaryRequest({
                content: new Buffer(JSON.stringify({
                     url: 'http://www.myurl.com',
@@ -543,7 +552,7 @@ describe('app/settings/requests/summary.js process har with save resources and s
           stubHar = sinon.stub(sniff, 'har', function () {
               return {
                       then: function (fn) {
-                           console.log('har har har');
+                           //console.log('har har har');
                            fn(_.clone(harResponseData));
                            return {
                              catch:function(fun){
@@ -563,6 +572,8 @@ describe('app/settings/requests/summary.js process har with save resources and s
      });
 
      it('with successful har...', function (done) {
+       this.timeout(1000);
+
           var promise = q.defer();
           processHar({
                     promise:  promise,
@@ -600,7 +611,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
           });
 
           stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
-               console.log('batchPut');
+               //console.log('batchPut');
                cb(null, []);
           });
 
@@ -622,7 +633,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
           stubHar = sinon.stub(sniff, 'har', function () {
               return {
                       then: function (fn) {
-                           console.log('har har har');
+                           //console.log('har har har');
                            fn(_.clone(harResponseData));
                            return {
                              catch:function(fun){
@@ -657,10 +668,10 @@ describe('app/settings/requests/summary.js process har with not saving links', f
                     }
                },_.clone(harResponseData));
               //  .then(function(){
-                //  console.log('2',promise.promise.then);
+                //  //console.log('2',promise.promise.then);
               //  })
                promise.promise.then(function(e){
-                 console.log('e',e,e.statusType === 'complete',e.notify);
+                 //console.log('e',e,e.statusType === 'complete',e.notify);
                 expect(e.statusType === 'complete').to.equal(true);
                 expect(e.notify).to.equal(true);
                 // expect(e.retryCommand).to.be.defined;
@@ -678,7 +689,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
      var stubHar, stubScan, stubUtils, stubBatchPut,stubPublish;
      beforeEach(function () {
           stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
-            console.log('a',a,'b',b,'c',c,'cb',cb);
+            //console.log('a',a,'b',b,'c',c,'cb',cb);
             if(c.$PUT.status === 'complete'){
               cb(true);
             } else {
@@ -691,7 +702,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
           });
 
           stubBatchPut = sinon.stub(utils, 'batchPut', function (a, e, cb) {
-               console.log('batchPut');
+               //console.log('batchPut');
                cb(null, []);
           });
 
@@ -713,7 +724,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
           stubHar = sinon.stub(sniff, 'har', function () {
               return {
                       then: function (fn) {
-                           console.log('har har har');
+                           //console.log('har har har');
                            fn(_.clone(harResponseData));
                            return {
                              catch:function(fun){
@@ -748,10 +759,10 @@ describe('app/settings/requests/summary.js process har with not saving links', f
                     }
                },_.clone(harResponseData));
               //  .then(function(){
-                //  console.log('2',promise.promise.then);
+                //  //console.log('2',promise.promise.then);
               //  })
                promise.promise.catch(function(e){
-                 console.log('e!!',e);
+                 //console.log('e!!',e);
                 expect(e.statusType === 'complete').to.equal(true);
                 expect(e.notify).to.equal(true);
                 done();
@@ -779,7 +790,7 @@ describe('app/settings/requests/summary.js process har', function () {
           stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
                return {
                     then: function (fn, a) {
-                      console.log('fn',fn,'a',a);
+                      //console.log('fn',fn,'a',a);
                          fn(null);
                          return {
                               catch: function (fn) {}
@@ -819,7 +830,7 @@ describe('app/settings/requests/summary.js process har', function () {
                     }
                },_.clone(harResponseData));
                promise.promise.then(function(e){
-                 console.log('!-e-!',e);
+                 //console.log('!-e-!',e);
                 expect(e.statusType === 'update').to.equal(true);
                 expect(e.notify).to.equal(true);
                 done();
@@ -828,14 +839,14 @@ describe('app/settings/requests/summary.js process har', function () {
 
 });
 // summaryRequest(new Buffer(JSON.stringify({}))).catch(function(response){
-// console.log('test');
+// //console.log('test');
 // //  expect(response.status === 'error').to.equal(true);
 // // });
 // var buffer = new Buffer(JSON.stringify({
 //      content: {}
 // }));
 // summaryRequest(buffer).catch(function (response) {
-//      console.log('tesssst', response.typeof);
+//      //console.log('tesssst', response.typeof);
 //      expect(false).to.equal(true);
 //      done();
 //  expect(response.status === 'error').to.equal(true);
@@ -854,14 +865,14 @@ describe('app/settings/requests/summary.js process har', function () {
 // });
 
 //  it('pageScanRequest() should pass with enough options', function () {
-//       console.log('three');
+//       //console.log('three');
 //       pageScanRequest({
 //            uid: '1234',
 //            token: '1234',
 //            url: 'this.url',
 //            options: {}
 //       }).catch(err => {
-//            console.log('pageScanRequest');
+//            //console.log('pageScanRequest');
 //            expect(err.status).to.equal('error');
 //            expect(err._debug).to.equal('checkRequirements');
 //            expect(err._debug).to.notEqual('checkOptions');
@@ -901,15 +912,15 @@ Failing when starting to test mongoose*/
 //            url: 'www.test.com',
 //            token: 'fakeToken'
 //       }).catch(err => {
-//            console.log('err', err);
+//            //console.log('err', err);
 //            expect(err.status).to.equal('error');
 //            expect(err._debug).to.equal('checkRequirements');
 //            expect(err._debug).to.notEqual('checkOptions');
 //            expect(err.message.length).to.notEqual(3);
 //       }).finally(err => {
-//            console.log('eee', err);
+//            //console.log('eee', err);
 //       })
-//       console.log('test', test);
+//       //console.log('test', test);
 //
 //  });
 

@@ -7,24 +7,23 @@ var summary = require("../../settings/requests").types.summary,
  * @param  {object} cj  rabbitMQ channel
  */
 function processSummary(msg, ch) {
-     console.log('consumers/summary.js -> processSummary');
+     //console.log('consumers/summary.js -> processSummary');
      var type = 'summary';
      summary(msg).then(function (response) {
-          console.log('consumers/summary.js request success');
-          console.log('response', response);
+          //console.log('consumers/summary.js request success',response);
           if (response.notify === true) {
                notify(response);
           }
           ch.ack(msg);
      }).catch(function (err) {
-          console.log('consumers/summary.js request failed');
+          //console.log('consumers/summary.js request failed');
           if (err.notify === true) {
                notify(err);
           }
           if (err.softRetry === true) {
                ch.nack(msg);
           } else if (err.retry === true) {
-                console.log('retry');
+                //console.log('retry');
                 err.objectType = 'request';
                 retry(err);
           }

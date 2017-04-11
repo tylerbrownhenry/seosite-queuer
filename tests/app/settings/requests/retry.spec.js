@@ -65,7 +65,7 @@ describe('app/settings/requests/retry.js publish:failed:', function (done) {
      var stub;
      beforeEach(function () {
           stub = sinon.stub(publisher, 'publish', function (msg) {
-               console.log('retry msg', msg);
+               //console.log('retry msg', msg);
                return {
                     then: function (fn) {
                          return {
@@ -88,18 +88,18 @@ describe('app/settings/requests/retry.js publish:failed:', function (done) {
                     'promise': true
                }
           }).catch(function (res) {
-               console.log('FAILED',res);
+               //console.log('FAILED',res);
                expect(res.retry === true).to.equal(true);
                done();
           });
      });
 });
 
-describe('app/settings/requests/retry.js init', function (done) {
-     var stub, stubUtils;
+describe('app/settings/requests/retry.js init 2', function (done) {
+     var stub2, stubUtils2;
      beforeEach(function () {
-          stub = sinon.stub(publisher, 'publish', function (msg) {
-               console.log('retry msg', msg);
+          stub2 = sinon.stub(publisher, 'publish', function (msg) {
+               //console.log('retry msg', msg);
                return {
                     then: function (fn) {
                          return {
@@ -111,13 +111,13 @@ describe('app/settings/requests/retry.js init', function (done) {
                }
           });
 
-          stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+          stubUtils2 = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
                cb(null);
           });
      });
      afterEach(function () {
-          stub.restore();
-          stubUtils.restore();
+          stub2.restore();
+          stubUtils2.restore();
      });
      it('succeeds if input is empty (will not retry)', function (done) {
           retry.init().then(function (res) {
@@ -205,7 +205,7 @@ describe('app/settings/requests/retry.js passes and attempts retry but fails', f
      var stub, stubUtils;
      beforeEach(function () {
           stub = sinon.stub(publisher, 'publish', function (msg) {
-               console.log('retry msg', msg);
+               //console.log('retry msg', msg);
                return {
                     then: function (fn) {
                          return {
@@ -244,7 +244,7 @@ describe('app/settings/requests/retry.js passes and attempts retry but fails', f
                     }
                }))
           }).catch(function (res) {
-            console.log('res',res);
+            //console.log('res',res);
                expect(typeof res !== 'undefined').to.equal(true);
                done();
           });
