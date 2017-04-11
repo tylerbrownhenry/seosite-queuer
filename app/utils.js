@@ -317,33 +317,6 @@ function findBy(model, args, cb) {
      }
 }
 
-/**
- * delete an item from a dynamo table
- * @param  {String}   model dynamoose model
- * @param  {Object}   args  identifier(s) for item
- * @param  {Function} cb     callback accepts one paramaters, err
- */
-function deleteBy(model, args, cb) {
-     try {
-          model.delete(args, function (err) {
-               if (err) {
-                    if (typeof callback === 'function') {
-                         return cb(err);
-                    }
-
-               }
-               if (typeof callback === 'function') {
-                    return cb(null);
-               }
-
-          });
-     } catch (err) {
-          return cb({
-               message: 'error:delete:item'
-          });
-     }
-}
-
 function batchPut(model, commands, cb) {
      model.batchPut(commands, function (err, e) {
           cb(err, e);
