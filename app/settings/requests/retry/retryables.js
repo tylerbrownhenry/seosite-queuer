@@ -31,10 +31,10 @@ function notify(promise, msg) {
 }
 
 function markedRequstAsFailed(promise, opts) {
-  console.log('test');
+  // console.log('test');
      var _markedRequstAsFailed = require('../summary').markedRequstAsFailed;
      _markedRequstAsFailed({isRetry: true,promise:promise,requestId:opts.requestId,message:opts.message});
-     console.log('test');
+    //  console.log('test');
 
      return promise.promise;
 }
@@ -96,7 +96,7 @@ function processLinks(promise, opts){
 }
 
 function processLinksInit(promise, opts){
-  console.log('retrables.js --> processUrl', opts);
+  // console.log('retrables.js --> processUrl', opts);
   var _updateCount = require('../links/process').saveUpdatedCount,
   requestId = opts.requestId,
   newScan = opts.newScan,
@@ -144,7 +144,7 @@ function publishLink(promise,opts){
 
 
 function updatePageCount(promise,opts){
-  console.log('retrables.js --> updatePageCount', opts);
+  // console.log('retrables.js --> updatePageCount', opts);
   var _updatePageCount = require('../page/updateCount');
   _updatePageCount(opts.requestId, opts.updatedCount, opts.putObject).then(function(){
     promise.resolve();

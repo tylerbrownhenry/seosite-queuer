@@ -38,7 +38,6 @@ module.exports.start = function (amqpConn) {
 
           ch.prefetch(10);
 
-          // init('summary', consumeSummary, 'freeSummary', false, ch);
           init('links', consumeLink, 'links', true, ch);
           init('summary', consumeSummary, 'summary', true, ch);
           init('capture', consumeCapture, 'capture', true, ch);

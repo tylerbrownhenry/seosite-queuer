@@ -24,6 +24,7 @@ function completeRequest(promise, link, data) {
                //console.log('settings/requests/link.js --> completeRequest:failed', err);
                promise.reject({
                     system: 'dynamo',
+                    systemError:err,
                     i_id: link.requestId,
                     status: 'error',
                     message: 'error:request:complete',
@@ -72,7 +73,9 @@ function completeLink(promise, link, resp) {
                     //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):error');
                     //console.log('save link update error', err,resp);
                     promise.reject(_.extend({
-                         statusType: 'database',
+                         system: 'dynamo',
+                         systemError:err,
+                         statusType: 'failed',
                          status: 'error',
                          page: '/dashboard',
                          url: link.baseUrl,
@@ -128,6 +131,7 @@ function completeLink(promise, link, resp) {
                                   */
                                    promise.reject({
                                         system: 'dynamo',
+                                        systemError:err,
                                         requestId: link.requestId,
                                         status: 'error',
                                         statusType: 'failed',

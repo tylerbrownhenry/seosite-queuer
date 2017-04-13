@@ -75,12 +75,7 @@ function doit(url, requestId, inputSizes) {
                               });
                          });
                     });
-               }).then(function () {
-                    //console.log('done 2');
-                    // ph.exit();
-               }).finally(function () {
-                    //console.log('done');
-               })
+               });
           })
      }
 

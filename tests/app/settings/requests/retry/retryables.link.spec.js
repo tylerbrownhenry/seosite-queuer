@@ -80,7 +80,7 @@ describe('app/settings/requests/link.js 2', function () {
           stubPublish2 = sinon.stub(publisher, 'publish', function (a, b, c) {
                return {
                     then: function (fn, d) {
-                         console.log('publisher-', c);
+                        //  console.log('publisher-', c);
                          prom.resolve({
                               content: c
                          });
@@ -100,7 +100,7 @@ describe('app/settings/requests/link.js 2', function () {
           stubPublish2.restore();
      });
 
-     it('retry completeLink when fails 0', function (done) {
+     it('retry completeLink when fails 0', function () {
 
           this.timeout(1000);
           linkRequest.init({
@@ -115,21 +115,20 @@ describe('app/settings/requests/link.js 2', function () {
                     content: new Buffer(JSON.stringify(msg))
                }, {
                     ack: function (e) {
-                         console.log('e', e, 'promise--');
-                         console.log('---dfdfds');
+                        //  console.log('e', e, 'promise--');
+                        //  console.log('---dfdfds');
 
                          prom.promise.then(function (msg) {
                               var content = JSON.parse(msg.content);
-                              console.log('content--', content);
+                              // console.log('content--', content);
                               expect(content.page !== null).to.equal(true);
                               expect(content.i_id !== null).to.equal(true);
                               expect(content.isRetry === true).to.equal(true);
                               expect(content.retryCommand === 'request.link.completeLink').to.equal(true);
                               expect(content.retryOptions).to.be.defined;
                               expect(content.status).to.be.defined;
-                              done();
                          }).catch(function (e) {
-                              console.log('test', e)
+                              // console.log('test', e)
                          });
                     }
                });
@@ -148,7 +147,7 @@ describe('app/settings/requests/link.js 2', function () {
           stubPublish = sinon.stub(publisher, 'publish', function (a, b, c) {
                return {
                     then: function (fn, d) {
-                         console.log('publisher-', c);
+                        //  console.log('publisher-', c);
                          promise.resolve({
                               content: c
                          });

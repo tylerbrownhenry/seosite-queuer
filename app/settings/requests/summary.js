@@ -8,7 +8,6 @@ var dynamoose = require('dynamoose'),
      processMetaData = require("./meta/process"),
      processLinks = require("./links/process").init,
      publishCaptures = require("./capture/publish"),
-     //  notify = require('../../actions/callback'),
      publisher = require("../../amqp-connections/publisher"),
      q = require('q'),
      _ = require('underscore'),
@@ -54,7 +53,9 @@ function reject(promise, input) {
           page: input.page || null,
           type: input.type || 'page:request',
           status: 'error',
-          statusType: input.statusType || null
+          statusType: input.statusType || null,
+          system: input.system || null,
+          systemError:input.systemError || null
      };
      if (input.retry === true) {
           msg.retry = true;
@@ -69,7 +70,7 @@ function reject(promise, input) {
                }
                if(typeof msg.retryOptions.promise !== 'undefined'){
                   msg.retryOptions.promise = null;
-                  console.log('msg',msg.retryOptions.promise);
+                  // console.log('msg',msg.retryOptions.promise);
                }
           }
      } else {
@@ -137,6 +138,8 @@ function markedRequstAsFailed(input) {
                //console.log('request/summary.js --> markedRequstAsFailed:failed');
                return reject(input.promise,
                     _.extend({
+                         system: 'dynamo',
+                         systemError:err,
                          statusType: 'failed',
                          message: 'error:save:failed:scan',
                          notify: true,
@@ -168,7 +171,7 @@ function _saveAsActive(opts) {
      }, function (err) {
           if (err !== null) {
                //console.log('request/summary.js init -> _saveAsActive -> updateBy:failed');
-               promise.reject(opts);
+               promise.reject({opts:opts,err:err});
           } else {
                //console.log('request/summary.js init -> _saveAsActive -> updateBy:passed', opts);
                //  resolve(opts);
@@ -198,7 +201,7 @@ function saveAsActive(opts) {
           processUrl(res);
      }).catch(function (err) {
           //console.log('request/summary.js init -> saveAsActive:failed', err);
-          savingAsActiveError(opts);
+          savingAsActiveError({opts:e.opts,err:e.err});
      });
 }
 
@@ -206,19 +209,21 @@ function saveAsActive(opts) {
  * if there is an error saving the request, this sets to queue to retry until the save is performed
  * @param  {Object} opts request options
  */
-function savingAsActiveError(opts) {
+function savingAsActiveError(e) {
      //console.log('request/summary.js init -> _saveAsActive -> updateBy:failed -> savingAsActiveError', opts);
-     var promise = opts.promise;
+     var promise = e.opts.promise;
      opts.promise = undefined;
      return reject(promise,
           _.extend({
+               system: 'dynamo',
+               systemError:e.err,
                status: 'error',
                statusType: 'database',
                notify: true,
                message: 'error:save:scan:active',
                retry: true,
                retryCommand: 'request.summary.saveAsActive',
-               retryOptions: opts
+               retryOptions: e.opts
           }, opts));
 }
 
@@ -283,6 +288,8 @@ function processHar(input, res) {
                Here we should send the unsaved scan to rabbitMQ, and suggest restarting from here
                */
                return reject(promise, _.extend({
+                    system: 'dynamo',
+                    systemError:err,
                     statusType: 'database',
                     message: 'error:save:scan',
                     notify: true,
@@ -365,16 +372,9 @@ function processHar(input, res) {
                     }, function (err) {
                          //console.log('error?', err);
                          if (err) {
-                              /* Check */
-                              /* Check */
-                              /* Check */
-                              /* Check */
-                              /* Check */
-                              // return reject(promise, 'database', 'Trouble saving scan.', true, input, page, true, 'settings.request.summary.utils.update.by', {
-                              //      input: input
-                              // });
-                              //
                               return reject(promise, _.extend({
+                                   system: 'dynamo',
+                                   systemError:err,
                                    status: 'error',
                                    statusType: 'complete',
                                    message: 'error:save:scan',
@@ -402,12 +402,6 @@ function processHar(input, res) {
                                         message: 'success:scan:complete',
                                         notify: true
                                    }, input));
-                              /* Check */
-                              /* Check */
-                              /* Check */
-                              /* Check */
-                              /* Check */
-
                          }
                     });
                }

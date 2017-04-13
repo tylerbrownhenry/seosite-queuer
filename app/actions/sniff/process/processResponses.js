@@ -1,6 +1,6 @@
 var _ = require('underscore');
 var q = require('q');
-var entryHandler = require('../handleEntry');
+var entryHandler = require('../handleEntry').entryHandler;
 function processResponses(opts) {
      var promise = q.defer();
      opts = opts || {};
@@ -14,7 +14,7 @@ function processResponses(opts) {
      _.each(_.keys(data.log.entries), function (key, idx) {
           try {
                var entry = data.log.entries[key];
-               reqPromises.push(new entryHandler(entry, idx, key, options));
+               reqPromises.push(new entryHandler(entry, idx, options));
           } catch (err) {
                promise.reject(err);
           }

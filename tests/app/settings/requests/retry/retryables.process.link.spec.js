@@ -416,7 +416,6 @@ describe('app/settings/requests/links/process.js', function () {
                }]
           }
           processLink.init(input,res,'fakeHash',newScan).catch(function(content){
-              console.log('msg--',content);
 
 
           // promise.promise.catch(function (content) {
@@ -437,9 +436,9 @@ describe('app/settings/requests/links/process.js', function () {
                expect(content.retryOptions.input).to.be.defined;
                retryConsumer({content:new Buffer(JSON.stringify(content))}, {
                     ack: function (e) {
-                      console.log('e',e);
+                      // console.log('e',e);
                          var content = JSON.parse(e.content);
-                         console.log('content',content);
+                        //  console.log('content',content);
                          expect(content.retryCommand === 'settings.request.links.process.init').to.equal(true);
                          done();
                     }

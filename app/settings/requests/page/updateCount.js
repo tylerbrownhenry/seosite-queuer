@@ -13,6 +13,8 @@ var utils = require("../../../utils"),
  */
 function handleError(promise, err, requestId, updatedCount, putObject) {
      return promise.reject({
+          system: 'dynamo',
+          systemError:err,
           system: 'database',
           requestId: requestId,
           i_id: requestId,

@@ -49,6 +49,8 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                     if(err){
                       //console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
                       promise.reject({
+                           system: 'rabbitMQ',
+                           systemError:err,
                            page: input.page,
                            requestId: requestId,
                            uid: input.uid,
@@ -83,6 +85,8 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
      }).catch(function (err) {
        //console.log('request/links/process.js --> saveUpdatedCount:failed',err);
           promise.reject({
+               system: err.system,
+               systemError:err.systemError,
                page: input.page,
                requestId: requestId,
                uid: input.uid,
@@ -154,6 +158,8 @@ function init(input, res, requestId, newScan) {
      utils.batchPut(Link, commands, function (err, e) {
           if (err !== null) {
             promise.reject({
+                 system: 'dynamo',
+                 systemError:err,
                  page: input.page,
                  requestId: requestId,
                  uid: input.uid,

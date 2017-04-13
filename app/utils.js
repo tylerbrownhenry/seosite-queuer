@@ -104,40 +104,13 @@ function checkAvailActivity(oid, plan, type, callback) {
                }
                var dailyAvail = (activity[type + '-day-count'] < permission.limits.daily[type]);
                var monthlyAvail = (activity[type + '-month-count'] < permission.limits.monthly[type]);
+               console.log(permission.limits.monthly[type],activity[type + '-month-count']);
+               console.log(monthlyAvail,'monthlyAvail',dailyAvail);
                var decision = (dailyAvail === true && monthlyAvail === true);
                callback(null, decision);
           })
      })
 }
-
-/**
- * finds a user in dynamo
- * @param  {Object}   args     identifier(s) for the user
- * @param  {Function} callback callback accepts two paramaters, err and user data
- */
-function findUser(args, callback) {
-     try {
-          //console.log('User', args)
-          User.scan(args).exec(function (err, user) {
-               if (err) {
-                    if (typeof callback === 'function') {
-                         return callback(err);
-                    }
-               } else {
-                    if (typeof callback === 'function') {
-                         return callback(null, user);
-                    }
-               }
-          });
-     } catch (err) {
-          if (typeof callback === 'function') {
-               return callback({
-                    message: 'error:find:user'
-               });
-          }
-     }
-}
-
 /**
  * finds and returns a user in dynamo
  * @param  {Object}   args     identifier(s) for the user
@@ -158,6 +131,7 @@ function findOneUser(args, callback) {
                }
           });
      } catch (err) {
+       console.log('err',err);
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:find:user'
@@ -219,6 +193,8 @@ function updateUser(args, updates, callback) {
                }
           });
      } catch (err) {
+       console.log('err',err);
+
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:update:user'
@@ -324,12 +300,12 @@ function batchPut(model, commands, cb) {
 }
 
 module.exports.findBy = findBy;
+module.exports.checkPermissions = checkPermissions;
 module.exports.batchPut = batchPut;
 module.exports.updateBy = updateBy;
 module.exports.updateActivity = updateActivity;
 module.exports.checkActivity = checkActivity;
 module.exports.checkAvailActivity = checkAvailActivity;
-module.exports.findUser = findUser; /* Deprecate */
 module.exports.findOneUser = findOneUser;
 module.exports.updateUser = updateUser;
 module.exports.deleteUser = deleteUser;

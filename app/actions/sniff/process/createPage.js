@@ -10,7 +10,7 @@ function extractEmails(text) {
 }
 
 function findMime(page) {
-  console.log('page--->',page.resources);
+  // console.log('page--->',page.resources);
      if (page.resources && page.resources['1'] && page.resources['1'].endReply && page.resources['1'].endReply.contentType) {
           if (page.resources['1'].endReply.contentType) {
                return page.resources['1'].endReply.contentType['1']

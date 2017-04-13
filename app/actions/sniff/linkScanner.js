@@ -201,7 +201,6 @@ module.exports.init = function (input) {
           userAgent: instance.options.userAgent
      });;
 
-     //console.log('test--');
      enqueueLink(link, instance);
      //console.log('test--');
      var resp = checkUrl(link.url.original, input.baseUrl, defaultOptions);

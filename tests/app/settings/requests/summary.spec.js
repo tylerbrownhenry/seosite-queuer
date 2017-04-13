@@ -652,7 +652,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
           stubBatchPut.restore();
      });
 
-     it('not saving links completing scan', function (done) {
+     it('not saving links completing scan', function () {
           var promise = q.defer();
           processHar({
                     promise:  promise,
@@ -676,7 +676,7 @@ describe('app/settings/requests/summary.js process har with not saving links', f
                 expect(e.notify).to.equal(true);
                 // expect(e.retryCommand).to.be.defined;
                 // expect(e.retryOptions).to.be.defined;
-                done();
+                // done();
               });
      });
 
