@@ -10,7 +10,7 @@ var dynamoose = require('dynamoose'),
      q = require('q');
 
 function completeRequest(promise, link, data) {
-     //console.log('settings/requests/link.js --> completeRequest', data, '(Check if data has page property)', link);
+     console.log('settings/requests/link.js --> completeRequest', data, '(Check if data has page property)', link);
      // data should have the page id in it.
      // check if page is marked on the link? in the request data?
      utils.updateBy(Request, {
@@ -19,7 +19,8 @@ function completeRequest(promise, link, data) {
           $PUT: {
                status: 'complete'
           }
-     }, function (err) {
+     }, function (err,e) {
+       console.log(err,'PAGE INFO??',e);
           if (err) {
                //console.log('settings/requests/link.js --> completeRequest:failed', err);
                promise.reject({
@@ -44,7 +45,7 @@ function completeRequest(promise, link, data) {
                     message: 'success:scan:complete',
                     uid: link.uid,
                     page: data.page,
-                    type: 'page:request',
+                    type: 'page:scan',
                     status: 'success',
                     statusType: 'complete',
                     i_id: link.requestId
@@ -55,9 +56,10 @@ function completeRequest(promise, link, data) {
 }
 
 function completeLink(promise, link, resp) {
-     //console.log('RETRY');
+     console.log('RETRY',link,resp);
      utils.updateBy(Link, {
-               linkId: link.linkId
+               requestId: resp.requestId,
+               _id: link.linkId
           }, {
                $PUT: {
                     status: "complete",
@@ -71,7 +73,7 @@ function completeLink(promise, link, resp) {
                //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):response');
                if (err !== null) {
                     //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):error');
-                    //console.log('save link update error', err,resp);
+                    console.log('save link update error', err,resp);
                     promise.reject(_.extend({
                          system: 'dynamo',
                          systemError:err,
@@ -103,7 +105,7 @@ function completeLink(promise, link, resp) {
                     utils.updateBy(Request, input, update,
                          function (err, data) {
                               if (err) {
-                                   //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):error');
+                                   console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):error');
                                    /*
                                    Missed decrement
 
@@ -135,7 +137,7 @@ function completeLink(promise, link, resp) {
                                         requestId: link.requestId,
                                         status: 'error',
                                         statusType: 'failed',
-                                        type: 'page:request',
+                                        type: '',
                                         message: 'error:after:save:update:count',
                                         requestId: link.requestId,
                                         i_id: link.requestId,
@@ -149,17 +151,17 @@ function completeLink(promise, link, resp) {
                                    });
                                    /* Maybe push to queue to update it later? */
                               } else {
-                                   //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed');
+                                   console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed');
                                    utils.findBy(Request, {
                                         requestId: link.requestId
                                    }, function (err, data) {
-                                        //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response');
+                                        console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response');
                                         //console.log('test', data);
                                         if (data && (data.processes === 0 || data.processes < 0)) {
-                                             //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request complete');
+                                             console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request complete');
                                              completeRequest(promise, link, data);
                                         } else {
-                                             //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request not complete');
+                                             console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request not complete');
                                              promise.resolve(true);
                                         }
                                    });

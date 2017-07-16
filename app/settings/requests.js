@@ -171,7 +171,7 @@ var _ = require('underscore');
 //      return promise.promise;
 // }
 //
-// function summaryRequestValidate(user, request, permissions) {
+// function pageScanRequestValidate(user, request, permissions) {
 //      //console.log('######', request, user);
 //      var promise = q.defer();
 //      var perm = permissions;
@@ -304,7 +304,7 @@ var _ = require('underscore');
 // }
 
 // var approvedRequestTypes = {
-//      summary: summaryRequestValidate,
+//      pageScan: pageScanRequestValidate,
 //      link: linkRequestValidate,
 //      capture: captureRequestValidate
 // }
@@ -315,7 +315,8 @@ module.exports = {
      types: {
           link: require('./requests/link').init,
           retry: require('./requests/retry').init,
-          summary: require('./requests/summary').init,
-          capture: require('./requests/capture')
+          pageScan: require('./requests/pageScan').init,
+          capture: require('./requests/capture'),
+          customerUpdates: require('./requests/customerUpdates')
      }
 }

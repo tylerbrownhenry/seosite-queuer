@@ -1,9 +1,21 @@
 var User = require('./models/user'),
      dynamoose = require('dynamoose'),
-     activitySchema = require('./models/activity'),
-     Activity = dynamoose.model('Activity', activitySchema),
+     Activity = require('./models/activity'),
      Permission = require('./models/permission'),
      _ = require('underscore');
+
+function getNowUTC() {
+     var t = +new Date();
+     //  var d = new Date()
+     //  var n = d.getTimezoneOffset();
+     //  t -= n * 60 * 1000;
+     return t;
+}
+
+function sendEmail(){
+  console.log('sendEmail doesnt do sh*t!');
+}
+
 /**
  * checks that an object contains properties listed in an array
  * @param  {Object} input an object
@@ -56,6 +68,7 @@ function checkActivity(oid, callback) {
      Activity.get({
           oid: oid
      }, function (err, activity) {
+         console.log('checkActivity',err,activity);
           if (err) {
                if (typeof callback === 'function') {
                     return callback(err);
@@ -72,18 +85,31 @@ function checkActivity(oid, callback) {
  * @param  {Function} callback callback accepts two paramaters, err and premission data
  */
 function checkPermissions(plan, callback) {
-     Permission.get({
-          label: plan
-     }, function (err, permission) {
-          if (err) {
+    //  Permission.get({
+    //       label: plan
+    //  }, function (err, permission) {
+    //       if (err) {
                if (typeof callback === 'function') {
                     return callback(err);
                }
-          }
+          // }
           if (typeof callback === 'function') {
-               return callback(null, permission);
+              //  return callback(null, permission);
+              var permission = {
+                limits: {
+                  daily:{
+                    request:3,
+                    scan:3
+                  },
+                  monthly: {
+                    request:1,
+                    scan:1
+                  }
+                }
+              }
+               return callback(null,permission);
           }
-     });
+    //  });
 }
 
 /**
@@ -95,6 +121,7 @@ function checkPermissions(plan, callback) {
  */
 function checkAvailActivity(oid, plan, type, callback) {
      checkActivity(oid, function (err, activity) {
+       console.log('activity',activity);
           if (err) {
                return callback(err);
           }
@@ -104,8 +131,8 @@ function checkAvailActivity(oid, plan, type, callback) {
                }
                var dailyAvail = (activity[type + '-day-count'] < permission.limits.daily[type]);
                var monthlyAvail = (activity[type + '-month-count'] < permission.limits.monthly[type]);
-               console.log(permission.limits.monthly[type],activity[type + '-month-count']);
-               console.log(monthlyAvail,'monthlyAvail',dailyAvail);
+              //  console.log(permission.limits.monthly[type], activity[type + '-month-count']);
+               console.log(monthlyAvail, 'monthlyAvail', dailyAvail);
                var decision = (dailyAvail === true && monthlyAvail === true);
                callback(null, decision);
           })
@@ -119,7 +146,7 @@ function checkAvailActivity(oid, plan, type, callback) {
 function findOneUser(args, callback) {
      try {
           //console.log('User', args)
-          User.scan(args).exec(function (err, user) {
+          User.get(args,function (err, user) {
                if (err) {
                     if (typeof callback === 'function') {
                          return callback(err);
@@ -131,7 +158,7 @@ function findOneUser(args, callback) {
                }
           });
      } catch (err) {
-       console.log('err',err);
+          console.log('err', err);
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:find:user'
@@ -147,18 +174,18 @@ function findOneUser(args, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function updateBy(model, args, updates, callback) {
-     //console.log('updateBy');
+     console.log('updateBy');
      try {
-          //console.log('utils.js --> updateBy')
+          console.log('utils.js --> updateBy')
           model.update(args, updates, function (err) {
-               //console.log('utils.js --> updateBy -> response');
+               console.log('utils.js --> updateBy -> response');
                if (err) {
-                    //console.log('utils.js --> updateBy:failed');
+                    console.log('utils.js --> updateBy:failed');
                     if (typeof callback === 'function') {
                          return callback(err);
                     }
                }
-               //console.log('utils.js --> updateBy:passed');
+               console.log('utils.js --> updateBy:passed');
                if (typeof callback === 'function') {
                     return callback(null);
                }
@@ -193,7 +220,7 @@ function updateUser(args, updates, callback) {
                }
           });
      } catch (err) {
-       console.log('err',err);
+          console.log('err', err);
 
           if (typeof callback === 'function') {
                return callback({
@@ -205,7 +232,7 @@ function updateUser(args, updates, callback) {
 
 /**
  * saves a model in dynamo
- * @param  {Object}   model     identifier(s) for the user
+ * @param  {Object}   model     dynamoDB model instance
  * @param  {Function} callback callback accepts one paramater, err
  */
 function saveModel(model, callback) {
@@ -294,15 +321,18 @@ function findBy(model, args, cb) {
 }
 
 function batchPut(model, commands, cb) {
+  console.log('batchPut',commands);
      model.batchPut(commands, function (err, e) {
+       console.log('batchPut',err,e);
           cb(err, e);
      });
 }
-
+module.exports.getNowUTC = getNowUTC;
 module.exports.findBy = findBy;
 module.exports.checkPermissions = checkPermissions;
 module.exports.batchPut = batchPut;
 module.exports.updateBy = updateBy;
+module.exports.sendEmail = sendEmail;
 module.exports.updateActivity = updateActivity;
 module.exports.checkActivity = checkActivity;
 module.exports.checkAvailActivity = checkAvailActivity;

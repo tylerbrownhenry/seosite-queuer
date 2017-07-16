@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for app/settings/requests/capture.js</title>
+    <title>Code coverage report for app/settings/requests/customerUpdates.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../prettify.css" />
     <link rel="stylesheet" href="../../../base.css" />
@@ -16,13 +16,13 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../../index.html">all files</a> / <a href="index.html">app/settings/requests/</a> capture.js
+      <a href="../../../index.html">all files</a> / <a href="index.html">app/settings/requests/</a> customerUpdates.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">30.77% </span>
+        <span class="strong">37.5% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>4/13</span>
+        <span class='fraction'>3/8</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
@@ -32,12 +32,12 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/3</span>
+        <span class='fraction'>0/1</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">30.77% </span>
+        <span class="strong">37.5% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>4/13</span>
+        <span class='fraction'>3/8</span>
       </div>
     </div>
   </div>
@@ -56,74 +56,32 @@
 11
 12
 13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
+14</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var capture = require("../../actions/mobileCaptures/index").doit;
-var q = require('q');
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var q = require('q');
 &nbsp;
-<span class="fstat-no" title="function not covered" >function _capture(msg) {</span>
+<span class="fstat-no" title="function not covered" >function _customerUpdates(msg) {</span>
+<span class="cstat-no" title="statement not covered" >    console.log('settings/requests/customerUpdates --&gt; in');</span>
 <span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
-<span class="cstat-no" title="statement not covered" >     var input = JSON.parse(msg.content);</span>
-<span class="cstat-no" title="statement not covered" >     var url = input.url;</span>
-<span class="cstat-no" title="statement not covered" >     var sizes = input.sizes;</span>
-<span class="cstat-no" title="statement not covered" >     var requestId = input.requestId;</span>
-     //console.log('Capture Go', url, 'requestId', requestId);
-<span class="cstat-no" title="statement not covered" >     capture(url, requestId, sizes).then(<span class="fstat-no" title="function not covered" >function (res) {</span></span>
-          //console.log('Capture Success', res);
+<span class="cstat-no" title="statement not covered" >          console.log('settings/requests/customerUpdates --&gt; done');</span>
 <span class="cstat-no" title="statement not covered" >          promise.resolve({</span>
-               status: 'success',
-               size: res.size,
-               url: res.url,
-               requestId: res.requestId,
-               data: 'Captures taken'
+               status: 'success'
           });
-     }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-          //console.log('Capture Error', err);
-<span class="cstat-no" title="statement not covered" >          promise.reject(err);</span>
-     });
 <span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
 }
 &nbsp;
-module.exports = _capture;
+module.exports = _customerUpdates;
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->

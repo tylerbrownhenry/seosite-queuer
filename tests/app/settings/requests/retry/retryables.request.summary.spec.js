@@ -54,7 +54,7 @@ describe('app/settings/summary.js markedRequstAsFailed', function () {
           summmary.markedRequstAsFailed(input)
           input.promise.promise.catch(function (msg) {
                expect(msg.retry === true).to.be.true;
-               expect(msg.retryCommand === 'request.summary.markedRequstAsFailed').to.be.true;
+               expect(msg.retryCommand === 'request.pageScan.markedRequstAsFailed').to.be.true;
                expect(msg.uid).to.be.defined;
                expect(msg.i_id).to.be.defined;
                expect(msg.message).to.be.defined;
@@ -64,7 +64,7 @@ describe('app/settings/summary.js markedRequstAsFailed', function () {
                     ack: function (e) {
                               var content = JSON.parse(e.content);
                               expect(content.i_id !== null).to.equal(true);
-                              expect(content.retryCommand === 'request.summary.markedRequstAsFailed').to.equal(true);
+                              expect(content.retryCommand === 'request.pageScan.markedRequstAsFailed').to.equal(true);
                               expect(content.retryOptions).to.be.defined;
                               expect(content.status).to.be.defined;
                               prom.promise.then(function(e){

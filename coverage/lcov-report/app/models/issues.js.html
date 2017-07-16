@@ -1,14 +1,14 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for app/actions/scanPage/internal/messages.js</title>
+    <title>Code coverage report for app/models/issues.js</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../../prettify.css" />
-    <link rel="stylesheet" href="../../../../base.css" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../../sort-arrow-sprite.png);
+            background-image: url(../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -16,28 +16,28 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../../../index.html">all files</a> / <a href="index.html">app/actions/scanPage/internal/</a> messages.js
+      <a href="../../index.html">all files</a> / <a href="index.html">app/models/</a> issues.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>12/12</span>
+        <span class='fraction'>3/3</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>2/2</span>
+        <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>1/1</span>
+        <span class='fraction'>0/0</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">100% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>12/12</span>
+        <span class='fraction'>3/3</span>
       </div>
     </div>
   </div>
@@ -77,27 +77,7 @@
 32
 33
 34
-35
-36
-37
-38
-39
-40
-41
-42
-43</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+35</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -115,70 +95,66 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">59×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">62×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
-var errno = require("errno").code;
-var statusCodes = require("http").STATUS_CODES;
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var dynamoose = require('dynamoose');
 &nbsp;
-var i;
-&nbsp;
-var errors = {
-     EXPECTED_HTML: function (type) {
-          type = type == null ? type : '"' + type + '"';
-          return 'Expected type "text/html" but got ' + type;
+var issueSchema = new dynamoose.Schema({
+     tooManyLinks: {
+          type: Boolean,
+          default: false
      },
-     HTML_RETRIEVAL: "HTML could not be retrieved"
-};
+     noIssues: {
+          type: Boolean,
+          default: false
+     },
+     links: {
+          type: Number,
+          default: 0
+     },
+     resources: {
+          type: Number,
+          default: 0
+     },
+     security: {
+          type: Number,
+          default: 0
+     },
+     meta: {
+          type: Number,
+          default: 0
+     },
+     requestId: {
+          type: String,
+          hashKey: true,
+     }
+});
 &nbsp;
-var reasons = {
-     //BLC_CUSTOM: "Custom Exclusion",
-     BLC_EXTERNAL: "External URL Exclusion",
-     BLC_INTERNAL: "Internal URL Exclusion",
-     BLC_HTML: "HTML Exclusion",
-     BLC_INVALID: "Invalid URL",
-     BLC_KEYWORD: "Keyword Exclusion",
-     //BLC_LOCALPATH: "Local File Path Exclusion",
-     BLC_ROBOTS: "Robots Exclusion",
-     BLC_SAMEPAGE: "Same-page URL Exclusion",
-     BLC_SCHEME: "Scheme Exclusion",
-     BLC_UNKNOWN: "Unknown Error",
-&nbsp;
-     ERRNO_ENOTFOUND: "no matching dns record (ENOTFOUND)"
-};
-&nbsp;
-for (i in errno) {
-     reasons["ERRNO_" + i] = errno[i].description + " (" + i + ")";
-}
-&nbsp;
-for (i in statusCodes) {
-     reasons["HTTP_" + i] = statusCodes[i] + " (" + i + ")";
-}
-&nbsp;
-module.exports = {
-     errors: errors,
-     reasons: reasons
-};
+module.exports = dynamoose.model('Issues', issueSchema);
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sat Apr 08 2017 16:01:20 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jul 14 2017 18:44:59 GMT-0400 (EDT)
 </div>
 </div>
-<script src="../../../../prettify.js"></script>
+<script src="../../prettify.js"></script>
 <script>
 window.onload = function () {
         if (typeof prettyPrint === 'function') {
@@ -186,6 +162,6 @@ window.onload = function () {
         }
 };
 </script>
-<script src="../../../../sorter.js"></script>
+<script src="../../sorter.js"></script>
 </body>
 </html>

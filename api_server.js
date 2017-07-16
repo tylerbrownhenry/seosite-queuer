@@ -291,7 +291,7 @@ if (cluster.isMaster) {
      //
      //            _request.save(function (err, result) {
      //                 console.log('err', err, 'result', result);
-     //                 publisher.publish("", "summary", new Buffer(JSON.stringify(message))).then(function (re) {
+     //                 publisher.publish("", "pageScan", new Buffer(JSON.stringify(message))).then(function (re) {
      //                      console.log('server.js publisher.publish succees');
      //                      notify({
      //                           message: 'Starting Scan!',

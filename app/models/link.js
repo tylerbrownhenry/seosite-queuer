@@ -11,11 +11,20 @@ var linkSchema = new dynamoose.Schema({
           type: String
      },
      found: {
-          type: Date
+          type: String,
+          default: +new Date()
      },
      _id: {
           type: String,
-          hashKey: true
+          rangeKey: true
+          // ,
+          // index: {
+          //   global: true,
+          //   rangeKey: 'requestId',
+          //   name: 'linkIdIndex',
+          //   project: true, // ProjectionType: ALL
+          //   throughput: 5 // read and write are both 5
+          // }
      },
      linkId: {
           type: String
@@ -24,10 +33,8 @@ var linkSchema = new dynamoose.Schema({
           type: String
      },
      requestId: {
-          type: String
-     },
-     scanned: {
-          type: Date
+       type: String,
+       hashKey: true,
      },
      status: {
           type: String,

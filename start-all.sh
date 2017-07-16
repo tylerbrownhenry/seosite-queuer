@@ -9,4 +9,6 @@ cd dynamo-panel
 npm run-script dev &
 cd ~
 cd ../../usr/local/sbin/
-sh rabbitmq-server
+la
+
+# java -Djava.library.path=./DynamoDBLocal_lib -jar DynamoDBLocal.jar -sharedDb -port 9000

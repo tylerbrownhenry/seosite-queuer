@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Code coverage report for app/models/request.js</title>
+    <title>Code coverage report for app/models/security.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -16,7 +16,7 @@
 <div class='wrapper'>
   <div class='pad1'>
     <h1>
-      <a href="../../index.html">all files</a> / <a href="index.html">app/models/</a> request.js
+      <a href="../../index.html">all files</a> / <a href="index.html">app/models/</a> security.js
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
@@ -62,71 +62,9 @@
 17
 18
 19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39
-40
-41
-42
-43
-44
-45
-46
-47
-48
-49
-50
-51</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+20</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -145,54 +83,23 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var dynamoose = require('dynamoose');
 &nbsp;
-var requestSchema = new dynamoose.Schema({
+var securitySchema = new dynamoose.Schema({
+     type: {
+          type: String
+     },
+     message: {
+          type: String
+     },
+     text: {
+          type: String
+     },
      requestId: {
           type: String,
-          hashKey: true
-     },
-     retries: {
-          type: Number
-     },
-     uid: {
-          type: String
-     },
-     page: {
-          type: String
-     },
-     url: {
-          type: String
-     },
-     requestDate: {
-          type: Date,
-          default: +new Date()
-     },
-     options: {
-          type: Object
-     },
-     processes: {
-          type: Number,
-          default: 0
-     },
-     status: {
-          type: String,
-     },
-     failedReason: {
-          type: String,
-     },
-     response: {
-          type: Object
-     },
-}, {
-     throughput: {
-          read: 15,
-          write: 5
-     },
-     timestamps: {
-          createdAt: 'createdTs',
-          updatedAt: 'updatedTs'
+          hashKey: true,
      }
 });
-module.exports = requestSchema;
+&nbsp;
+module.exports = dynamoose.model('Security', securitySchema);
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->

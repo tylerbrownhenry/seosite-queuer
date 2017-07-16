@@ -32,7 +32,7 @@ module.exports = function (grunt) {
      // tasks
     //  grunt.registerTask("test", ["mochaTest"]);
     //  grunt.registerTask('coverage', ['clean', 'copy:views', 'env:coverage',
-          // 'instrument', 'reloadTasks', 'mochaTest', 'storeCoverage', 'makeReport'
+    //       'instrument', 'reloadTasks', 'mochaTest', 'storeCoverage', 'makeReport'
     //  ]);
      grunt.registerTask('istanbul', ['mocha_istanbul']);
 

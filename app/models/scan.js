@@ -34,7 +34,8 @@ var scanSchema = new dynamoose.Schema({
           type: Number
      },
      completedTime: {
-       type:Date
+        type: Date,
+        default: +new Date()
      },
      message: {
           type: String

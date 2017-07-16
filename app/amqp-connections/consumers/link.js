@@ -9,11 +9,11 @@ var dynamoose = require('dynamoose'),
  * @param  {object} msg content of rabbitMQ message
  */
 function processLink(msg, ch) {
-     //console.log('consumer/link.js processLink');
+     console.log('consumer/link.js processLink');
      var type = 'link';
      var promise = q.defer();
      settings.types.link(msg).then(function (response) {
-          //console.log('consumer/link.js ackking message processLink', response);
+          console.log('consumer/link.js ackking message processLink', response);
           if (response.notify === true) {
                notify(response);
           }
@@ -21,7 +21,7 @@ function processLink(msg, ch) {
           promise.resolve(response);
 
      }).catch(function (err) {
-          //console.log('consumer/link.js  failed message', err);
+          console.log('consumer/link.js  failed message', err);
           if (err.notify === true) {
                notify(err);
           }

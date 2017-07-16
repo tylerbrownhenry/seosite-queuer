@@ -1,4 +1,4 @@
-var dynamoose = require('dynamoose');;
+var dynamoose = require('dynamoose');
 
 var userSchema = new dynamoose.Schema({
      email: {
@@ -16,8 +16,7 @@ var userSchema = new dynamoose.Schema({
           default: 'org_admin'
      },
      oid: {
-          type: String,
-          hashKey: true
+          type: String
      },
      uid: {
           type: String,
@@ -63,7 +62,12 @@ var userSchema = new dynamoose.Schema({
           type: String,
      },
      resetPasswordExpires: {
-          type: Date,
+          type: String,
+          default: +new Date()
      },
+     created: {
+          type: String,
+          default: +new Date()
+     }
 });
 module.exports = dynamoose.model('User', userSchema);

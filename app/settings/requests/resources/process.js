@@ -1,5 +1,8 @@
-var _ = require('underscore');
-var interest = {
+var _ = require('underscore'),
+sh = require('shorthash'),
+ResourceModel = require('../../../models/resource'),
+utils = require('../../../utils'),
+interest = {
      "Content-Type": {
           "text/css": true,
           "text/css; charset=utf-8": true,
@@ -80,7 +83,31 @@ function processResources(input, res) {
      if (input.options
        && input.options.save
        && input.options.save.resources === true){
-          return postProcess(res);
+         var resources = postProcess(res);
+         var commands = [];
+         _.each(resources, function (resource) {
+              commands.push({
+                url: resource.url,
+                timings: resource.timings,
+                start: resource.start,
+                duration: resource.duration,
+                cached: resource.cached,
+                gzip: resource.gzip,
+                minified: resource.minified,
+                type: resource.type,
+                _id: sh.unique(JSON.stringify(resource) + input.requestId),
+                status: resource.status,
+               requestId: input.requestId
+              });
+         });
+
+         utils.batchPut(ResourceModel, commands, function (err, e) {
+              console.log('err', e);
+              if (err !== null) {
+
+              }
+         })
+          return resources;
      }
      return;
 }

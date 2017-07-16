@@ -22,8 +22,8 @@ var alertSchema = new dynamoose.Schema({
       type: String
     },
     requestDate: {
-      type: Date,
-      default: Date.now()
+      type: String,
+      default: +new Date()
     },
     temp_id: {
       type: String,

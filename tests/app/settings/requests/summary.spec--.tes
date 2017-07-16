@@ -1,6 +1,9 @@
+require('dotenv').config();
 var chai = require('chai'),
+
+    rewire = require('rewire'),
      expect = chai.expect,
-     utils = require('../../../../app/utils'),
+     utils = rewire('../../../../app/utils'),
      sniff = require('../../../../app/actions/sniff/index'),
      Request = require('../../../../app/models/request'),
      phantom = require('node-phantom-simple'),
@@ -167,14 +170,37 @@ describe('app/settings/requests/summary.js invalid because:', function () {
 });
 
 describe('app/settings/requests/summary.js with valid parameters', function () {
-     var stub;
-     beforeEach(function () {
-          stub = sinon.stub(dynamoose.models.Request, 'update');
-          stub.yieldsTo(true);
-     });
-     afterEach(function () {
-          stub.restore();
-     });
+     var stubUtils,stubSum;
+    //  beforeEach(function () {
+
+       beforeEach(function () {
+
+         utils.__set__('updateBy', function(a, b, c, cb) {
+           console.log('yay it worked!');
+           cb({
+             error: true
+           });
+         });
+         });
+
+            // stubUtils = sinon.stub(utils, 'updateBy', function (a, b, c, cb) {
+            //      cb({
+            //           error: true
+            //      });
+            // });
+            // stubSum = sinon.stub(dynamoose.models.Request, 'update',function(){
+            //   return true;
+            // });
+                  // stubSum.yieldsTo(true);
+      //  });
+      //  afterEach(function () {
+    //    });
+     //
+    //  });
+    //  afterEach(function () {
+              //  stubSum.restore();
+          // stubUtils.restore();
+    //  });
      it('summaryRequest fail to save request sends back message to retry', function (done) {
           summaryRequest({
                content: new Buffer(JSON.stringify({

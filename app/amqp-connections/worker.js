@@ -9,10 +9,11 @@ var errorHandler = require('../settings/errorHandler'),
 /*
 Consumer Actions
 */
-var consumeSummary = require("./consumers/summary"),
+var consumePageScan = require("./consumers/pageScan"),
      consumeLink = require("./consumers/link"),
      consumeCapture = require("./consumers/capture"),
-     consumeRetry = require("./consumers/retry");
+     consumeRetry = require("./consumers/retry"),
+     consumeCustomerUpdates = require("./consumers/customerUpdates");
 
 /**
  * initilizes rabbitMQ consumer
@@ -39,9 +40,10 @@ module.exports.start = function (amqpConn) {
           ch.prefetch(10);
 
           init('links', consumeLink, 'links', true, ch);
-          init('summary', consumeSummary, 'summary', true, ch);
+          init('page:scan', consumePageScan, 'page:scan', true, ch);
           init('capture', consumeCapture, 'capture', true, ch);
           init('retry', consumeRetry, 'retry', true, ch);
+          init('customerUpdates', consumeCustomerUpdates, 'customerUpdates', true, ch);
           /**
            * initalize consumer
            * @param  {String} assertName
@@ -52,7 +54,7 @@ module.exports.start = function (amqpConn) {
            * @return {[type]}            [description]
            */
           function init(assertName, queueFunc, queueName, ack, ch) {
-               //console.log('ch init');
+               console.log('ch init',assertName,queueName);
                ch.assertQueue(queueName, {
                     durable: true
                }, function (err, _ok) {
@@ -62,6 +64,7 @@ module.exports.start = function (amqpConn) {
                          return;
                     }
                     ch.consume(assertName, function (e) {
+                      // console.log('worker',e);
                          queueFunc(e, ch);
                     }, {
                          noAck: false

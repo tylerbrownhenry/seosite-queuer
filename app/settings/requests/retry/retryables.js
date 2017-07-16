@@ -5,7 +5,7 @@ function requiresDatabase() {
 }
 
 function saveAsActive(promise, opts) {
-     var _saveAsActive = require('../settings/requests/summary').saveAsActive;
+     var _saveAsActive = require('../settings/requests/pageScan').saveAsActive;
      opts.promise = promise;
      opts.requestId = opts.i_id;
      opts.isRetry = true;
@@ -14,7 +14,7 @@ function saveAsActive(promise, opts) {
 }
 
 function processHar(promise, opts) {
-     var _processHar = require('../summary').processHar;
+     var _processHar = require('../pageScan').processHar;
      opts.input.promise = promise;
      opts.input.isRetry = true;
      opts.input.requestId = opts.i_id;
@@ -32,7 +32,7 @@ function notify(promise, msg) {
 
 function markedRequstAsFailed(promise, opts) {
   // console.log('test');
-     var _markedRequstAsFailed = require('../summary').markedRequstAsFailed;
+     var _markedRequstAsFailed = require('../pageScan').markedRequstAsFailed;
      _markedRequstAsFailed({isRetry: true,promise:promise,requestId:opts.requestId,message:opts.message});
     //  console.log('test');
 
@@ -41,10 +41,17 @@ function markedRequstAsFailed(promise, opts) {
 
 function processUrl(promise, opts) {
      ////console.log('retrables.js --> processUrl', opts);
-     var _processUrl = require('../summary').processUrl;
+     var _processUrl = require('../pageScan').processUrl;
+     var promise = q.defer();
      opts.promise = promise;
      opts.isRetry = true;
-     _processUrl(opts);
+     _processUrl(opts).then(function(msg){
+       console.log('processUrl passed',msg);
+          //  promise.resolve(msg);
+     }).catch(function(e){
+        //  promise.reject(e);
+        console.log('processUrl failed',e);
+     });
      return opts.promise.promise;
 }
 
@@ -176,10 +183,10 @@ function updateCount(promise,opts){
 var commands = {
      'request:page:update:count': updatePageCount,
      'settings.request.links.updateCount':updateCount,
-     'request.summary.markedRequstAsFailed': markedRequstAsFailed,
-     'request.summary.processUrl': processUrl,
-     'request.summary.saveAsActive': saveAsActive,
-     'request.summary.processHar': processHar,
+     'request.pageScan.markedRequstAsFailed': markedRequstAsFailed, /* Sends isretry */
+     'request.pageScan.processUrl': processUrl, /* Sends isretry */
+     'request.pageScan.saveAsActive': saveAsActive, /* Sends isretry */
+     'request.pageScan.processHar': processHar,/* Sends isretry */
      'request.link.completeLink': completeLink,
      'processLinks': processLinks,
      'settings.request.links.process.init':processLinksInit,

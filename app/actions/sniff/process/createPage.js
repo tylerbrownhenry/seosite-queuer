@@ -30,7 +30,7 @@ function saveThumb(page, opts) {
 }
 
 function run(page, promise, ph, options) {
-  // console.log('page',page);
+  console.log('page',page,'options.url',options.url);
      page.address = options.url;
      page.customHeaders = {
           'Cache-Control': 'no-cache',
@@ -40,45 +40,48 @@ function run(page, promise, ph, options) {
      page.types = {};
      page.options = options;
      var connectWaitTimeout = setTimeout(function () {
-          page.get("content", function (content) {
-               //console.log('done yet?',content);
-          }, function () {
+          // page.get("content", function (content) {
+              //  console.log('done yet?');
+          // }, function () {
                //console.log('done yet?');
-          })
+          // })
      }, 5000)
      try {
           page.set("viewportSize", {
                width: 1920,
                height: 1080
           });
+          console.log('PAGE.address',page.address);
           page.open(page.address, function (err, status) {
 
 
               //  var thumb = saveThumb(page, opts);
               // var thumg = 'test...';
-               //console.log('status', status, 'err', err);
+               console.log('status', status, 'err', err);
                if (status !== 'success') {
                     var statusMessage = '';
                     if (status) {
                          statusMessage = '( Status : ' + status + ' )';
                     }
                     promise.reject(new errors.ConnectionError('Failed to load the URL ' + statusMessage));
+                    ph.exit();
+                    return;
                }
 
               contentWaitTimeout = setTimeout(function () {
                     //// console.log('yo!');
                     page.get('cookies', function (err, cookies) {
-                      //console.log('cookies--->',JSON.stringify(cookies));
+                      console.log('cookies--->',JSON.stringify(cookies));
                          if (err) {
                               //// return //console.error("Error occurred running `page.get('cookies')`:\n" + err);
                          }
                          page.get('content', function (err, content) {
-                              // console.log('content--->');
-                              ph.exit();
+                              console.log('content---> err',err);
                               clearTimeout(connectWaitTimeout);
                               clearTimeout(contentWaitTimeout);
                               if (err) {
-                                  ////  return //console.error("Error occurred running `page.get('content')`:\n" + err);
+                                    ph.exit();
+                                   return //console.error("Error occurred running `page.get('content')`:\n" + err);
                               }
 
                               //// console.log('content--->',err);
@@ -101,16 +104,11 @@ function run(page, promise, ph, options) {
                               var passedEmails = [];
 
                               // console.log('actions/sniff/index.js');
-                              //// console.log('thumb',thumb);
+                              console.log('thumb');
                               scrapeHtml(content, page.address, page.customHeaders).then(function (instance) {
-                                  // console.log('createHAR');
-                                   try {
-                                     var har = createHAR(page);
-
-                                   } catch (e) {
-                                   } finally {
-
-                                   }
+                                  console.log('createHAR');
+                                  var har = createHAR(page);
+                                  console.log('har',har);
                                    har.links = instance.foundLinks;
                                    har.url = {
                                         resolvedUrl: page.finalUrl,
@@ -121,7 +119,9 @@ function run(page, promise, ph, options) {
                                   //  thumb.then(function (res) {
                                         // har.thumb = res;
                                         har.thumb = 'this.jpg';
+                                        ph.exit();  
                                         promise.resolve(har);
+                                        console.log('har');
                                   //  });
                               }).catch(function (err) {
                                    //console.log('err', err);
@@ -207,7 +207,7 @@ function createPage(opts) {
                // }
                //console.log("status: " + status);
                // page.render("google.png");
-               // phantom.exit();
+              //  phantom.exit();
           };
           // console.log('createPage3',page);
           run(page, promise, ph, options);

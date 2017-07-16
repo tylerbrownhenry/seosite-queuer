@@ -11,11 +11,15 @@ var requestSchema = new dynamoose.Schema({
      uid: {
           type: String
      },
+     page: {
+          type: String
+     },
      url: {
           type: String
      },
      requestDate: {
-          type: Date
+          type: Date,
+          default: +new Date()
      },
      options: {
           type: Object

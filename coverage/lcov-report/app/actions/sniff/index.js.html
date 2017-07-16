@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">22.22% </span>
+        <span class="strong">20% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>8/36</span>
+        <span class='fraction'>8/40</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">5% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/13</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">22.22% </span>
+        <span class="strong">20% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>8/36</span>
+        <span class='fraction'>8/40</span>
       </div>
     </div>
   </div>
@@ -183,10 +183,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -202,12 +202,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -272,10 +272,10 @@ q = require('q');
                          page: page,
                          ph: ph
                     }).then(<span class="fstat-no" title="function not covered" >function (res) {</span>
-                         //console.log('actions/sniff/index.js har -&gt; openPage -&gt; phantom.create:passed -&gt; ph.createPage:passed -&gt;createPage:passed');
+<span class="cstat-no" title="statement not covered" >                         console.log('actions/sniff/index.js har -&gt; openPage -&gt; phantom.create:passed -&gt; ph.createPage:passed -&gt;createPage:passed');</span>
 <span class="cstat-no" title="statement not covered" >                         promise.resolve(res);</span>
                     }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-                         //console.log('actions/sniff/index.js har -&gt; openPage -&gt; phantom.create:passed -&gt; ph.createPage:passed -&gt;createPage:failed');
+<span class="cstat-no" title="statement not covered" >                         console.log('actions/sniff/index.js har -&gt; openPage -&gt; phantom.create:passed -&gt; ph.createPage:passed -&gt;createPage:failed');</span>
 <span class="cstat-no" title="statement not covered" >                         promise.reject(err);</span>
 <span class="cstat-no" title="statement not covered" >                         if (typeof ph !== 'undefined' &amp;&amp; typeof ph.exit === 'function') {</span>
 <span class="cstat-no" title="statement not covered" >                              ph.exit(); </span>// Abort PhantomJS when an error occurs.
@@ -291,12 +291,12 @@ q = require('q');
   //console.log('actions/sniff/index.js har -&gt; openPage -&gt;');
 <span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     openPage(opts).then(<span class="fstat-no" title="function not covered" >function (data) {</span></span>
-         //console.log('actions/sniff/index.js processResponses -&gt;');
+<span class="cstat-no" title="statement not covered" >         console.log('actions/sniff/index.js processResponses -&gt;');</span>
 <span class="cstat-no" title="statement not covered" >          processResponses({</span>
                data: data,
                options: opts
           }).then(<span class="fstat-no" title="function not covered" >function (res) {</span>
-              //console.log('actions/sniff/index.js -&gt; processResponses -&gt; then',res);
+<span class="cstat-no" title="statement not covered" >              console.log('actions/sniff/index.js -&gt; processResponses -&gt; then',res);</span>
 <span class="cstat-no" title="statement not covered" >               promise.resolve(res);</span>
           }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
                //console.log('actions/sniff/index.js -&gt; processResponses -&gt; catch',err);
@@ -316,7 +316,7 @@ module.exports.har = har;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Apr 12 2017 20:27:20 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jul 14 2017 18:44:59 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

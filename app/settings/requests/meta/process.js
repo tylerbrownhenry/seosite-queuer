@@ -1,13 +1,19 @@
-var _ = require('underscore');
+var _ = require('underscore'),
+     metaData = require('../../../models/metaData'),
+     Issue = require('../../../models/issues'),
+     sh = require("shorthash"),
+     utils = require('../../../utils'),
+     Security = require('../../../models/security');
+
 /**
  * adds the properties ['meta','grade','issues'] to newScan object
  * @return {Object} modified version of Scan object
  */
 
-function processMetaData(newScan,input,res) {
-  //console.log('result--');
+function processMetaData(newScan, input, res) {
+     //console.log('result--');
      if (input.options && input.options.save && input.options.save.metaData === true) {
-          newScan.meta = {
+          var meta = {
                title: {
                     message: 'error:meta:no:title',
                     text: '',
@@ -36,24 +42,24 @@ function processMetaData(newScan,input,res) {
           var links = _.filter(res.links, function (link) {
                if (typeof link.specialCase !== 'undefined') {
                     if (link.specialCase === 'title') {
-                         newScan.meta.title.found = true;
-                         newScan.meta.title.text = link.html.text;
-                         newScan.meta.title.message = 'Found'
+                         meta.title.found = true;
+                         meta.title.text = link.html.text;
+                         meta.title.message = 'Found'
                     } else if (link.specialCase === 'description') {
-                         newScan.meta.description.found = true;
-                         newScan.meta.description.element = link.html.tag;
-                         newScan.meta.description.text = link.html.attrs.content;
-                         newScan.meta.description.message = 'Found'
+                         meta.description.found = true;
+                         meta.description.element = link.html.tag;
+                         meta.description.text = link.html.attrs.content;
+                         meta.description.message = 'Found'
                     } else if (link.specialCase === 'h1') {
-                         newScan.meta.h1.found = true;
-                         newScan.meta.h1.element = link.html.tag;
-                         newScan.meta.h1.text = link.html.attrs.content;
-                         newScan.meta.h1.message = 'Found'
+                         meta.h1.found = true;
+                         meta.h1.element = link.html.tag;
+                         meta.h1.text = link.html.attrs.content;
+                         meta.h1.message = 'Found'
                     } else if (link.specialCase === 'h2') {
-                         newScan.meta.h2.found = true;
-                         newScan.meta.h2.element = link.html.tag;
-                         newScan.meta.h2.text = link.html.attrs.content;
-                         newScan.meta.h2.message = 'Found'
+                         meta.h2.found = true;
+                         meta.h2.element = link.html.tag;
+                         meta.h2.text = link.html.attrs.content;
+                         meta.h2.message = 'Found'
                     }
                     return false;
                } else if (link.html.tagName === 'meta') {
@@ -68,16 +74,16 @@ function processMetaData(newScan,input,res) {
 
           var metaIssueCount = 0;
 
-          if (newScan.meta.title.found !== true) {
+          if (meta.title.found !== true) {
                metaIssueCount++
           }
-          if (newScan.meta.description.found !== true) {
+          if (meta.description.found !== true) {
                metaIssueCount++
           }
-          if (newScan.meta.h1.found !== true) {
+          if (meta.h1.found !== true) {
                metaIssueCount++
           }
-          if (newScan.meta.h2.found !== true) {
+          if (meta.h2.found !== true) {
                metaIssueCount++
           }
 
@@ -98,6 +104,27 @@ function processMetaData(newScan,input,res) {
                }
           });
 
+          var commands = [];
+          _.each(_.keys(meta), function (key) {
+               console.log('META');
+               commands.push({
+                    "_id": sh.unique(key + newScan.requestId),
+                    "type": key,
+                    "element": meta[key].element,
+                    "found": meta[key].found,
+                    "message": meta[key].message,
+                    "text": meta[key].text,
+                    "requestId": newScan.requestId
+               });
+          });
+
+          utils.batchPut(metaData, commands, function (err, e) {
+               console.log('err', e);
+               if (err !== null) {
+
+               }
+          });
+
           //console.log('2', links);
           var linkIssueCount = 0;
 
@@ -105,16 +132,19 @@ function processMetaData(newScan,input,res) {
           if (tooManyLinks) {
                linkIssueCount++
           }
+
           if (tooManyLinks === false &&
                linkIssueCount === 0 &&
                resourceIssueCount === 0 &&
                metaIssueCount === 0 &&
                (!newScan.emails || (newScan.emails && newScan.emails.length === 0))) {
                newScan.issues = {
+                    requestId: newScan.requestId,
                     noIssues: true
                };
           } else {
                newScan.issues = {
+                    requestId: newScan.requestId,
                     tooManyLinks: tooManyLinks,
                     links: linkIssueCount,
                     resources: resourceIssueCount,
@@ -122,6 +152,31 @@ function processMetaData(newScan,input,res) {
                     meta: metaIssueCount
                }
           }
+
+          var issue = new Issue(newScan.issues);
+          console.log('Issue', issue);
+          utils.saveModel(issue, function (err) {
+               console.log('--err', err);
+          });
+
+          var commands = [];
+          _.each(newScan.emails, function (email) {
+               commands.push({
+                    "_id": sh.unique(email + newScan.requestId),
+                    "type": 'email',
+                    "message": 'plain:text:email',
+                    "text": email,
+                    "requestId": newScan.requestId
+               });
+          });
+
+          utils.batchPut(Security, commands, function (err, e) {
+               console.log('err', e);
+               if (err !== null) {
+
+               }
+          })
+
           newScan.grade = {
                letter: 'B',
                message: 'grade:b:message'
@@ -129,4 +184,5 @@ function processMetaData(newScan,input,res) {
      }
      return newScan;
 }
+
 module.exports = processMetaData;

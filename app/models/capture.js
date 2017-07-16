@@ -5,6 +5,9 @@ var captureSchema = new dynamoose.Schema({
           type: String,
           hashKey: true
      },
+     uid: {
+          type: String,
+     },
      url: {
           type: Object
      },

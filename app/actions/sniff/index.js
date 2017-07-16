@@ -49,10 +49,10 @@ function openPage(opts) {
                          page: page,
                          ph: ph
                     }).then(function (res) {
-                         //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:passed');
+                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:passed');
                          promise.resolve(res);
                     }).catch(function (err) {
-                         //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed');
+                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed');
                          promise.reject(err);
                          if (typeof ph !== 'undefined' && typeof ph.exit === 'function') {
                               ph.exit(); // Abort PhantomJS when an error occurs.
@@ -68,12 +68,12 @@ function har(opts) {
   //console.log('actions/sniff/index.js har -> openPage ->');
      var promise = q.defer();
      openPage(opts).then(function (data) {
-         //console.log('actions/sniff/index.js processResponses ->');
+         console.log('actions/sniff/index.js processResponses ->');
           processResponses({
                data: data,
                options: opts
           }).then(function (res) {
-              //console.log('actions/sniff/index.js -> processResponses -> then',res);
+              console.log('actions/sniff/index.js -> processResponses -> then',res);
                promise.resolve(res);
           }).catch(function (err) {
                //console.log('actions/sniff/index.js -> processResponses -> catch',err);

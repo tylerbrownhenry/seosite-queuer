@@ -52,6 +52,7 @@
     "urlobj": "0.0.10"
   },
   "devDependencies": {
+    "aws-sdk-mock": "^1.7.0",
     "chai": "^3.4.0",
     "grunt": "~0.4.5",
     "grunt-benchmark": "^1.0.0",
@@ -78,6 +79,7 @@
     "minami": "^1.1.1",
     "mocha": "^3.2.0",
     "nock": "^2.17.0",
+    "rewire": "^2.5.2",
     "should": "~3.1.2",
     "sinon": "^1.17.2",
     "supertest": "~0.9.0"

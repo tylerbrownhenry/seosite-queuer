@@ -30,9 +30,9 @@ function updateCount(requestId, updatedCount, response) {
 }
 
 function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input) {
-  //console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands,linkObj,input);
+  console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands,linkObj,input);
      updateCount(requestId, updatedCount, newScan).then(function (resp) {
-          //console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
+          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
           //console.log('commands',commands);
           _.each(commands, function (command) {
                var id = command._id;
@@ -54,10 +54,10 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                            page: input.page,
                            requestId: requestId,
                            uid: input.uid,
-                           statusType: 'failed',
                            status: 'error',
+                           statusType: 'failed',
                            message: 'error:publish:link',
-                           type: 'page:request',
+                           type: '',
                            retry: true,
                            retryCommand: 'publish:link',
                            retryOptions: {
@@ -68,14 +68,14 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                            }
                       });
                     } else {
-                      //console.log('summary.js successfully published to queue');
+                      //console.log('pageScan.js successfully published to queue');
                       promise.resolve({
                            page: input.page,
                            requestId: requestId,
                            uid: input.uid,
+                           status: 'success',
                            statusType: 'update',
                            notify: true,
-                           status: 'success',
                            param: commands.length,
                            message: 'success:found:links'
                       });
@@ -95,7 +95,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                message: 'error:update:link:count',
                notify: true,
                retry: true,
-               type: 'page:request',
+               type: '',
                retryCommand: 'settings.request.links.updateCount',
                retryOptions: {
                     commands: commands,
@@ -129,7 +129,7 @@ function init(input, res, requestId, newScan) {
      var commands = [];
      var linkObj = {};
 
-     //console.log('request/links/process.js --> build commands');
+     console.log('request/links/process.js --> build commands');
      _.each(links, function (link) {
           if (link.url) {
                var linkId = sh.unique(link.url.original + requestId);
@@ -153,9 +153,10 @@ function init(input, res, requestId, newScan) {
                }
           }
      });
-     //console.log('request/links/process.js --> build commands:passed --> batchPut');
+     console.log('request/links/process.js --> build commands:passed --> batchPut');
      var updatedCount = 0;
      utils.batchPut(Link, commands, function (err, e) {
+           console.log('err',e);
           if (err !== null) {
             promise.reject({
                  system: 'dynamo',
@@ -168,7 +169,7 @@ function init(input, res, requestId, newScan) {
                  message: 'error:update:link:count',
                  notify: true,
                  retry: true,
-                 type: 'page:request',
+                 type: '',
                  retryCommand: 'settings.request.links.process.init', /* Add to retryables */
                  retryOptions: {
                       res: res,

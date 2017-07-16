@@ -42,7 +42,7 @@ function handleError(promise, err, requestId, updatedCount, putObject) {
  * @return {promise}
  */
 function updateCount(requestId, updatedCount, putObject) {
-     //console.log('app/settings/requests/page/updateCount.js:init');
+     console.log('app/settings/requests/page/updateCount.js:init');
      var promise = q.defer();
      utils.updateBy(Request, {
           requestId: requestId
@@ -53,7 +53,7 @@ function updateCount(requestId, updatedCount, putObject) {
                //console.log('app/settings/requests/page/updateCount.js:failed');
                return handleError(promise, err, requestId, updatedCount, putObject)
           } else {
-               //console.log('app/settings/requests/page/updateCount.js:passed');
+               console.log('app/settings/requests/page/updateCount.js:passed');
                promise.resolve({
                     requestId: requestId,
                     updatedCount: updatedCount

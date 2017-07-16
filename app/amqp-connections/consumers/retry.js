@@ -32,9 +32,11 @@ function processRequest(msg,ch) {
                   if(typeof e === 'object' && e.retry === true){
                     ch.nack(msg);
                   } else {
-                    ch.ack();
+                    ch.ack(msg);
                   }
                 });
+          } else {
+            ch.ack(msg);
           }
     });
 }
