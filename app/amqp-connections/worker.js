@@ -11,8 +11,10 @@ Consumer Actions
 */
 var consumePageScan = require("./consumers/pageScan"),
      consumeLink = require("./consumers/link"),
+     consumeResource = require("./consumers/resource"),
      consumeCapture = require("./consumers/capture"),
      consumeRetry = require("./consumers/retry"),
+     consumeActions = require("./consumers/actions"),
      consumeCustomerUpdates = require("./consumers/customerUpdates");
 
 /**
@@ -26,15 +28,15 @@ module.exports.start = function (amqpConn) {
                return; /* Restart or something? */
           }
           ch.on("drain", function (err) {
-               //console.error("[AMQP] channel drgain", err);
+               console.error("[AMQP] channel drgain", err);
           });
 
           ch.on("error", function (err) {
-               //console.error("[AMQP] channel error", err); /* Restart or something? */
+               console.error("[AMQP] channel error", err); /* Restart or something? */
           });
 
           ch.on("close", function () {
-               //console.log("[AMQP] channel closed");
+               console.log("[AMQP] channel closed");
           });
 
           ch.prefetch(10);
@@ -43,7 +45,9 @@ module.exports.start = function (amqpConn) {
           init('page:scan', consumePageScan, 'page:scan', true, ch);
           init('capture', consumeCapture, 'capture', true, ch);
           init('retry', consumeRetry, 'retry', true, ch);
+          init('resource', consumeResource, 'resource', true, ch);
           init('customerUpdates', consumeCustomerUpdates, 'customerUpdates', true, ch);
+          init('actions', consumeActions, 'actions', true, ch);
           /**
            * initalize consumer
            * @param  {String} assertName
@@ -59,12 +63,10 @@ module.exports.start = function (amqpConn) {
                     durable: true
                }, function (err, _ok) {
                     if (errorHandler(amqpConn, err)) {
-                         //console.log('amqpConn', amqpConn, 'err', err);
                          /* Restart or something? */
                          return;
                     }
                     ch.consume(assertName, function (e) {
-                      // console.log('worker',e);
                          queueFunc(e, ch);
                     }, {
                          noAck: false

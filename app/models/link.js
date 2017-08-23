@@ -43,6 +43,9 @@ var linkSchema = new dynamoose.Schema({
      __link: {
           type: Object
      },
+     attrs: {
+          type: Object
+     },
      results: {
           type: Object
      }

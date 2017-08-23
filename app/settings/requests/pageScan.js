@@ -1,4 +1,4 @@
-var dynamoose = require('dynamoose'),
+let dynamoose = require('dynamoose'),
      requestSchema = require("../../models/request"),
      Request = dynamoose.model('Request', requestSchema),
      Scan = require("../../models/scan"),
@@ -7,15 +7,16 @@ var dynamoose = require('dynamoose'),
      processResources = require("./resources/process").processResources,
      processMetaData = require("./meta/process"),
      processLinks = require("./links/process").init,
+     actions = require("./actions").publish,
      publishCaptures = require("./capture/publish"),
      publisher = require("../../amqp-connections/publisher"),
      q = require('q'),
      _ = require('underscore'),
      sh = require("shorthash"),
      moment = require('moment'),
-     _notify = require('../../actions/notify'),
+     _notify = require('../../actions/notify').notify,
      Capture = require('../../models/capture'),
-     sniff = require('../../actions/sniff/index');
+     sniff = require('../../actions/browse/index');
 
 /**
  * broadcast status message back to dashboard
@@ -29,7 +30,7 @@ function notify(opts) {
           status: opts.status,
           statusType: opts.statusType,
           message: opts.message,
-          page: opts.page,
+          source: opts.source,
           type: opts.type
      };
      _notify(msg);
@@ -41,7 +42,6 @@ function notify(opts) {
  * @param  {Object} input   request data
  */
 function reject(promise, input) {
-     console.log('request/pageScan.js -> failed -> reject', input, 'promise', promise);
      if (typeof input === 'undefined') {
           input = {}
      }
@@ -50,8 +50,8 @@ function reject(promise, input) {
           requestId: input.requestId || null,
           i_id: input.i_id || input.requestId || null,
           url: input.url || null,
-          page: input.page || null,
-          type: input.type || '',
+          source: input.source || null,
+          type: input.type || 'page:scan',
           status: 'error',
           statusType: input.statusType || null,
           system: input.system || null,
@@ -70,7 +70,6 @@ function reject(promise, input) {
                msg.retryOptions = input.retryOptions;
                if(typeof msg.retryOptions.promise !== 'undefined'){
                   msg.retryOptions.promise = null;
-                  // console.log('msg',msg.retryOptions.promise);
                }
           }
      } else {
@@ -98,8 +97,8 @@ function resolve(promise, input) {
      var msg = {
           uid: input.uid || null,
           requestId: input.requestId || null,
-          page: input.page || null,
-          type: input.type || '',
+          source: input.source || null,
+          type: input.type || 'page:scan',
           status: input.status || null,
           statusType: input.statusType || null,
           completedTime: utils.getNowUTC(),
@@ -108,7 +107,6 @@ function resolve(promise, input) {
      if (input.notify === true) {
           msg.notify = true;
      }
-     console.log('requests/pageScan.js --> resolve!');
      promise.resolve(msg);
 }
 
@@ -117,7 +115,6 @@ function resolve(promise, input) {
  * @param  {Object} input
  */
 function markedRequstAsFailed(input) {
-    //  console.log('request/pageScan.js --> markedRequstAsFailed ->');
      utils.updateBy(Request, {
           requestId: input.requestId
      }, {
@@ -127,7 +124,6 @@ function markedRequstAsFailed(input) {
           }
      }, function (_err) {
           if (_err === null) {
-               //console.log('request/pageScan.js --> markedRequstAsFailed:passed');
                return reject(input.promise,
                     _.extend({
                          statusType: 'failed',
@@ -135,7 +131,6 @@ function markedRequstAsFailed(input) {
                          notify: true
                     }, input))
           } else {
-               //console.log('request/pageScan.js --> markedRequstAsFailed:failed');
                return reject(input.promise,
                     _.extend({
                          system: 'dynamo',
@@ -161,7 +156,6 @@ function markedRequstAsFailed(input) {
  * @return {Promise}     promise
  */
 function _saveAsActive(opts) {
-     //console.log('request/pageScan.js init -> _saveAsActive -> !!', opts);
      var promise = q.defer();
      utils.updateBy(Request, {
           requestId: opts.requestId
@@ -171,16 +165,10 @@ function _saveAsActive(opts) {
           }
      }, function (err) {
           if (err !== null) {
-               //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:failed');
                promise.reject({opts:opts,err:err});
           } else {
-               //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed', opts);
-               //  resolve(opts);
-               //  notify(response);
-               //
-               //
                notify(_.extend({
-                    type: '',
+                    type: 'page:scan',
                     status: 'success',
                     statusType: 'update',
                     message: 'success:scan:init'
@@ -196,12 +184,9 @@ function _saveAsActive(opts) {
  * @param  {Object} opts request Options
  */
 function saveAsActive(opts) {
-     console.log('request/pageScan.js init -> saveAsActive ->');
      _saveAsActive(opts).then(function (res) {
-          console.log('request/pageScan.js init -> saveAsActive:passed', res);
           processUrl(res);
      }).catch(function (err) {
-          //console.log('request/pageScan.js init -> saveAsActive:failed', err);
           savingAsActiveError({opts:e.opts,err:e.err});
      });
 }
@@ -211,7 +196,6 @@ function saveAsActive(opts) {
  * @param  {Object} opts request options
  */
 function savingAsActiveError(e) {
-     //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:failed -> savingAsActiveError', opts);
      var promise = e.opts.promise;
      opts.promise = undefined;
      return reject(promise,
@@ -234,23 +218,31 @@ function savingAsActiveError(e) {
  * @param  {Object} res   information returned from page scan
  */
 function processHar(input, res) {
-     console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar',res,'input',input);
      var url = input.url,
           options = input.options,
           promise = input.promise,
           requestId = input.requestId,
           uid = input.uid,
-          page = input.page,
+          source = input.source,
           url = input.url,
           isRetry = input.isRetry;
-    console.log('processHar',options,input);
-     //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> publishCaptures');
-    //  publishCaptures(input, res);
+
      var newScan = new Scan(res);
-     //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> processHtml');
 
      newScan.requestId = requestId;
-     resources = processResources(input, res);
+     var resp = processResources(input, res);
+     var resources = resp.resources;
+     var waitCount = resp.waitCount;
+
+
+        waitCount += 35;
+        publishCaptures(input, res);
+        actions('softwareSummary',input,res,newScan)
+        actions('checkSSL',input,res,newScan)
+        actions('tapTargetCheck',input,res,newScan)
+        actions('checkSocial',input,res,newScan)
+        actions('serverInfo',input,res,newScan);
+
 
      if (options && options.save && options.save.resources === true) {
           newScan.resources = resources;
@@ -260,11 +252,6 @@ function processHar(input, res) {
           newScan.emails = res.emails;
      }
      newScan.thumb = res.thumb;
-     /* FIX */
-     /* FIX */
-     /* FIX */
-     /* FIX */
-     /* FIX */
 
      newScan = processMetaData(newScan, input, res);
      delete newScan.emails;
@@ -283,11 +270,9 @@ function processHar(input, res) {
      delete newScan.log;
      newScan.uid = input.uid;
 
-     //console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save ->');
      utils.saveScan(newScan, function (err) {
-          //console.log('huh?');
           if (err !== null) {
-               console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:failed');
+              //  console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:failed');
                /*
                Here we should send the unsaved scan to rabbitMQ, and suggest restarting from here
                */
@@ -306,12 +291,11 @@ function processHar(input, res) {
                }, input));
 
           } else {
-               console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed');
+              //  console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed');
                if (options && options.save && options.save.links === true && typeof res.links !== 'undefined' && res.links.length !== 0) {
-                    console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks');
+                    // console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks');
                     res.linkCount = res.links.length;
-                    processLinks(input, res, requestId, newScan).then(function (_res) {
-                         console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed -> processLinks:passed',page);
+                    processLinks(input, res, requestId, newScan, waitCount).then(function (_res) {
 
                          /* Check */
                          /* Check */
@@ -323,10 +307,10 @@ function processHar(input, res) {
                          resolve(promise, {
                               requestId: requestId,
                               uid: uid,
-                              page: page,
+                              source: source,
                               status: _res.status,
                               statusType: _res.statusType,
-                              type: '',
+                              type: 'page:scan',
                               message: _res.message,
                               notify: true
                          });
@@ -357,7 +341,7 @@ function processHar(input, res) {
                               requestId: requestId,
                               uid: input.uid,
                               url: input.url,
-                              page: input.page,
+                              source: input.source,
                               retry: err.retry,
                               notify: err.notify,
                               retryCommand: err.retryCommand,
@@ -366,7 +350,7 @@ function processHar(input, res) {
                     });
 
                } else {
-                    console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed --> No Links Found');
+                    // console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed -> processHar -> newScan.save:passed --> No Links Found');
                     utils.updateBy(Request, {
                          requestId: requestId
                     }, {
@@ -421,7 +405,7 @@ function processHar(input, res) {
  * @return {Boolean}
  */
 function shouldRetry(input, err) {
-     console.log('shouldRetry ** should have better logic eventually',input,input.isRetry === true);
+    //  console.log('shouldRetry ** should have better logic eventually',input,input.isRetry === true);
      if (input.isRetry === true) {
           return false;
      }
@@ -434,20 +418,23 @@ function shouldRetry(input, err) {
  */
 function processUrl(input) {
      var promise = q.defer();
-     console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har',input);
+    //  console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har',input);
+     try{
+
+
      sniff.har({
           url: input.url,
           uid: input.uid,
           options: input.options,
           requestId: input.requestId
      }).then(function (res) {
-          console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed',input);
+          // console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:passed',input);
           processHar(input, res);
           return promise.resolve();
      }).catch(function (err) {
-          console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed', err,input);
+          // console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed', err,input);
           if (shouldRetry(input, err)) {
-            console.log('trying again?')
+            // console.log('trying again?')
                return reject(input.promise,
                     _.extend({
                          message: 'error:scan:retry',
@@ -458,12 +445,15 @@ function processUrl(input) {
                          retryOptions: input
                     }, input));
           }
-          console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed -> is a retry');
+          // console.log('request/pageScan.js init -> _saveAsActive -> updateBy:passed -> processUrl -> sniff.har:failed -> is a retry');
           markedRequstAsFailed(_.extend({
                message: 'error:unable:to:scan',
           }, input));
           return promise.reject({});
      });
+   }catch(e){
+     console.log('e',e);
+   }
      return promise.promise;
 }
 
@@ -473,16 +463,14 @@ function processUrl(input) {
  * @return {Promise} promise function
  */
 function init(msg) {
-     console.log('request/pageScan.js init', msg);
+    //  console.log('request/pageScan.js init', msg);
      var promise = q.defer();
      var input = preFlight(promise, msg, reject);
      if (input === false) {
           return promise.promise;
      }
-     console.log('input',input);
-     var page = input.page;
+     var source = input.source;
      if (utils.checkRequirements(input, ['url', 'requestId', 'uid', 'options']) === true) {
-          //console.log('request/pageScan.js init -> checkRequirements : failed');
           reject(promise,
                _.extend({
                     message: 'error:missing:required:fields',
@@ -491,8 +479,7 @@ function init(msg) {
                     notify: true
                }, input));
      } else {
-          //console.log('request/pageScan.js init -> checkRequirements : passed ->');
-          input.page = page;
+          input.source = source;
           input.promise = promise;
           saveAsActive(input);
      }

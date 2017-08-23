@@ -8,37 +8,43 @@ var scanSchema = new dynamoose.Schema({
      uid: {
           type: String
      },
-     meta: {
-          type: Object
-     },
-     resources: {
+     htmlResults: {
           type: Object
      },
      issues: {
           type: Object
-     },
-     emails: {
-          type: Object
-     },
-     linkCount: {
-          type: Number
      },
      thumb: {
           type: String
      },
      url: {
           type: Object,
-          default:{}
+          default: {}
      },
      redirects: {
           type: Number
      },
      completedTime: {
-        type: Date,
-        default: +new Date()
+          type: Date,
+          default: +new Date()
      },
      message: {
           type: String
+     },
+     sslEnabled: {
+          type: String
+     },
+     social:{
+       type:Object
+     },
+     serverInfo:{
+      type: Object
+     },
+     fontInfo: {
+        type: Object
+     },
+     tapTargetCheck: {
+       type:Object
      },
      status: {
           type: String

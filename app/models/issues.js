@@ -9,6 +9,14 @@ var issueSchema = new dynamoose.Schema({
           type: Boolean,
           default: false
      },
+     sitemap: {
+          type: Boolean,
+          default: false
+     },
+     robots: {
+          type: Boolean,
+          default: false
+     },
      links: {
           type: Number,
           default: 0

@@ -31,8 +31,8 @@ function enqueueLink(link, instance) {
 
 var RobotDirectives = require("robot-directives");
 
-function scan(html, baseUrl, robots, instance) {
-    //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js scan html:',html,'baseUrl:',baseUrl,'robots:',robots,'instance:',instance);
+function scan(html, baseUrl, robots, instance,requestId) {
+     //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js scan html:',html,'baseUrl:',baseUrl,'robots:',robots,'instance:',instance);
 
      var promise = q.defer();
      var tree;
@@ -40,26 +40,33 @@ function scan(html, baseUrl, robots, instance) {
 
      instance.baseUrl = baseUrl;
      instance.robots = robots;
-
+     var htmlLength = html.length;
      parseHtml(html).then(function (document) {
           tree = document;
-          return scrapeHtml(document, robots);
-     }).then(function (links) {
-          //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js parseHtml:links',links)
-          instance.foundLinks = links;
-          instance._tree = tree;
+          scrapeHtml(document, robots).then(function (results) {
+               //console.log('app/actions/sniff/linkChecker/initScrapeHtml.js parseHtml:links',links)
+               instance.foundLinks = results.links;
+               instance.htmlResults = results.html
+               instance.htmlResults.htmlLength = htmlLength;
+               instance.htmlResults.textToHtml = Number((instance.htmlResults.textLength / htmlLength) * 100);
+               instance._tree = tree;
 
-          if (typeof instance !== 'undefined' || typeof instance.foundLinks === 'undefined' || instance.foundLinks === null || instance.foundLinks.length === 0) {
-               return promise.resolve(instance);
-          }
+               if (typeof instance !== 'undefined' || typeof instance.foundLinks === 'undefined' || instance.foundLinks === null || instance.foundLinks.length === 0) {
+                    return promise.resolve(instance);
+               }
 
-          _.each(links, function (link) {
-               enqueueLink(link, instance);
+               _.each(results.links, function (link) {
+                    enqueueLink(link, instance);
+               });
+
+               instance.parsed = true;
+               promise.resolve(instance);
+          }).catch(function (err) {
+               promise.reject({
+                    status: 'error',
+                    message: err
+               });
           });
-
-          instance.parsed = true;
-          promise.resolve(instance);
-
      }).catch(function (err) {
           promise.reject({
                status: 'error',
@@ -70,7 +77,7 @@ function scan(html, baseUrl, robots, instance) {
      return promise.promise;
 };
 
-function _scan(html, url, headers) {
+function _scan(html, url, headers,requestId) {
      function Instance() {
           this.active = false;
           this.baseUrl = undefined;
@@ -87,7 +94,7 @@ function _scan(html, url, headers) {
      instance.currentRobots = new RobotDirectives({
           userAgent: instance.options.userAgent /* Is default what we want? */
      });
-     return scan(html, url, instance.currentRobots, instance);
+     return scan(html, url, instance.currentRobots, instance,requestId);
 }
 
 module.exports = _scan;

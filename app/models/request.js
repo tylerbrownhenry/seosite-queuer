@@ -11,6 +11,12 @@ var requestSchema = new dynamoose.Schema({
      uid: {
           type: String
      },
+     source: {
+          type: String
+     },
+     requestType:{
+       type:String
+     },
      page: {
           type: String
      },

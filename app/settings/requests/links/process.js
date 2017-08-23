@@ -20,7 +20,7 @@ function updateCount(requestId, updatedCount, response) {
           processes: updatedCount,
           dev_use_only_request: response.currentResponse,
           response: {
-               resolvedUrl: response.url.resolvedUrl,
+               url: response.url.url,
                statusMessage: 'Success',
                redirects: response.redirects,
                failedReason: null
@@ -29,8 +29,8 @@ function updateCount(requestId, updatedCount, response) {
      return _updateCount(requestId, updatedCount, putObject);
 }
 
-function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input) {
-  console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands,linkObj,input);
+function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input) {
+     console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands, linkObj, input);
      updateCount(requestId, updatedCount, newScan).then(function (resp) {
           console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
           //console.log('commands',commands);
@@ -42,52 +42,54 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                     requestId: requestId,
                     linkId: linkObj[id]._id,
                     uid: input.uid,
-                    baseUrl: newScan.url.resolvedUrl,
+                    baseUrl: newScan.url.url,
                     _link: linkObj[id]
                }));
                publisher.publish("", "links", buffer).then(function (err) {
-                    if(err){
-                      //console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
-                      promise.reject({
-                           system: 'rabbitMQ',
-                           systemError:err,
-                           page: input.page,
-                           requestId: requestId,
-                           uid: input.uid,
-                           status: 'error',
-                           statusType: 'failed',
-                           message: 'error:publish:link',
-                           type: '',
-                           retry: true,
-                           retryCommand: 'publish:link',
-                           retryOptions: {
-                                buffer: buffer,
-                                type: newScan.url.resolvedUrl,
-                                messageId: linkObj[id]._id,
-                                uid: input.uid
-                           }
-                      });
-                    } else {
-                      //console.log('pageScan.js successfully published to queue');
-                      promise.resolve({
-                           page: input.page,
-                           requestId: requestId,
-                           uid: input.uid,
-                           status: 'success',
-                           statusType: 'update',
-                           notify: true,
-                           param: commands.length,
-                           message: 'success:found:links'
-                      });
-                    }
+                    //  if(err){
+                    //    console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
+                    //    promise.reject({
+                    //      system: 'rabbitMQ',
+                    //      systemError:err,
+                    //      source: input.source,
+                    //      requestId: requestId,
+                    //      uid: input.uid,
+                    //      status: 'error',
+                    //      statusType: 'failed',
+                    //      message: 'error:publish:link',
+                    //      type: 'page:scan',
+                    //      retry: true,
+                    //      retryCommand: 'publish:link',
+                    //      retryOptions: {
+                    //        buffer: buffer,
+                    //        type: newScan.url.url,
+                    //        messageId: linkObj[id]._id,
+                    //        uid: input.uid
+                    //      }
+                    //    });
                });
           });
+          // } else {
+          // console.log('pageScan.js successfully published to queue');
+          promise.resolve({
+               source: input.source,
+               requestId: requestId,
+               uid: input.uid,
+               status: 'success',
+               statusType: 'update',
+               notify: true,
+               param: commands.length,
+               message: 'success:found:links'
+          });
+          // }
+          //  });
+          // });
      }).catch(function (err) {
-       //console.log('request/links/process.js --> saveUpdatedCount:failed',err);
+          //console.log('request/links/process.js --> saveUpdatedCount:failed',err);
           promise.reject({
                system: err.system,
-               systemError:err.systemError,
-               page: input.page,
+               systemError: err.systemError,
+               source: input.source,
                requestId: requestId,
                uid: input.uid,
                statusType: 'failed',
@@ -95,17 +97,17 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                message: 'error:update:link:count',
                notify: true,
                retry: true,
-               type: '',
+               type: 'page:scan',
                retryCommand: 'settings.request.links.updateCount',
                retryOptions: {
                     commands: commands,
                     updatedCount: updatedCount,
                     requestId: requestId,
                     newScan: newScan,
-                    linkObj:linkObj,
+                    linkObj: linkObj,
                     input: {
-                      page:input.page,
-                      uid:input.uid
+                         source: input.source,
+                         uid: input.uid
                     }
                }
           });
@@ -118,14 +120,14 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
  * @param  {Object} res   scan response object
  * @return {Promise}
  */
-function init(input, res, requestId, newScan) {
+function init(input, res, requestId, newScan, waitCount) {
      //console.log('request/links/process.js', newScan);
      var promise = q.defer();
      var links = res.links;
      res.links = undefined;
      res.linkCount = links.length;
 
-     var parentLink = newScan.url.resolvedUrl;
+     var parentLink = newScan.url.url;
      var commands = [];
      var linkObj = {};
 
@@ -134,12 +136,15 @@ function init(input, res, requestId, newScan) {
           if (link.url) {
                var linkId = sh.unique(link.url.original + requestId);
                if (typeof linkObj[linkId] === 'undefined') {
+                    //  console.log('link.html.attrs',link.html.attrs);
+                    //  console.log('link.##',link);
                     commands.push({
                          "_id": linkId,
                          "__scan": {},
                          "__link": link,
                          "found": Date(),
                          "linkId": linkId,
+                         "attrs": link.html.attrs,
                          "resolvedUrl": parentLink,
                          "requestId": requestId,
                          "scanned": null,
@@ -153,34 +158,35 @@ function init(input, res, requestId, newScan) {
                }
           }
      });
-     console.log('request/links/process.js --> build commands:passed --> batchPut');
-     var updatedCount = 0;
+     //  console.log('request/links/process.js --> build commands:passed --> batchPut');
+     var updatedCount = waitCount;
      utils.batchPut(Link, commands, function (err, e) {
-           console.log('err',e);
+          console.log('err', e);
           if (err !== null) {
-            promise.reject({
-                 system: 'dynamo',
-                 systemError:err,
-                 page: input.page,
-                 requestId: requestId,
-                 uid: input.uid,
-                 statusType: 'failed',
-                 status: 'error',
-                 message: 'error:update:link:count',
-                 notify: true,
-                 retry: true,
-                 type: '',
-                 retryCommand: 'settings.request.links.process.init', /* Add to retryables */
-                 retryOptions: {
-                      res: res,
-                      requestId: requestId,
-                      newScan: newScan,
-                      input: {
-                        page:input.page,
-                        uid:input.uid
-                      }
-                 }
-            });
+               promise.reject({
+                    system: 'dynamo',
+                    systemError: err,
+                    source: input.source,
+                    requestId: requestId,
+                    uid: input.uid,
+                    statusType: 'failed',
+                    status: 'error',
+                    message: 'error:update:link:count',
+                    notify: true,
+                    retry: true,
+                    type: 'page:scan',
+                    retryCommand: 'settings.request.links.process.init',
+                    /* Add to retryables */
+                    retryOptions: {
+                         res: res,
+                         requestId: requestId,
+                         newScan: newScan,
+                         input: {
+                              source: input.source,
+                              uid: input.uid
+                         }
+                    }
+               });
                //console.log('request/links/process.js --> build commands:passed --> batchPut:failed',err);
                // FIRST FIX HERE
                // FIRST FIX HERE
@@ -188,21 +194,21 @@ function init(input, res, requestId, newScan) {
                // FIRST FIX HERE
                // FIRST FIX HERE
                // FIRST FIX HERE
-              //  return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
-              //       requestId: requestId,
-              //       updatedCount: updatedCount,
-              //       newScan: newScan,
-              //       commands: commands,
-              //       parentLink: parentLink,
-              //       requestId: requestId
-              //  });
+               //  return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
+               //       requestId: requestId,
+               //       updatedCount: updatedCount,
+               //       newScan: newScan,
+               //       commands: commands,
+               //       parentLink: parentLink,
+               //       requestId: requestId
+               //  });
           }
           //console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
           /*
           checkcheck if e is undeinfed...
           */
           updatedCount = commands.length;
-          saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,linkObj,input);
+          saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input);
      });
      return promise.promise;
 };

@@ -24,7 +24,7 @@ if (!Date.prototype.toISOString) {
 }
 
 function openPage(opts) {
-  //console.log('actions/sniff/index.js har -> openPage -> phantom.create ->');
+  console.log('actions/sniff/index.js har -> openPage -> phantom.create ->',opts);
      var promise = q.defer();
      var phantomInstance;
      phantom.create(function (err, ph) {
@@ -40,10 +40,10 @@ function openPage(opts) {
           phantomInstance = ph;
           ph.createPage(function (err, page) {
                if (err) {
-                    //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:failed');
+                    console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:failed',err);
                     promise.reject(err);
                } else {
-                    //console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed');
+                    console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed');
                     createPage({
                          options: opts,
                          page: page,
@@ -52,7 +52,7 @@ function openPage(opts) {
                          console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:passed');
                          promise.resolve(res);
                     }).catch(function (err) {
-                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed');
+                         console.log('actions/sniff/index.js har -> openPage -> phantom.create:passed -> ph.createPage:passed ->createPage:failed',err);
                          promise.reject(err);
                          if (typeof ph !== 'undefined' && typeof ph.exit === 'function') {
                               ph.exit(); // Abort PhantomJS when an error occurs.
@@ -65,8 +65,11 @@ function openPage(opts) {
 }
 
 function har(opts) {
-  //console.log('actions/sniff/index.js har -> openPage ->');
+  console.log('actions/sniff/index.js har -> openPage ->');
      var promise = q.defer();
+     try{
+
+
      openPage(opts).then(function (data) {
          console.log('actions/sniff/index.js processResponses ->');
           processResponses({
@@ -83,6 +86,9 @@ function har(opts) {
           //console.log('--error', err, 'error');
           promise.reject(err);
      });
+   }catch(e){
+console.log('e',e);
+   }
      return promise.promise;
 }
 

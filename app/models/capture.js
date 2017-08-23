@@ -5,12 +5,12 @@ var captureSchema = new dynamoose.Schema({
           type: String,
           hashKey: true
      },
-     uid: {
-          type: String,
-     },
-     url: {
-          type: Object
-     },
+    //  uid: {
+    //       type: String,
+    //  },
+    //  url: {
+    //       type: Object
+    //  },
      '1920x1080': {
           type: String,
           default: null
@@ -36,8 +36,8 @@ var captureSchema = new dynamoose.Schema({
           default: null
      },
      status: {
-          type: String,
-          default: 'init'
+          type: Boolean,
+          default: false
      }
 });
 

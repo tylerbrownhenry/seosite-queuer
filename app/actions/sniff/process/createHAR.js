@@ -9,7 +9,7 @@ function processResource(page, key, entries,types,address) {
         startReply = resource.startReply,
         endReply = resource.endReply,
         error = resource.error;
-// console.log('page.resources',resource,key);
+        console.log('page.resources',resource,key);
 
     if (!request || !startReply || !endReply) {
         return;
@@ -116,7 +116,6 @@ function createHAR(page) {
         endTime = new Date(page.endTime).getTime(),
         startTime = new Date(page.startTime).getTime(),
         onLoadTime = endTime - startTime;
-
 
     var entries = [];
 

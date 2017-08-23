@@ -11,7 +11,7 @@ var updateSchema = new dynamoose.Schema({
     message: {
       type: String,
     },
-    page: {
+    source: {
       type: String
     },
     type: {

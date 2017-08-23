@@ -133,7 +133,7 @@ var _ = require('underscore');
 //                message: JSON.stringify(err.message),
 //                title: 'Validation Error',
 //                uid: req.body.uid,
-//                page: req.body.page,
+//                source: req.body.page,
 //                type: req.body.type,
 //                temp_id: req.body.temp_id,
 //                i_id: null,
@@ -315,8 +315,10 @@ module.exports = {
      types: {
           link: require('./requests/link').init,
           retry: require('./requests/retry').init,
-          pageScan: require('./requests/pageScan').init,
+          resource: require('./requests/resource').init,
+          pageScan: require('./requests/pageScan/process').process,
           capture: require('./requests/capture'),
+          actions: require('./requests/actions').process,
           customerUpdates: require('./requests/customerUpdates')
      }
 }

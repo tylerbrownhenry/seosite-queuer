@@ -1,35 +1,45 @@
-var pageScan = require("../../settings/requests").types.pageScan,
-     notify = require('../../actions/notify'),
-     retry =  require('../../settings/requests/retry').publish;
+var processAction = require("../../settings/requests").types.pageScan,
+     notify = require('../../actions/notify').notify,
+     retry =  require('../../settings/requests/retry').publish,
+     actions =  require('../../settings/requests/actions').actions,
+     utils =  require('../../utils');
 /**
  * consumer of a page sumamry request from rabbitMQ
  * @param  {object} msg content of rabbitMQ message
  * @param  {object} cj  rabbitMQ channel
  */
 function processSummary(msg, ch) {
-     //console.log('consumers/pageScan.js -> processSummary');
      var type = 'page:scan';
-     pageScan(msg).then(function (response) {
-          console.log('consumers/pageScan.js request success',response);
+     var input = JSON.parse(msg.content);
+     processAction(msg,'process').then((response)=>{
+       console.log('processSummary sucesss ',response);
           if (response.notify === true) {
                notify(response);
           }
+          utils.retryUpdateRequest({
+               requestId: input.requestId
+          }, q.defer());
           ch.ack(msg);
-     }).catch(function (err) {
-          console.log('consumers/pageScan.js request failed');
+     }).catch((err) => {
+       console.log('processSummary err',err);
+          const _action = actions[input.action];
           if (err.notify === true) {
                notify(err);
-               console.log('retry1');
           }
           if (err.softRetry === true) {
-              console.log('retry2');
-               ch.nack(msg);
-          } else if (err.retry === true) {
-                console.log('retry3');
-                err.objectType = 'request';
-                retry(err);
+               return ch.nack(msg);
+          }
+          if (input.isRetry !== true) {
+               if (_action.retry.can === true) {
+                    retry(err);
+               }
+          } else {
+            utils.retryUpdateRequest({
+                 requestId: input.requestId
+            }, q.defer());
           }
           ch.ack(msg);
-     })
+          promise.reject();
+     });
 }
 module.exports = processSummary;

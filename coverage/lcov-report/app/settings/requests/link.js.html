@@ -548,7 +548,7 @@ function completeRequest(promise, link, data) {
                     message: 'success:scan:complete',
                     uid: link.uid,
                     page: data.page,
-                    type: '',
+                    type: 'page:scan',
                     status: 'success',
                     statusType: 'complete',
                     i_id: link.requestId
@@ -640,7 +640,7 @@ function completeLink(promise, link, resp) {
                                         requestId: link.requestId,
                                         status: 'error',
                                         statusType: 'failed',
-                                        type: '',
+                                        type: 'page:scan',
                                         message: 'error:after:save:update:count',
                                         requestId: link.requestId,
                                         i_id: link.requestId,

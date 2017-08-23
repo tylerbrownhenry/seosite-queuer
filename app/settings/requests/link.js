@@ -1,62 +1,18 @@
 var dynamoose = require('dynamoose'),
+     querystring = require('querystring'),
      linkScanner = require("../../actions/sniff/linkScanner"),
      linkSchema = require("../../models/link"),
      Link = dynamoose.model('Link', linkSchema),
      requestSchema = require("../../models/request"),
      Request = dynamoose.model('Request', requestSchema),
-     notify = require('../../actions/notify'),
+     notify = require('../../actions/notify').notify,
      utils = require('../../utils'),
      _ = require('underscore'),
-     q = require('q');
-
-function completeRequest(promise, link, data) {
-     console.log('settings/requests/link.js --> completeRequest', data, '(Check if data has page property)', link);
-     // data should have the page id in it.
-     // check if page is marked on the link? in the request data?
-     utils.updateBy(Request, {
-          requestId: link.requestId
-     }, {
-          $PUT: {
-               status: 'complete'
-          }
-     }, function (err,e) {
-       console.log(err,'PAGE INFO??',e);
-          if (err) {
-               //console.log('settings/requests/link.js --> completeRequest:failed', err);
-               promise.reject({
-                    system: 'dynamo',
-                    systemError:err,
-                    i_id: link.requestId,
-                    status: 'error',
-                    message: 'error:request:complete',
-                    requestId: link.requestId,
-                    retry: true,
-                    retryCommand: 'link.request.completeRequest',
-                    retryOptions: {
-                         link: link,
-                         data: data
-                    }
-               });
-          } else {
-               /* un hard code type and page */
-               /* check if notify is formatted correctly */
-               //console.log('Scan complete', link, 'data', data);
-               notify({
-                    message: 'success:scan:complete',
-                    uid: link.uid,
-                    page: data.page,
-                    type: 'page:scan',
-                    status: 'success',
-                    statusType: 'complete',
-                    i_id: link.requestId
-               });
-               promise.resolve(true);
-          }
-     });
-}
+     q = require('q'),
+     completeRequest = utils.completeRequest;
 
 function completeLink(promise, link, resp) {
-     console.log('RETRY',link,resp);
+    //  console.log('RETRY', link, resp);
      utils.updateBy(Link, {
                requestId: resp.requestId,
                _id: link.linkId
@@ -73,13 +29,13 @@ function completeLink(promise, link, resp) {
                //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):response');
                if (err !== null) {
                     //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):error');
-                    console.log('save link update error', err,resp);
+                    // console.log('save link update error', err, resp);
                     promise.reject(_.extend({
                          system: 'dynamo',
-                         systemError:err,
+                         systemError: err,
                          statusType: 'failed',
                          status: 'error',
-                         page: '/dashboard',
+                         source: '--',
                          url: link.baseUrl,
                          message: 'error:save:link',
                          notify: true,
@@ -92,83 +48,23 @@ function completeLink(promise, link, resp) {
                          }
                     }, resp));
                } else {
-                    //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed');
-                    var update = {
-                         $ADD: {
-                              processes: -1
-                         }
-                    };
-                    var input = {
-                         requestId: link.requestId
-                    };
-
-                    utils.updateBy(Request, input, update,
-                         function (err, data) {
-                              if (err) {
-                                   console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):error');
-                                   /*
-                                   Missed decrement
-
-
-                                   Maybe can have a garbage collector queue that this
-                                   will ping when this happens, acknowledging that this may have
-                                   a missing queue.
-
-                                   To revaluate
-                                   1. Pause current processes.
-                                   2. Wait for all scans to finish
-                                   3. Check rabbitMQ
-                                   - If has a count (5 left related to this request)
-                                   4. Has a database count
-                                   - If has a count of (5 unclosed)
-                                   Mark 5 left
-                                   If queue is greater than database
-                                   Check which is unique and missing from database
-                                   Create that entry
-                                   - If fails mark it has having an database error in queue
-                                   If queue is lower
-                                   - Add item to queue
-
-                                   start queue
-                                  */
-                                   promise.reject({
-                                        system: 'dynamo',
-                                        systemError:err,
-                                        requestId: link.requestId,
-                                        status: 'error',
-                                        statusType: 'failed',
-                                        type: '',
-                                        message: 'error:after:save:update:count',
-                                        requestId: link.requestId,
-                                        i_id: link.requestId,
-                                        retry: true,
-                                        retryCommand: 'utils.updateBy',
-                                        retryOptions: {
-                                             update: update,
-                                             input: input,
-                                             model: 'Request'
-                                        }
-                                   });
-                                   /* Maybe push to queue to update it later? */
-                              } else {
-                                   console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed');
-                                   utils.findBy(Request, {
-                                        requestId: link.requestId
-                                   }, function (err, data) {
-                                        console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response');
-                                        //console.log('test', data);
-                                        if (data && (data.processes === 0 || data.processes < 0)) {
-                                             console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request complete');
-                                             completeRequest(promise, link, data);
-                                        } else {
-                                             console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):passed --> updateBy(request):passed --> findBy:response --> request not complete');
-                                             promise.resolve(true);
-                                        }
-                                   });
-                              }
-                         });
+                    utils.retryUpdateRequest(link, promise);
                }
           });
+}
+
+function findAttr(arr, key, value) {
+     return typeof _.find(_.keys(arr), function (_key) {
+          if (_key === key) {
+               if (value) {
+                    if (value === arr[key]) {
+                         return arr[key];
+                    }
+               } else {
+                    return arr[key];
+               }
+          }
+     }) !== 'undefined';
 }
 
 /**
@@ -185,8 +81,17 @@ function init(msg) {
           url: link.url,
           baseUrl: link.baseUrl
      }).then(function (response) {
-          //console.log('request/link.js init --> linkScanner:passed', response);
+          // console.log('request/link.js init --> linkScanner:passed##', response, 'link',link);
+          var isImg = link._link.html.tagName === 'img';
+          var hasParams = null;
+          if (link && link._link.url && link._link.url.original) {
+               hasParams = _.keys(querystring.parse(link._link.url.original.split('?')[1], null, null)).length > 0;
+          }
           var resp = {
+               hasParams: (response.internal) ? hasParams : null,
+               isImg: isImg,
+               hasNoFollow: (response.internal) ? null : findAttr(link._link.html.attrs, 'rel', 'nofollow'),
+               hasAlt: (isImg) ? findAttr(link._link.html.attrs, 'alt') : null,
                selector: link._link.html.selector,
                tag: link._link.html.tag,
                tagName: link._link.html.tagName,

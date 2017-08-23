@@ -17,6 +17,9 @@ var metaDataSchema = new dynamoose.Schema({
      text: {
           type: String,
      },
+     keywords: {
+          type: Object,
+     },
      _id: {
           type: String,
           rangeKey: true

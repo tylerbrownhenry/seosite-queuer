@@ -1,6 +1,9 @@
 var User = require('./models/user'),
      dynamoose = require('dynamoose'),
      Activity = require('./models/activity'),
+     notify = require('./actions/notify'),
+     requestSchema = require('./models/request'),
+     Request = dynamoose.model('Request', requestSchema),
      Permission = require('./models/permission'),
      _ = require('underscore');
 
@@ -12,8 +15,7 @@ function getNowUTC() {
      return t;
 }
 
-function sendEmail(){
-  console.log('sendEmail doesnt do sh*t!');
+function sendEmail() {
 }
 
 /**
@@ -23,7 +25,6 @@ function sendEmail(){
  * @return {Boolean}
  */
 function checkRequirements(input, props) {
-     //console.log('utils.js -> checkRequirements');
      var failed = false;
      _.each(props, function (prop) {
           if (typeof input[prop] === 'undefined') {
@@ -68,7 +69,6 @@ function checkActivity(oid, callback) {
      Activity.get({
           oid: oid
      }, function (err, activity) {
-         console.log('checkActivity',err,activity);
           if (err) {
                if (typeof callback === 'function') {
                     return callback(err);
@@ -85,31 +85,31 @@ function checkActivity(oid, callback) {
  * @param  {Function} callback callback accepts two paramaters, err and premission data
  */
 function checkPermissions(plan, callback) {
-    //  Permission.get({
-    //       label: plan
-    //  }, function (err, permission) {
-    //       if (err) {
-               if (typeof callback === 'function') {
-                    return callback(err);
+     //  Permission.get({
+     //       label: plan
+     //  }, function (err, permission) {
+     //       if (err) {
+     if (typeof callback === 'function') {
+          return callback(err);
+     }
+     // }
+     if (typeof callback === 'function') {
+          //  return callback(null, permission);
+          var permission = {
+               limits: {
+                    daily: {
+                         request: 3,
+                         scan: 3
+                    },
+                    monthly: {
+                         request: 1,
+                         scan: 1
+                    }
                }
-          // }
-          if (typeof callback === 'function') {
-              //  return callback(null, permission);
-              var permission = {
-                limits: {
-                  daily:{
-                    request:3,
-                    scan:3
-                  },
-                  monthly: {
-                    request:1,
-                    scan:1
-                  }
-                }
-              }
-               return callback(null,permission);
           }
-    //  });
+          return callback(null, permission);
+     }
+     //  });
 }
 
 /**
@@ -121,7 +121,6 @@ function checkPermissions(plan, callback) {
  */
 function checkAvailActivity(oid, plan, type, callback) {
      checkActivity(oid, function (err, activity) {
-       console.log('activity',activity);
           if (err) {
                return callback(err);
           }
@@ -131,8 +130,6 @@ function checkAvailActivity(oid, plan, type, callback) {
                }
                var dailyAvail = (activity[type + '-day-count'] < permission.limits.daily[type]);
                var monthlyAvail = (activity[type + '-month-count'] < permission.limits.monthly[type]);
-              //  console.log(permission.limits.monthly[type], activity[type + '-month-count']);
-               console.log(monthlyAvail, 'monthlyAvail', dailyAvail);
                var decision = (dailyAvail === true && monthlyAvail === true);
                callback(null, decision);
           })
@@ -145,20 +142,18 @@ function checkAvailActivity(oid, plan, type, callback) {
  */
 function findOneUser(args, callback) {
      try {
-          //console.log('User', args)
-          User.get(args,function (err, user) {
+          User.get(args, function (err, user) {
                if (err) {
                     if (typeof callback === 'function') {
                          return callback(err);
                     }
                } else {
                     if (typeof callback === 'function') {
-                         return callback(null, user[0]);
+                         return callback(null, user);
                     }
                }
           });
      } catch (err) {
-          console.log('err', err);
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:find:user'
@@ -174,24 +169,18 @@ function findOneUser(args, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function updateBy(model, args, updates, callback) {
-     console.log('updateBy');
      try {
-          console.log('utils.js --> updateBy')
           model.update(args, updates, function (err) {
-               console.log('utils.js --> updateBy -> response');
                if (err) {
-                    console.log('utils.js --> updateBy:failed');
                     if (typeof callback === 'function') {
                          return callback(err);
                     }
                }
-               console.log('utils.js --> updateBy:passed');
                if (typeof callback === 'function') {
                     return callback(null);
                }
           });
      } catch (err) {
-          //console.log('utils.js --> updateBy:error', err);
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:update:item'
@@ -209,7 +198,6 @@ function updateBy(model, args, updates, callback) {
 function updateUser(args, updates, callback) {
      try {
           User.update(args, updates, function (err) {
-               //console.log('ERR---UPDATE', err, callback);
                if (err) {
                     if (typeof callback === 'function') {
                          return callback(err);
@@ -220,8 +208,6 @@ function updateUser(args, updates, callback) {
                }
           });
      } catch (err) {
-          console.log('err', err);
-
           if (typeof callback === 'function') {
                return callback({
                     message: 'error:update:user'
@@ -236,7 +222,6 @@ function updateUser(args, updates, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function saveModel(model, callback) {
-     //console.log('test saveModel');
      model.save(callback);
 }
 
@@ -274,10 +259,8 @@ function deleteUser(uid, cb) {
  * @param  {Function} cb    callback accepts one paramaters, err
  */
 function saveScan(scan, cb) {
-     //console.log('saving scan');
      try {
           scan.save(function (err) {
-               //console.log('utils.js saveScan response', err);
                if (err) {
                     if (typeof cb === 'function') {
                          return cb(err);
@@ -288,7 +271,7 @@ function saveScan(scan, cb) {
                }
           });
      } catch (e) {
-          //console.log('utils.js saveScan catch error', e);
+
      }
 }
 
@@ -321,13 +304,97 @@ function findBy(model, args, cb) {
 }
 
 function batchPut(model, commands, cb) {
-  console.log('batchPut',commands);
      model.batchPut(commands, function (err, e) {
-       console.log('batchPut',err,e);
           cb(err, e);
      });
 }
+
+function completeRequest(promise, input, data) {
+     updateBy(Request, {
+          requestId: input.requestId
+     }, {
+          $PUT: {
+               status: 'complete'
+          }
+     }, function (err, e) {
+          if (err) {
+               promise.reject({
+                    system: 'dynamo',
+                    systemError: err,
+                    i_id: input.requestId,
+                    status: 'error',
+                    message: 'error:request:complete',
+                    requestId: input.requestId,
+                    retry: true,
+                    retryCommand: 'utils.completeRequest',
+                    retryOptions: {
+                         input: input,
+                         data: data
+                    }
+               });
+          } else {
+               notify.notify({
+                    message: 'success:scan:complete',
+                    uid: input.uid,
+                    requestType: data.requestType,
+                    source: data.source,
+                    type: 'page:scan',
+                    status: 'success',
+                    statusType: 'complete',
+                    i_id: input.requestId
+               });
+               promise.resolve(true);
+          }
+     });
+}
+
+function retryUpdateRequest(input, promise) {
+     var update = {
+          $ADD: {
+               processes: -1
+          }
+     };
+     var arg = {
+          requestId: input.requestId
+     };
+
+     updateBy(Request, arg, update,
+          function (err, data) {
+               if (err) {
+                    promise.reject({
+                         system: 'dynamo',
+                         systemError: err,
+                         requestId: input.requestId,
+                         status: 'error',
+                         statusType: 'failed',
+                         type: 'page:scan',
+                         message: 'error:after:save:update:count',
+                         requestId: arg.requestId,
+                         i_id: arg.requestId,
+                         retry: true,
+                         retryCommand: 'utils.retryUpdateRequest',
+                         retryOptions: {
+                              input: arg
+                         }
+                    });
+                    /* Maybe push to queue to update it later? */
+               } else {
+                    findBy(Request, {
+                         requestId: input.requestId
+                    }, function (err, data) {
+                         if (data && (data.processes === 0 || data.processes < 0)) {
+                              completeRequest(promise, input, data);
+                         } else {
+                              promise.resolve(true);
+                         }
+                    });
+               }
+          });
+}
+
 module.exports.getNowUTC = getNowUTC;
+module.exports.retryUpdateRequest = retryUpdateRequest;
+module.exports.completeRequest = completeRequest;
 module.exports.findBy = findBy;
 module.exports.checkPermissions = checkPermissions;
 module.exports.batchPut = batchPut;

@@ -524,7 +524,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                            status: 'error',
                            statusType: 'failed',
                            message: 'error:publish:link',
-                           type: '',
+                           type: 'page:scan',
                            retry: true,
                            retryCommand: 'publish:link',
                            retryOptions: {
@@ -562,7 +562,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands,li
                message: 'error:update:link:count',
                notify: true,
                retry: true,
-               type: '',
+               type: 'page:scan',
                retryCommand: 'settings.request.links.updateCount',
                retryOptions: {
                     commands: commands,
@@ -636,7 +636,7 @@ function init(input, res, requestId, newScan) {
                  message: 'error:update:link:count',
                  notify: true,
                  retry: true,
-                 type: '',
+                 type: 'page:scan',
                  retryCommand: 'settings.request.links.process.init', /* Add to retryables */
                  retryOptions: {
                       res: res,

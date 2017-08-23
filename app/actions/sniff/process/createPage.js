@@ -4,13 +4,14 @@ var scrapeHtml = require("../linkChecker/initScrapeHtml");
 var saveImage = require("../../mobileCaptures/index").saveImage;
 var createHAR = require('./createHAR');
 var errors = require('../errors');
+var validateW3C = require('../../../settings/requests/w3cValidate/process').publish;
 
 function extractEmails(text) {
      return text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
 }
 
 function findMime(page) {
-  // console.log('page--->',page.resources);
+     // console.log('page--->',page.resources);
      if (page.resources && page.resources['1'] && page.resources['1'].endReply && page.resources['1'].endReply.contentType) {
           if (page.resources['1'].endReply.contentType) {
                return page.resources['1'].endReply.contentType['1']
@@ -30,7 +31,7 @@ function saveThumb(page, opts) {
 }
 
 function run(page, promise, ph, options) {
-  console.log('page',page,'options.url',options.url);
+     console.log('page', page, 'options.url', options.url);
      page.address = options.url;
      page.customHeaders = {
           'Cache-Control': 'no-cache',
@@ -40,23 +41,24 @@ function run(page, promise, ph, options) {
      page.types = {};
      page.options = options;
      var connectWaitTimeout = setTimeout(function () {
-          // page.get("content", function (content) {
-              //  console.log('done yet?');
-          // }, function () {
-               //console.log('done yet?');
-          // })
-     }, 5000)
+          console.log('done yet?');
+          page.get("content", function (content) {
+               console.log('done yet?-->', content);
+          }, function (e) {
+               console.log('done yet?--->', e);
+          })
+          // ph.exit();
+     }, 60000)
      try {
           page.set("viewportSize", {
                width: 1920,
                height: 1080
           });
-          console.log('PAGE.address',page.address);
+          console.log('PAGE.address', page.address);
           page.open(page.address, function (err, status) {
 
-
-              //  var thumb = saveThumb(page, opts);
-              // var thumg = 'test...';
+               //  var thumb = saveThumb(page, opts);
+               // var thumg = 'test...';
                console.log('status', status, 'err', err);
                if (status !== 'success') {
                     var statusMessage = '';
@@ -67,82 +69,128 @@ function run(page, promise, ph, options) {
                     ph.exit();
                     return;
                }
+               
 
-              contentWaitTimeout = setTimeout(function () {
-                    //// console.log('yo!');
+               contentWaitTimeout = setTimeout(function () {
+                    console.log('yo!');
                     page.get('cookies', function (err, cookies) {
-                      console.log('cookies--->',JSON.stringify(cookies));
+                         console.log('cookies--->', JSON.stringify(cookies));
                          if (err) {
                               //// return //console.error("Error occurred running `page.get('cookies')`:\n" + err);
                          }
                          page.get('content', function (err, content) {
-                              console.log('content---> err',err);
-                              clearTimeout(connectWaitTimeout);
-                              clearTimeout(contentWaitTimeout);
-                              if (err) {
-                                    ph.exit();
-                                   return //console.error("Error occurred running `page.get('content')`:\n" + err);
-                              }
+                              page.evaluate(function (s) {
+                                   var seosite_base = window.getComputedStyle(document.querySelector('body'));
 
-                              //// console.log('content--->',err);
-                              page.cookies = (cookies || []).map(function (cookie) {
-                                   if ('expiry' in cookie) {
-                                        cookie.expires = new Date(cookie.expiry * 1000).toISOString();
-                                        delete cookie.expiry;
+                                   var all = document.getElementsByTagName("*");
+                                   var fonts = {};
+                                  document.querySelectorAll("a[href^='https://twitter.com']")[0].href;
+                                  var twitterUsername = null;
+                                  var facebookLinkExists = null;
+                                  var twitterLinks = document.querySelectorAll("a[href*='twitter.com']");
+                                  var facebookLinks = document.querySelectorAll("a[href*='facebook.com']");
+                                  console.log('twitterLinks',twitterLinks)
+                                  if(typeof facebookLinks !== 'undefined' && facebookLinks.length > 0){
+                                    facebookLinkExists = true;
+                                  }
+                                  if(typeof twitterLinks !== 'undefined' && twitterLinks.length > 0){
+                                    var matches = twitterLinks[0].href.match('^https?://(www\.)?twitter\.com/(#!/)?([^/]+)(/\w+)*$');
+                                    if(matches !== 'null' && matches[3]){
+                                      twitterUsername = matches[3];
+                                    }
+                                  }
+                                   for (var i = 0, max = all.length; i < max; i++) {
+                                        var fontFamily = window.getComputedStyle(all[i]).fontFamily;
+                                        var fontName = fontFamily.split(',')[0].replace("'").replace('"', '').replace(' ', '').replace('-', '').toLowerCase();
+                                        var font = 'ff-' + fontName;
+                                        fonts[font] = true;
                                    }
-                                   return cookie;
-                              });
-                              //// console.log('content--->',err);
+                                   // console.log('fonts',fonts)
+                                   var baseSize = Number(seosite_base.fontSize)
+                                   var baseLineHeight = Number(seosite_base.lineHeight);
+                                   var lineHeightTooSmall = (baseSize * 1.2) > baseLineHeight;
+                                   return {
+                                        socialInfo:{
+                                          facebookLinkExists: facebookLinkExists,
+                                          twitterUsername: twitterUsername,
+                                        },
+                                        fontInfo:{
+                                          baseFontTooSmall: baseSize < 16,
+                                          lineHeightTooSmall: lineHeightTooSmall,
+                                          tooManyFonts: Object.keys(fonts).length > 4,
+                                          fonts: Object.keys(fonts),
+                                          baseFontSize: seosite_base.fontSize,
+                                          baseLineHeight: seosite_base.lineHeight
+                                        }
+                                   }
+                              }, function (err,pageInfo) {
+                                   console.log('content---> err', err);
+                                   clearTimeout(contentWaitTimeout);
+                                   if (err) {
+                                        ph.exit();
+                                        return //console.error("Error occurred running `page.get('content')`:\n" + err);
+                                   }
 
+                                   console.log('content--->', err);
+                                   page.cookies = (cookies || []).map(function (cookie) {
+                                        if ('expiry' in cookie) {
+                                             cookie.expires = new Date(cookie.expiry * 1000).toISOString();
+                                             delete cookie.expiry;
+                                        }
+                                        return cookie;
+                                   });
+                                   console.log('content--->', err);
 
-
-                              page.content = {
-                                   mimeType: findMime(page),
-                                   size: content.length,
-                              };
-                              var emails = extractEmails(content);
-                              var passedEmails = [];
-
-                              // console.log('actions/sniff/index.js');
-                              console.log('thumb');
-                              scrapeHtml(content, page.address, page.customHeaders).then(function (instance) {
-                                  console.log('createHAR');
-                                  var har = createHAR(page);
-                                  console.log('har',har);
-                                   har.links = instance.foundLinks;
-                                   har.url = {
-                                        resolvedUrl: page.finalUrl,
-                                        url: page.address
+                                   page.content = {
+                                        mimeType: findMime(page),
+                                        size: content.length,
                                    };
-                                   har.emails = passedEmails;
-                                   har.redirects = page.redirects;
-                                  //  thumb.then(function (res) {
+                                   var emails = extractEmails(content);
+                                   var passedEmails = [];
+
+                                   // console.log('actions/sniff/index.js');
+                                   console.log('thumb');
+                                   validateW3C(content, true, options.requestId);
+
+                                   scrapeHtml(content, page.address, page.customHeaders, options.requestId).then(function (instance) {
+                                        console.log('createHAR');
+                                        var har = createHAR(page);
+                                        console.log('har', har);
+                                        har.fontInfo = pageInfo.fontInfo;
+                                        har.socialInfo = pageInfo.socialInfo;
+                                        har.htmlResults = instance.htmlResults
+                                        har.links = instance.foundLinks;
+                                        har.url = {
+                                             resolvedUrl: page.finalUrl,
+                                             url: page.address
+                                        };
+                                        har.emails = passedEmails;
+                                        har.redirects = page.redirects;
+                                        //  thumb.then(function (res) {
                                         // har.thumb = res;
                                         har.thumb = 'this.jpg';
-                                        ph.exit();  
+                                        ph.exit();
                                         promise.resolve(har);
                                         console.log('har');
-                                  //  });
-                              }).catch(function (err) {
-                                   //console.log('err', err);
-                                   promise.reject(err);
+                                        //  });
+                                   }).catch(function (err) {
+                                        console.log('err', err);
+                                        promise.reject(err);
+                                   });
                               });
                          });
-                    });
-               }, options.delay * 1000);
+                    }, options.delay * 1000);
 
-               //console.log('options.delay', options.delay);
+               })
           });
      } catch (err) {
-          clearTimeout(connectWaitTimeout);
+          console.log('catch-->err', err);
           clearTimeout(contentWaitTimeout);
-          //console.log('err', err);
      }
 }
 
-
 function createPage(opts) {
-  //// console.log('createPage opts',opts);
+     //// console.log('createPage opts',opts);
      var promise = q.defer();
      try {
           opts = opts || {};
@@ -154,6 +202,7 @@ function createPage(opts) {
           var ph = opts.ph;
 
           page.onLoadStarted = function (req) {
+               console.log('LOAD STARTED');
                this.startTime = new Date();
           };
           page.onResourceRequested = function (req) {
@@ -174,6 +223,7 @@ function createPage(opts) {
                          endReply: null
                     };
                }
+
                if (res.stage === 'start') {
                     this.resources[res.id].startReply = res;
                }
@@ -189,30 +239,38 @@ function createPage(opts) {
           };
 
           page.onResourceError = function (resourceError) {
-               //console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
+               console.log('Unable to load resource (#' + resourceError.id + 'URL:' + resourceError.url + ')');
                //console.log('Error code: ' + resourceError.errorCode + '. Description: ' + resourceError.errorString);
           };
 
           page.onLoadError = function (_casper, url) {
-               //console.log("[onLoadError]: ", url);
+               console.log("[onLoadError]: ", url);
           }
           page.onTimeout = function (err) {
-               //console.log("[Timeout]: ", err);
+               console.log("[Timeout]: ", err);
           };
+
+          var style = page.evaluate(function () {
+               console.log('styles');
+               return window.getComputedStyle(document.querySelector('body'));
+          }, function () {
+               console.log('HEY GUYS');
+          });
+          console.log("styles2 " + JSON.stringify(style) + "");
 
           page.onLoadFinished = function (status) {
                var url = page.address;
                // for (var i = 100 - 1; i >= 0; i--) {
-                  ////  console.log('page.address',page);
+               console.log('page.address', page);
                // }
                //console.log("status: " + status);
                // page.render("google.png");
-              //  phantom.exit();
+               //  phantom.exit();
           };
           // console.log('createPage3',page);
           run(page, promise, ph, options);
      } catch (err) {
-          //console.log('createPage err', err);
+          console.log('createPage err', err);
           promise.reject(err)
      }
      return promise.promise;

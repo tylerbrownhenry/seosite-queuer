@@ -5,6 +5,19 @@ var _ = require('underscore'),
      utils = require('../../../utils'),
      Security = require('../../../models/security');
 
+function findKeywords(keywords, text) {
+     var foundWords = {};
+     var words = text.split(' ');
+     _.each(words, function (word) {
+          var cleanWord = word.toLowerCase();
+          if (keywords['_' + cleanWord]) {
+               foundWords['_' + cleanWord] = true;
+          }
+     });
+     console.log('foundWords',foundWords,'words',words,'keywords',keywords);
+     return foundWords;
+}
+
 /**
  * adds the properties ['meta','grade','issues'] to newScan object
  * @return {Object} modified version of Scan object
@@ -12,54 +25,80 @@ var _ = require('underscore'),
 
 function processMetaData(newScan, input, res) {
      //console.log('result--');
+     var keywords = res.htmlResults.keywords;
+
      if (input.options && input.options.save && input.options.save.metaData === true) {
           var meta = {
                title: {
                     message: 'error:meta:no:title',
                     text: '',
-                    found: false
+                    found: false,
+                    keywords: {}
                },
                description: {
                     message: 'error:meta:no:meta:desc',
                     element: null,
                     text: '',
-                    found: false
+                    found: false,
+                    keywords: {}
                },
                h1: {
                     message: 'error:meta:no:h1',
                     element: null,
                     text: '',
-                    found: false
+                    found: false,
+                    keywords: {}
                },
                h2: {
                     message: 'error:meta:no:h2',
                     element: null,
                     text: '',
-                    found: false
-               }
+                    found: false,
+                    keywords: {}
+               },
+               h3: [],
+               h4: [],
+               h5: [],
+               h6: []
           }
 
           var links = _.filter(res.links, function (link) {
                if (typeof link.specialCase !== 'undefined') {
                     if (link.specialCase === 'title') {
+                         console.log('title####', link);
                          meta.title.found = true;
+                         meta.title.element = link.html.tag;
                          meta.title.text = link.html.text;
-                         meta.title.message = 'Found'
+                         meta.title.message = 'Found';
+                         meta.title.keywords = findKeywords(keywords, link.html.text);
                     } else if (link.specialCase === 'description') {
                          meta.description.found = true;
                          meta.description.element = link.html.tag;
                          meta.description.text = link.html.attrs.content;
-                         meta.description.message = 'Found'
+                         meta.description.message = 'Found';
+                         meta.description.keywords = findKeywords(keywords, link.html.attrs.content);
                     } else if (link.specialCase === 'h1') {
+                         console.log('H1', link.html);
                          meta.h1.found = true;
                          meta.h1.element = link.html.tag;
-                         meta.h1.text = link.html.attrs.content;
-                         meta.h1.message = 'Found'
+                         meta.h1.text = link.html.text;
+                         meta.h1.message = 'Found';
+                         meta.h1.keywords = findKeywords(keywords, link.html.text);
                     } else if (link.specialCase === 'h2') {
                          meta.h2.found = true;
                          meta.h2.element = link.html.tag;
-                         meta.h2.text = link.html.attrs.content;
-                         meta.h2.message = 'Found'
+                         meta.h2.text = link.html.text;
+                         meta.h2.message = 'Found';
+                         meta.h2.keywords = findKeywords(keywords, link.html.text);
+                    } else if (link.specialCase === 'h3' || link.specialCase === 'h4' || link.specialCase === 'h5' || link.specialCase === 'h6') {
+                         console.log('H13+', link);
+                         meta[link.specialCase].push({
+                              found: true,
+                              element: link.html.tag,
+                              text: link.html.text,
+                              message: 'Found',
+                              keywords: findKeywords(keywords, link.html.text)
+                         })
                     }
                     return false;
                } else if (link.html.tagName === 'meta') {
@@ -105,19 +144,35 @@ function processMetaData(newScan, input, res) {
           });
 
           var commands = [];
-          _.each(_.keys(meta), function (key) {
-               console.log('META');
-               commands.push({
-                    "_id": sh.unique(key + newScan.requestId),
-                    "type": key,
-                    "element": meta[key].element,
-                    "found": meta[key].found,
-                    "message": meta[key].message,
-                    "text": meta[key].text,
-                    "requestId": newScan.requestId
-               });
-          });
 
+          function createCommand(meta, metaKey, newScan, key, idx) {
+               return {
+                    "_id": sh.unique(idx + key + newScan.requestId),
+                    "type": key,
+                    "element": metaKey.element,
+                    "found": metaKey.found,
+                    "message": metaKey.message,
+                    "keywords": metaKey.keywords,
+                    "text": metaKey.text,
+                    "requestId": newScan.requestId
+               };
+          }
+          var count = 0;
+          _.each(_.keys(meta), function (key, idx) {
+               count++
+               console.log('##META');
+               if (typeof meta[key] === 'object' && typeof meta[key].length === 'undefined') {
+                    console.log('metaKey[key]', meta[key]);
+                    commands.push(createCommand(meta, meta[key], newScan, key, count));
+               } else if (meta[key].length > 0) {
+                    _.each(meta[key], function (header, _idx) {
+                         count++
+                         console.log('metaKey[key] header', header);
+                         commands.push(createCommand(meta, header, newScan, key, count));
+                    })
+               }
+          });
+          // console.log('COMMANDS###', commands);
           utils.batchPut(metaData, commands, function (err, e) {
                console.log('err', e);
                if (err !== null) {

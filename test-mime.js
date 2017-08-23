@@ -1,0 +1,638 @@
+var mime = require('mime-types');
+var _mime = require('mime');
+var _ = require('underscore');
+// var test = mime.extension('svg+xml'.split('+')[0]);
+// console.log('test',test);
+// var test = mime.lookup('svg+xml'.split('+')[0]);
+// return console.log('test',test);
+// return console.log(mime.lookup('http://mariojacome.com/webfonts/32D021_1_0.woff'));
+
+var resources = [{
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/jquery/jquery.js?ver=1.12.4"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/wp-mediaelement.min.js?ver=4.7.5"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/mediaelement-and-player.min.js?ver=2.22.0"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.7.5"
+}, {
+     "type": "image/gif",
+     "file": "https://www.google-analytics.com/r/collect?v=1&_v=j56&a=1870126551&t=pageview&_s=1&dl=http%3A%2F%2Fmariojacome.com%2F%3Fedfsd&ul=en-us&de=UTF-8&dt=Mario%20Jacome%20%7C%20Designer%20%26%20Illustrator&sd=32-bit&sr=1024x768&vp=1920x1080&je=0&_u=IEBAAMQAI~&jid=1303596794&gjid=210304048&cid=1453551212.1500684612&tid=UA-85476038-1&_gid=1458583183.1500684612&_r=1&z=267542368"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/css/styles.min.css"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/css/reset.css"
+}, {
+     "type": "text/html; charset=utf-8",
+     "file": "https://www.youtube.com/embed/-G4PUlUvRlw?feature=oembed"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.google.com/js/bg/6A6V5UTfLJEZsjNj2Vc3U2vVlenFyqxJdKWTCva4Ogk.js"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.youtube.com/yts/jsbin/player-vflrAeTuj/en_US/base.js"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/style.css"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D021_1_0.woff"
+}, {
+     "type": "text/html; charset=UTF-8",
+     "file": "http://mariojacome.com/?edfsd"
+}, {
+     "type": "text/css",
+     "file": "https://www.youtube.com/yts/cssbin/www-player-vflI-qtiB.css"
+}, {
+     "type": "application/json; charset=UTF-8",
+     "file": "https://googleads.g.doubleclick.net/pagead/id"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/wp-emoji-release.min.js?ver=4.7.5"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.google-analytics.com/analytics.js"
+}, {
+     "type": "font/ttf",
+     "file": "https://fonts.gstatic.com/s/roboto/v16/QHD8zigcbDB8aPfIoaupKOvvDin1pK8aKteLpeZ5c0A.ttf"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D021_0_0.woff"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/js/scripts.min.js?ver=4.7.5"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.youtube.com/yts/jsbin/www-embed-player-vfl8435pg/www-embed-player.js"
+}, {
+     "type": "text/javascript",
+     "file": "https://static.doubleclick.net/instream/ad_status.js"
+}, {
+     "type": "font/ttf",
+     "file": "https://fonts.gstatic.com/s/roboto/v16/RxZJdnzeo3R5zSexge8UUSZ2oysoEQEeKwjgmXLRnTc.ttf"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/wp-embed.min.js?ver=4.7.5"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D00E_1_0.woff"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/css/styles.min.css"
+}, {
+     "type": "text/html; charset=UTF-8",
+     "file": "http://mariojacome.com/?edfsd"
+}, {
+     "type": "text/css",
+     "file": "https://www.youtube.com/yts/cssbin/www-player-vflI-qtiB.css"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/jquery/jquery.js?ver=1.12.4"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.google.com/js/bg/2eEGEtC_QJcELRUfw87Pjn2yQFSzWvfR5GkaGuzvSxY.js"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1"
+}, {
+     "type": "image/gif",
+     "file": "https://www.google-analytics.com/r/collect?v=1&_v=j56&a=1070222491&t=pageview&_s=1&dl=http%3A%2F%2Fmariojacome.com%2F%3Fedfsd&ul=en-us&de=UTF-8&dt=Mario%20Jacome%20%7C%20Designer%20%26%20Illustrator&sd=32-bit&sr=1024x768&vp=1920x1080&je=0&_u=IEBAAMQAI~&jid=1519211934&gjid=1042171392&cid=282517767.1500684755&tid=UA-85476038-1&_gid=163358777.1500684755&_r=1&z=34339188"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/mediaelement-and-player.min.js?ver=2.22.0"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/css/reset.css"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.youtube.com/yts/jsbin/www-embed-player-vfl8435pg/www-embed-player.js"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.google-analytics.com/analytics.js"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/style.css"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/mediaelementplayer.min.css?ver=2.22.0"
+}, {
+     "type": "application/json; charset=UTF-8",
+     "file": "https://googleads.g.doubleclick.net/pagead/id"
+}, {
+     "type": "text/html; charset=utf-8",
+     "file": "https://www.youtube.com/embed/-G4PUlUvRlw?feature=oembed"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D021_0_0.woff"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-content/themes/semplice/js/scripts.min.js?ver=4.7.5"
+}, {
+     "type": "font/ttf",
+     "file": "https://fonts.gstatic.com/s/roboto/v16/RxZJdnzeo3R5zSexge8UUSZ2oysoEQEeKwjgmXLRnTc.ttf"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D00E_1_0.woff"
+}, {
+     "type": "text/css",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/wp-mediaelement.min.css?ver=4.7.5"
+}, {
+     "type": "font/ttf",
+     "file": "https://fonts.gstatic.com/s/roboto/v16/QHD8zigcbDB8aPfIoaupKOvvDin1pK8aKteLpeZ5c0A.ttf"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/mediaelement/wp-mediaelement.min.js?ver=4.7.5"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/wp-emoji-release.min.js?ver=4.7.5"
+}, {
+     "type": "application/javascript",
+     "file": "http://mariojacome.com/wp-includes/js/wp-embed.min.js?ver=4.7.5"
+}, {
+     "type": "text/javascript",
+     "file": "https://www.youtube.com/yts/jsbin/player-vflrAeTuj/en_US/base.js"
+}, {
+     "type": "application/x-font-woff",
+     "file": "http://mariojacome.com/webfonts/32D021_1_0.woff"
+}, {
+     "type": "text/javascript",
+     "file": "https://static.doubleclick.net/instream/ad_status.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BNDczNDI0OTU5MV5BMl5BanBnXkFtZTgwODUwNjc5MjI@._CR254,14,1362,1020_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D631%26pc0%3D633%26ld0%3D633%26t0%3D1500684802817%26csmtags%3D%7C%7C:633"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/18835559_228775397620243_1911264683660798071_n.jpg?oh=5939fab2c753c9d35a694406842e17ee&oe=5A0B2BB5"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DLoadTitle%26bb0%3D11%26be0%3D16%26pc0%3D191%26ld0%3D16%26t0%3D1500684802200%26csmtags%3D%7C%7C:194"
+}, {
+     "type": "image/png",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/y1/r/ZS8q378OQsF.png"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D638%26pc0%3D639%26ld0%3D639%26t0%3D1500684802823%26csmtags%3D%7C%7C:639"
+}, {
+     "type": "text/css",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/vap/video/airy2/prod/2.0.1421.1/css/imdb._TTW_.css"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNewsDeskWidget%26bb0%3D624%26pc0%3D630%26ld0%3D630%26t0%3D1500684802814%26csmtags%3D%7C%7C:630"
+}, {
+     "type": "text/html;charset=UTF-8",
+     "file": "http://www.imdb.com/?edfsd"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/ext_tw_video_thumb/888527831134683138/pu/img/5EIAzSDpBLMYFkO2.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTczNTI2ODUwOF5BMl5BanBnXkFtZTcwMTU0NTIzMw@@._V1_SY172_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D578%26pc0%3D609%26ld0%3D609%26t0%3D1500684802793%26csmtags%3D%7C%7C:609"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D619%26pc0%3D622%26ld0%3D622%26t0%3D1500684802806%26csmtags%3D%7C%7C:622"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/js/collections/pagelayout-3128247822._CB505282040_.js"
+}, {
+     "type": "text/css",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/css/collections/recs-widget-1556839428._CB509684498_.css"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgxMjg0Mzc1OV5BMl5BanBnXkFtZTcwODI3MzA2MQ@@._V1_SY172_CR3,0,116,172_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM0ODE2MjQ4OV5BMl5BanBnXkFtZTgwNTQ3NzY5MjI@._CR492,192,1092,1092_UX402_UY402._SY201_SX201_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DWatchableTitlesListWidget%26bb0%3D661%26pc0%3D666%26ld0%3D666%26t0%3D1500684802850%26csmtags%3D%7C%7C:666"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM5ODk5MjI1N15BMl5BanBnXkFtZTgwMjQ4ODU3MDI@._V1_SY172_CR49,0,116,172_AL_.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3iBAx4/yN/l/en_US/UppVpVnnzuJ.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTM4MDQzNzM0OV5BMl5BanBnXkFtZTcwNDI3ODEyMw@@._V1_SY201_CR57,0,201,201_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DLoadIcons%26bb0%3D17%26be0%3D17%26pc0%3D194%26ld0%3D17%26t0%3D1500684802201%26csmtags%3D%7C%7C:194"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BYzAxMTc1MmUtYjNlYy00ZGMyLTg0Y2ItN2JlN2ZkMjVkYzgwXkEyXkFqcGdeQXVyNjAwODA4Mw@@._V1_SY207_CR22,0,140,207_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D646%26pc0%3D652%26ld0%3D652%26t0%3D1500684802836%26csmtags%3D%7C%7C:652"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTkxNDk2MDA0N15BMl5BanBnXkFtZTcwNjAxODA0NA@@._CR269,141,1510,1131_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BN2IwZjk5MjktYzEyNy00Y2RkLTgzOTYtZjM2M2I0ODc5Mzg5XkEyXkFqcGdeQXVyMTgxMjYxOQ@@._V1_CR0,252,1152,648_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ3NDU5OTY5NV5BMl5BanBnXkFtZTgwNjE5ODA5OTE@._V1_SX116_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/js/collections/watchlistButton-194820129._CB522736550_.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM4NTMzMTkxOF5BMl5BanBnXkFtZTgwODYzMDk2MjI@._V1_SY298_CR0,0,201,298_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "https://abs.twimg.com/emoji/v2/72x72/1f44b.png"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yX/r/h3BK73tzY1F.js"
+}, {
+     "type": "image/jpeg",
+     "file": "http://img5.zergnet.com/1891162_300.jpg"
+}, {
+     "type": "image/png",
+     "file": "https://abs.twimg.com/emoji/v2/72x72/1f3b6.png"
+}, {
+     "type": "image/png",
+     "file": "https://abs.twimg.com/emoji/v2/72x72/1f44d.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BOTI1MzY1NDU2OF5BMl5BanBnXkFtZTcwMTUxNzYzNA@@._CR613,125,1023,1023_UX402_UY402._SY201_SX201_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTk2MjY3MzM0NV5BMl5BanBnXkFtZTgwMzQ4MzQ5MjI@._V1_SY351_SX624_AL_.jpg"
+}, {
+     "type": "text/html; charset=utf-8",
+     "file": "https://staticxx.facebook.com/connect/xd_arbiter/r/XBwzv5Yrm_1.js?version=42#channel=f4bac62e&origin=http%3A%2F%2Fia.media-imdb.com"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA3OTQzMjQ3NV5BMl5BanBnXkFtZTcwNzcwOTczOQ@@._V1_SX140_CR0,0,140,207_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM2Nzg4MzkwOF5BMl5BanBnXkFtZTgwNzA0OTE3NjE@._V1_SY172_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BODEyNDQ5MTAzOV5BMl5BanBnXkFtZTgwNjk3Njc5MjI@._CR230,62,1325,992_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://www.facebook.com/pages/call_to_action/fetch_dialog_data/?id=10153400261793949&surface=pagePlugin&unit_type=VIEWER&dpr=1"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTg2NDU2NDYxOV5BMl5BanBnXkFtZTgwMzU2Njc5MjI@._CR362,243,1257,942_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BODEyNzA2NzgyMF5BMl5BanBnXkFtZTgwOTA0ODE0MTE@._V1_SY207_CR85,0,140,207_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BNzY5NTI0ODg5MV5BMl5BanBnXkFtZTgwMTM0NjM5MjI@._V1_SY150_CR0,0,101,150_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/imdbpro_menu_bg-3252195562._V_.png"
+}, {
+     "type": "image/png",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yV/r/b9uCPzoF9VV.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BNTYzMjc2Mjg4MF5BMl5BanBnXkFtZTcwODc1OTQwNw@@._V1_SX116_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DWatchableTitlesListWidget%26bb0%3D722%26pc0%3D723%26ld0%3D723%26t0%3D1500684802907%26csmtags%3D%7C%7C:723"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTM5NTI4NjQxMl5BMl5BanBnXkFtZTgwMzE0ODE0MTE@._V1_SX140_CR0,0,140,207_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/18301793_10101481093723465_1864543036249698540_n.jpg?oh=45e71c575c5d6d5faab61f5763d18980&oe=59F42293"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3ipwU4/yG/l/en_US/v9AE7PjUT8U.js"
+}, {
+     "type": "text/css; charset=utf-8",
+     "file": "http://platform.twitter.com/css/timeline.f2717a85d01fdfb9746f308a329853c8.light.ltr.css"
+}, {
+     "type": "text/html",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/html/zergnet-2975767399._CB522861833_.html?widgetId=46653"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26m%3D1%26sc%3D0N3132REECJF4PZ8MR1T%26ue%3D4%26bb%3D480%26ns%3D484%26ne%3D558%26cf%3D577%26af%3D577%26be%3D1184%26pc%3D3387%26tc%3D-2387%26na_%3D-2387%26fe_%3D-2387%26lk_%3D-2387%26_lk%3D-2387%26co_%3D-2387%26_co%3D-2387%26rq_%3D-2387%26rs_%3D-2387%26_rs%3D22%26dl_%3D-8%26di_%3D1184%26de_%3D1184%26_de%3D1225%26_dc%3D3387%26ld_%3D3387%26ty%3D0%26rc%3D0%26ld%3D3390%26t%3D1500684805574%26ctb%3D1%26csmtags%3D%7C%7Cnonredirect:3390"
+}, {
+     "type": "image/jpeg",
+     "file": "http://img4.zergnet.com/1843791_300.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DLoadJS%26bb0%3D455%26be0%3D456%26pc0%3D456%26ld0%3D456%26t0%3D1500684802640%26csmtags%3D%7C%7C:456"
+}, {
+     "type": "text/html",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/html/twitter-3626940295._CB522736162_.html?config=%7B%22width%22%3A%22300px%22%2C%22height%22%3A%22500px%22%2C%22href%22%3A%22https%3A%2F%2Ftwitter.com%2FIMDb%22%2C%22heading%22%3A%22Follow%20Us%20On%20Twitter%22%2C%22screen-name%22%3A%22IMDb%22%2C%22list-name%22%3Anull%2C%22widget-id%22%3A%22354387022028357633%22%7D"
+}, {
+     "type": "application/javascript; charset=utf-8",
+     "file": "http://platform.twitter.com/widgets.js"
+}, {
+     "type": null,
+     "file": "https://syndication.twitter.com/i/jot/syndication?l=%7B%22_category_%22%3A%22syndicated_impression%22%2C%22triggered_on%22%3A1500684803604%2C%22dnt%22%3Afalse%2C%22event_namespace%22%3A%7B%22client%22%3A%22tfw%22%2C%22page%22%3A%22timeline%22%2C%22action%22%3A%22impression%22%7D%7D"
+}, {
+     "type": "text/css; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yu/l/0,cross/Y8I0lxjBK7Z.css"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DBornTodayWidget%26bb0%3D635%26pc0%3D637%26ld0%3D637%26t0%3D1500684802821%26csmtags%3D%7C%7C:637"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/tweet_video_thumb/DFSvdjXV0AEifmS.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "http://connect.facebook.net/en_US/all.js#xfbml=1"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DAdvancedTitleSearchWidget%26bb0%3D679%26pc0%3D692%26ld0%3D692%26t0%3D1500684802876%26csmtags%3D%7C%7C:692"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3i2ou4/yx/l/en_US/WNN9E8TkDI4.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/ext_tw_video_thumb/888525645633863680/pu/img/UlcMDSlkrVnx_kty.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DRecsWidget%26bb0%3D653%26pc0%3D653%26ld0%3D653%26t0%3D1500684802837%26csmtags%3D%7C%7C:653"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjA5NjM3NTk1M15BMl5BanBnXkFtZTgwMzg1MzU2NjE@._V1_SX116_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "text/css",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/css/collections/consumer-2-column-4240895533._CB505040459_.css"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DZergnetWidget%26bb0%3D737%26pc0%3D741%26ld0%3D741%26t0%3D1500684802925%26csmtags%3D%7C%7C:741"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjE2Nzc2NDUzMl5BMl5BanBnXkFtZTgwNTI0Njg1NDE@._CR522,103,444,444_UX402_UY402._SY201_SX201_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "https://abs.twimg.com/emoji/v2/72x72/1f4f8.png"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D640%26pc0%3D642%26ld0%3D642%26t0%3D1500684802826%26csmtags%3D%7C%7C:642"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/15895325_1561461490536457_1946990985967456086_n.jpg?oh=1b8fab17bb0a5be8cd7f5e00ce250f6d&oe=59F1A91D"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D642%26pc0%3D645%26ld0%3D645%26t0%3D1500684802829%26csmtags%3D%7C%7C:645"
+}, {
+     "type": "image/png",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/IMDb/icon/external-button._CB304896345_.png"
+}, {
+     "type": "image/png",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/IMDb/icon/external-button-hover._CB304896345_.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEwNDgzMzQ1OF5BMl5BanBnXkFtZTgwODA2NjY5MjI@._CR500,71,1178,1178_UX402_UY402._SY201_SX201_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/watchlist-ribbon-sprite-md-1415281079._V_.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/tweet_video_thumb/DFS1CwzU0AAGNGO.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D697%26pc0%3D699%26ld0%3D699%26t0%3D1500684802883%26csmtags%3D%7C%7C:700"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DLoadCSS%26bb0%3D17%26be0%3D455%26pc0%3D455%26ld0%3D455%26t0%3D1500684802639%26csmtags%3D%7C%7C:455"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yE/r/WTtu6ALqNjp.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/18767938_1705975586083924_3352570198577563086_n.jpg?oh=70f9ce03557e9091bf13c5c5d0371dc3&oe=59C31289"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BY2ViNGI1ZGUtYmUyNS00ZWU0LWExOTQtMDMwZjQ2ZWJhNmRhXkEyXkFqcGdeQXVyNjYxMDUzODc@._V1_SX201_CR0,0,201,298_AL_.jpg"
+}, {
+     "type": "text/html; charset=utf-8",
+     "file": "http://staticxx.facebook.com/connect/xd_arbiter/r/XBwzv5Yrm_1.js?version=42#channel=f4bac62e&origin=http%3A%2F%2Fia.media-imdb.com"
+}, {
+     "type": "image/png",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yG/r/7BQ2_mwbjDR.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQxNjEyNzYyMF5BMl5BanBnXkFtZTgwODkwODU3MTE@._V1_SY150_CR9,0,101,150_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/watchlist_slot1_logged_out-1670046337._CB522736556_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DHeroWidget%26bb0%3D559%26pc0%3D568%26ld0%3D568%26t0%3D1500684802752%26csmtags%3D%7C%7C:576"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjEzNTU5NjQ1Ml5BMl5BanBnXkFtZTgwNDA2NjM5MjI@._CR270,88,1455,1090_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/y5/r/nGMNwbzd305.js"
+}, {
+     "type": "text/css; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yk/l/0,cross/cxg3naN8xVJ.css"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTQ5ODgzNjA2Ml5BMl5BanBnXkFtZTgwNDM0Mzc3NjE@._V1_SX116_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/watchlist_slot2_popular-4090757197._CB522736562_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM4NzEyNTU2Nl5BMl5BanBnXkFtZTgwMTE3ODI0MDI@._V1_SY298_CR0,0,201,298_AL_.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3i4RR4/y7/l/en_US/cVLgmJvuYzZ.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-0/p130x130/19894814_10155700864768949_7237195866479465871_n.jpg?oh=43eb4bb717e24d9661ed027d1433b1f1&oe=59F3E82E"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMzg1MjUwNTYzMF5BMl5BanBnXkFtZTgwMTk5MjU5MjI@._CR163,24,523,776_UX402_UY596._SY298_SX201_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D654%26pc0%3D656%26ld0%3D656%26t0%3D1500684802840%26csmtags%3D%7C%7C:656"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/auth/auth-sprite-x2-5527406._V_.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjI5MTUzMTg4N15BMl5BanBnXkFtZTgwNTEyODgxMzE@._CR290,144,1286,963_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://z-ecx.images-amazon.com/images/G/01/csminstrumentation/ue-full-11e51f253e8ad9d145f4ed644b40f692._V1_.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjU0MTUzNDYxMV5BMl5BanBnXkFtZTgwMjYxNTc5MjI@._CR130,188,1000,749_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "application/x-javascript",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/vap/video/airy2/prod/2.0.1421.1/js/airy.ads._TTW_.js"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DPollWidget%26bb0%3D657%26pc0%3D660%26ld0%3D660%26t0%3D1500684802844%26csmtags%3D%7C%7C:660"
+}, {
+     "type": "text/css; charset=utf-8",
+     "file": "http://platform.twitter.com/css/timeline.f2717a85d01fdfb9746f308a329853c8.light.ltr.css"
+}, {
+     "type": "text/html; charset=UTF-8",
+     "file": "https://www.facebook.com/plugins/like_box.php?app_id=&channel=http%3A%2F%2Fstaticxx.facebook.com%2Fconnect%2Fxd_arbiter%2Fr%2FXBwzv5Yrm_1.js%3Fversion%3D42%23cb%3Df34720c058%26domain%3Dia.media-imdb.com%26origin%3Dhttp%253A%252F%252Fia.media-imdb.com%252Ff4bac62e%26relation%3Dparent.parent&color_scheme=light&container_width=285&header=false&href=http%3A%2F%2Fwww.facebook.com%2Fimdb&locale=en_US&sdk=joey&show_border=false&show_faces=true&stream=false&width=285"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/js/collections/common-2411119445._CB508084084_.js"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/js/collections/recommendations-2126106747._CB522738992_.js"
+}, {
+     "type": "image/png",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/IMDb/icon/play-button._CB318667375_.png"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yC/r/zaaztc1Bm_R.js"
+}, {
+     "type": null,
+     "file": "https://syndication.twitter.com/i/jot?l=%7B%22widget_origin%22%3A%22http%3A%2F%2Fia.media-imdb.com%2Fimages%2FG%2F01%2Fimdb%2Fhtml%2Ftwitter-3626940295._CB522736162_.html%3Fconfig%3D%257B%2522width%2522%253A%2522300px%2522%252C%2522height%2522%253A%2522500px%2522%252C%2522href%2522%253A%2522https%253A%252F%252Ftwitter.com%252FIMDb%2522%252C%2522heading%2522%253A%2522Follow%2520Us%2520On%2520Twitter%2522%252C%2522screen-name%2522%253A%2522IMDb%2522%252C%2522list-name%2522%253Anull%252C%2522widget-id%2522%253A%2522354387022028357633%2522%257D%22%2C%22widget_frame%22%3Afalse%2C%22widget_id%22%3A%22354387022028357633%22%2C%22widget_data_source%22%3A%22354387022028357633%22%2C%22query%22%3Anull%2C%22profile_id%22%3Anull%2C%22_category_%22%3A%22tfw_client_event%22%2C%22triggered_on%22%3A1500684804626%2C%22dnt%22%3Afalse%2C%22client_version%22%3A%22ed7b443%3A1500587785131%22%2C%22format_version%22%3A1%2C%22event_namespace%22%3A%7B%22client%22%3A%22tfw%22%2C%22page%22%3A%22timeline%22%2C%22element%22%3A%22notice%22%2C%22action%22%3A%22seen%22%7D%7D&notice_seen=true"
+}, {
+     "type": "image/png",
+     "file": "https://images-na.ssl-images-amazon.com/images/G/01/IMDb/icon/play-button-hover._CB318667374_.png"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DTwitterWidget%26bb0%3D724%26pc0%3D728%26ld0%3D728%26t0%3D1500684802912%26csmtags%3D%7C%7C:728"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D617%26pc0%3D618%26ld0%3D618%26t0%3D1500684802802%26csmtags%3D%7C%7C:618"
+}, {
+     "type": "application/x-javascript",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/js/collections/starbarwidget-335260898._CB522736561_.js"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D610%26pc0%3D616%26ld0%3D616%26t0%3D1500684802800%26csmtags%3D%7C%7C:616"
+}, {
+     "type": "text/html",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/html/facebook-869486875._CB522736254_.html"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BZDRiOGE5ZTctOWIxOS00MWQwLThlMDYtNWIwMDQwNzBjZDY1XkEyXkFqcGdeQXVyNjU0OTQ0OTY@._V1_SY172_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/ext_tw_video_thumb/888561141810479106/pu/img/YBAOdvQiwHsG6W0r.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/18157982_1729311803762270_5824095505099995905_n.jpg?oh=6cdcdb516478d6d397dd32cde6b2e2db&oe=5A0C905B"
+}, {
+     "type": "image/jpeg",
+     "file": "http://img2.zergnet.com/1891153_300.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BOTMxNDUwODE2OF5BMl5BanBnXkFtZTgwMjQ4NTc5MjI@._CR247,94,1643,1231_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/imdbpro_logo_nb-3000473826._CB530713470_.png"
+}, {
+     "type": "image/jpeg",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/watchlist_slot3_top250-575799966._CB522736596_.jpg"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3/yU/r/cpXBrTtjXhd.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://pbs.twimg.com/ext_tw_video_thumb/888521563015790596/pu/img/ooIJ984K1gTMqBJj.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DFacebookWidget%26bb0%3D730%26pc0%3D735%26ld0%3D735%26t0%3D1500684802919%26csmtags%3D%7C%7C:735"
+}, {
+     "type": "image/jpeg",
+     "file": "http://img4.zergnet.com/1891163_300.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTg2ODkyNjg2N15BMl5BanBnXkFtZTgwMjk3Njc5MjI@._CR771,28,1052,788_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "https://www.facebook.com/impression.php/f10b4e6a5c/?lid=115&payload=%7B%22source%22%3A%22jssdk%22%7D"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTY4MDUxOTIwMV5BMl5BanBnXkFtZTgwNDg0ODE0OTE@._CR1675,895,1332,1975_UX402_UY596._SY298_SX201_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BOTgzNzE1MTk3MF5BMl5BanBnXkFtZTcwMzQ1MDc0OQ@@._V1_SX140_CR0,0,140,207_AL_.jpg"
+}, {
+     "type": null,
+     "file": "https://syndication.twitter.com/i/jot?l=%7B%22widget_origin%22%3A%22http%3A%2F%2Fia.media-imdb.com%2Fimages%2FG%2F01%2Fimdb%2Fhtml%2Ftwitter-3626940295._CB522736162_.html%3Fconfig%3D%257B%2522width%2522%253A%2522300px%2522%252C%2522height%2522%253A%2522500px%2522%252C%2522href%2522%253A%2522https%253A%252F%252Ftwitter.com%252FIMDb%2522%252C%2522heading%2522%253A%2522Follow%2520Us%2520On%2520Twitter%2522%252C%2522screen-name%2522%253A%2522IMDb%2522%252C%2522list-name%2522%253Anull%252C%2522widget-id%2522%253A%2522354387022028357633%2522%257D%22%2C%22widget_frame%22%3Afalse%2C%22widget_id%22%3A%22354387022028357633%22%2C%22widget_data_source%22%3A%22354387022028357633%22%2C%22query%22%3Anull%2C%22profile_id%22%3Anull%2C%22widget_in_viewport%22%3Atrue%2C%22item_ids%22%3A%5B%22888561212694315015%22%2C%22888537075389222913%22%2C%22888534176588152833%22%2C%22888534157453778944%22%2C%22888528190020255744%22%2C%22888527993747800064%22%2C%22888526174808190976%22%2C%22888523518597505024%22%2C%22888510148284567552%22%2C%22888517969864609792%22%2C%22888514334543851521%22%2C%22888509978474147841%22%2C%22888387955517038593%22%2C%22888502797397774336%22%2C%22888500618578493440%22%2C%22888490238829486081%22%2C%22888489614909906945%22%2C%22888482426959183872%22%2C%22888480391551533057%22%2C%22888481551238823937%22%5D%2C%22item_details%22%3A%7B%22888561212694315015%22%3A%7B%22item_type%22%3A0%7D%2C%22888537075389222913%22%3A%7B%22item_type%22%3A0%7D%2C%22888534176588152833%22%3A%7B%22item_type%22%3A0%7D%2C%22888534157453778944%22%3A%7B%22item_type%22%3A0%7D%2C%22888528190020255744%22%3A%7B%22item_type%22%3A0%7D%2C%22888527993747800064%22%3A%7B%22item_type%22%3A0%7D%2C%22888526174808190976%22%3A%7B%22item_type%22%3A0%7D%2C%22888523518597505024%22%3A%7B%22item_type%22%3A0%7D%2C%22888510148284567552%22%3A%7B%22item_type%22%3A10%2C%22target_type%22%3A0%2C%22target_id%22%3A%22888519957553659905%22%7D%2C%22888517969864609792%22%3A%7B%22item_type%22%3A0%7D%2C%22888514334543851521%22%3A%7B%22item_type%22%3A0%7D%2C%22888509978474147841%22%3A%7B%22item_type%22%3A0%7D%2C%22888387955517038593%22%3A%7B%22item_type%22%3A10%2C%22target_type%22%3A0%2C%22target_id%22%3A%22888507805770014720%22%7D%2C%22888502797397774336%22%3A%7B%22item_type%22%3A0%7D%2C%22888500618578493440%22%3A%7B%22item_type%22%3A0%7D%2C%22888490238829486081%22%3A%7B%22item_type%22%3A0%7D%2C%22888489614909906945%22%3A%7B%22item_type%22%3A0%7D%2C%22888482426959183872%22%3A%7B%22item_type%22%3A0%7D%2C%22888480391551533057%22%3A%7B%22item_type%22%3A10%2C%22target_type%22%3A0%2C%22target_id%22%3A%22888482380645781506%22%7D%2C%22888481551238823937%22%3A%7B%22item_type%22%3A0%7D%7D%2C%22_category_%22%3A%22tfw_client_event%22%2C%22triggered_on%22%3A1500684804628%2C%22dnt%22%3Afalse%2C%22client_version%22%3A%22ed7b443%3A1500587785131%22%2C%22format_version%22%3A1%2C%22event_namespace%22%3A%7B%22client%22%3A%22tfw%22%2C%22page%22%3A%22timeline%22%2C%22component%22%3A%22timeline%22%2C%22element%22%3A%22initial%22%2C%22action%22%3A%22results%22%7D%7D"
+}, {
+     "type": "application/javascript;charset=utf-8",
+     "file": "https://cdn.syndication.twimg.com/widgets/timelines/354387022028357633?callback=__twttr.callbacks.tl_i0_354387022028357633_old&dnt=false&domain=ia.media-imdb.com&lang=en&override_name=IMDb&override_type=user&suppress_response_codes=true&t=1667427&with_replies=false"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BNTkzNTUwNjE1NV5BMl5BanBnXkFtZTcwNzI1MTg0NA@@._V1_SX101_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/lb/overlay-1511558127._V_.png"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DBoxOfficeListWidget%26bb0%3D703%26pc0%3D717%26ld0%3D717%26t0%3D1500684802901%26csmtags%3D%7C%7C:717"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/navbar_sprite-580289297._V_.png"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BNTAzMTEzMTEyNl5BMl5BanBnXkFtZTgwODAxMDc5MjI@._CR488,59,1150,1150_UX402_UY402._SY201_SX201_AL_.jpg"
+}, {
+     "type": "application/javascript; charset=UTF-8",
+     "file": "http://www.zergnet.com/zerg.js?id=46653"
+}, {
+     "type": "application/javascript; charset=utf-8",
+     "file": "https://platform.twitter.com/js/timeline.e07ebeba0d52bbd8d83cb4415cf5b38e.js"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMjM1NTc0NzE4OF5BMl5BanBnXkFtZTgwNDkyNjQ1NTE@._V1_SX116_CR0,0,116,172_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTk5ODEyNzAzMl5BMl5BanBnXkFtZTgwNTU3MjgzMjI@._CR931,136,526,394_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BOTk3NTU3MTM2N15BMl5BanBnXkFtZTgwMzg4Nzk3MDI@._V1_SX201_CR0,0,201,298_AL_.jpg"
+}, {
+     "type": "image/png",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/14519737_10154708836523949_4664287994593729350_n.png?oh=e81e43c880cc2d08388d2ac56ef211a0&oe=5A0B07BD"
+}, {
+     "type": "image/jpeg",
+     "file": "https://scontent-dft4-2.xx.fbcdn.net/v/t1.0-1/p50x50/19904944_102081543780666_1924615674563749685_n.jpg?oh=4ed4899376b4b0db6ea490870235d87e&oe=59EE42CA"
+}, {
+     "type": "image/jpeg",
+     "file": "https://images-na.ssl-images-amazon.com/images/M/MV5BMTgyMjEzODU2Nl5BMl5BanBnXkFtZTgwNDAzNjc5MjI@._CR466,358,632,474_UX614_UY460._SY230_SX307_AL_.jpg"
+}, {
+     "type": "image/gif",
+     "file": "http://fls-na.amazon.com/1/batch/1/OP/A1EVAM02EL8SFB:000-0000000-0000000:0N3132REECJF4PZ8MR1T:www.imdb.com$uedata=s:%2Fuedata%2F000-0000000-0000000%2F%3Fld%26v%3Da02%26id%3D0N3132REECJF4PZ8MR1T%26ctb%3D1%26sc0%3DNinjaWidget%26bb0%3D742%26pc0%3D743%26ld0%3D743%26t0%3D1500684802927%26csmtags%3D%7C%7C:743"
+}, {
+     "type": "application/x-javascript; charset=utf-8",
+     "file": "https://static.xx.fbcdn.net/rsrc.php/v3iPy64/y_/l/en_US/RkHm6csNUxD.js"
+}, {
+     "type": "image/png",
+     "file": "http://ia.media-imdb.com/images/G/01/imdb/images/navbar/imdbpro_menu_user-4091932618._CB530713443_.png"
+}];
+
+var types = {};
+
+
+
+_.each(resources, function (resource) {
+
+})
+
+console.log('types', types);

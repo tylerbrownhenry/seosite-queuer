@@ -1112,7 +1112,7 @@
           i_id: input.i_id || input.requestId || null,
           url: input.url || null,
           page: input.page || null,
-          type: input.type || '',
+          type: input.type || 'page:scan',
           status: 'error',
           statusType: input.statusType || null,
           system: input.system || null,
@@ -1160,7 +1160,7 @@
           uid: input.uid || null,
           requestId: input.requestId || null,
           page: input.page || null,
-          type: input.type || '',
+          type: input.type || 'page:scan',
           status: input.status || null,
           statusType: input.statusType || null,
           completedTime: utils.getNowUTC(),
@@ -1241,7 +1241,7 @@
                //
                //
 <span class="cstat-no" title="statement not covered" >               notify(_.extend({</span>
-                    type: '',
+                    type: 'page:scan',
                     status: 'success',
                     statusType: 'update',
                     message: 'success:scan:init'
@@ -1387,7 +1387,7 @@
                               page: page,
                               status: _res.status,
                               statusType: _res.statusType,
-                              type: '',
+                              type: 'page:scan',
                               message: _res.message,
                               notify: true
                          });

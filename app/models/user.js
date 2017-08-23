@@ -1,22 +1,31 @@
 var dynamoose = require('dynamoose');
-
 var userSchema = new dynamoose.Schema({
      email: {
           type: String,
           unique: true,
           lowercase: true
      },
+     status: {
+       type: String,
+       default: 'active'
+     },
      password: String,
      isAdmin: {
           type: Boolean,
           default: false
+     },
+     customerId: {
+          type: String,
+     },
+     timezone: {
+       type:String
      },
      role: {
           type: String,
           default: 'org_admin'
      },
      oid: {
-          type: String
+          type: String,
      },
      uid: {
           type: String,
@@ -41,29 +50,6 @@ var userSchema = new dynamoose.Schema({
      picture: {
           type: String,
           default: ''
-     },
-     plan: {
-          type: String,
-          default: 'free'
-     },
-     last4: {
-          type: String,
-     },
-     customerId: {
-          type: String,
-     },
-     subscriptionId: {
-          type: String,
-     },
-     apiToken: {
-          type: String,
-     },
-     resetPasswordToken: {
-          type: String,
-     },
-     resetPasswordExpires: {
-          type: String,
-          default: +new Date()
      },
      created: {
           type: String,

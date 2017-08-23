@@ -1,6 +1,6 @@
 var dynamoose = require('dynamoose'),
      settings = require("../../settings/requests"),
-     notify = require('../../actions/notify'),
+     notify = require('../../actions/notify').notify,
      retry = require('../../settings/requests/retry').publish,
      q = require('q');
 
@@ -14,7 +14,7 @@ function processLink(msg, ch) {
      var promise = q.defer();
      settings.types.link(msg).then(function (response) {
           console.log('consumer/link.js ackking message processLink', response);
-          if (response.notify === true) {
+          if (response && response.notify === true) {
                notify(response);
           }
           ch.ack(msg);

@@ -1,5 +1,5 @@
 var retryInit = require("../../settings/requests").types.retry,
-     notify = require('../../actions/notify'),
+     notify = require('../../actions/notify').notify,
      retry =  require('../../settings/requests/retry').publish;
 
 /**

@@ -12,7 +12,7 @@ var alertSchema = new dynamoose.Schema({
       type: Array,
       default: []
     },
-    page: {
+    source: {
       type: String
     },
     type: {
