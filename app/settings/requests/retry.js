@@ -26,6 +26,10 @@ function originalIssueResolved(type) {
  * @param  {Object} input
  */
 function publish(input) {
+  console.log('publish!');
+try{
+
+
      var promise = q.defer();
      if (typeof input === 'undefined' || utils.checkRequirements(input, ['i_id', 'retryCommand', 'retryOptions']) === true) {
           logError({
@@ -36,6 +40,8 @@ function publish(input) {
           promise.reject(false);
           return promise.promise;
      }
+     console.log('publish!');
+
      var msg = {
           uid: input.uid || null,
           i_id: input.i_id,
@@ -50,12 +56,20 @@ function publish(input) {
           delete input.retryOptions.promise;
      }
      msg.retryOptions = input.retryOptions;
+     console.log('publish!');
      publisher.publish("", "retry", new Buffer(JSON.stringify(msg))).then(function (res) {
+       console.log('publish!');
+
           promise.resolve(res);
      }).catch(function (e) {
+       console.log('publish!');
+
           promise.reject({retry: true});
      });
      return promise.promise;
+   }catch(e){
+    console.log('e',e);
+   }
 }
 
 /**

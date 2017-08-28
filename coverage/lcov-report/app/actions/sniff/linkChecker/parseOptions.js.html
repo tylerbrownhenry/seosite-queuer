@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">22.22% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>18/18</span>
+        <span class='fraction'>4/18</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">83.33% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>5/6</span>
+        <span class='fraction'>0/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>2/2</span>
+        <span class='fraction'>0/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">22.22% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>18/18</span>
+        <span class='fraction'>4/18</span>
       </div>
     </div>
   </div>
-  <div class='status-line high'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -74,53 +74,53 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">"use strict";
 var defaultOptions = require("./defaultOptions");
 &nbsp;
-function array2booleanMap(array) {
-     var i, map, numElements;
-     if (Array.isArray(array) === true) {
-          map = {};
-          numElements = array.length;
-          for (i = 0; i &lt; numElements; i++) {
-               map[array[i]] = true;
+<span class="fstat-no" title="function not covered" >function array2booleanMap(array) {</span>
+<span class="cstat-no" title="statement not covered" >     var i, map, numElements;</span>
+<span class="cstat-no" title="statement not covered" >     if (Array.isArray(array) === true) {</span>
+<span class="cstat-no" title="statement not covered" >          map = {};</span>
+<span class="cstat-no" title="statement not covered" >          numElements = array.length;</span>
+<span class="cstat-no" title="statement not covered" >          for (i = 0; i &lt; numElements; i++) {</span>
+<span class="cstat-no" title="statement not covered" >               map[array[i]] = true;</span>
           }
-          return map;
+<span class="cstat-no" title="statement not covered" >          return map;</span>
      }
-     return array;
+<span class="cstat-no" title="statement not covered" >     return array;</span>
 }
 &nbsp;
-function parseOptions(options) {
-     <span class="missing-if-branch" title="else path not taken" >E</span>if (options == null || options.__parsed !== true) {
-          options = Object.assign({}, defaultOptions, options);
-          options.acceptedSchemes = array2booleanMap(options.acceptedSchemes);
-          options.excludedSchemes = array2booleanMap(options.excludedSchemes);
-          options.__parsed = true;
+<span class="fstat-no" title="function not covered" >function parseOptions(options) {</span>
+<span class="cstat-no" title="statement not covered" >     if (options == null || options.__parsed !== true) {</span>
+<span class="cstat-no" title="statement not covered" >          options = Object.assign({}, defaultOptions, options);</span>
+<span class="cstat-no" title="statement not covered" >          options.acceptedSchemes = array2booleanMap(options.acceptedSchemes);</span>
+<span class="cstat-no" title="statement not covered" >          options.excludedSchemes = array2booleanMap(options.excludedSchemes);</span>
+<span class="cstat-no" title="statement not covered" >          options.__parsed = true;</span>
      }
-     return options;
+<span class="cstat-no" title="statement not covered" >     return options;</span>
 }
 &nbsp;
 module.exports = parseOptions;
@@ -130,7 +130,7 @@ module.exports = parseOptions;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jul 14 2017 18:44:59 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>

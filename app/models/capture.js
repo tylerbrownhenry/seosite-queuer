@@ -5,33 +5,15 @@ var captureSchema = new dynamoose.Schema({
           type: String,
           hashKey: true
      },
-    //  uid: {
-    //       type: String,
-    //  },
-    //  url: {
-    //       type: Object
-    //  },
+     'ipadlandscape': {
+          type: String,
+          default: null
+     },
+     'iphone6': {
+          type: String,
+          default: null
+     },
      '1920x1080': {
-          type: String,
-          default: null
-     },
-     '1600x1200': {
-          type: String,
-          default: null
-     },
-     '1400x900': {
-          type: String,
-          default: null
-     },
-     '1024x768': {
-          type: String,
-          default: null
-     },
-     '800x600': {
-          type: String,
-          default: null
-     },
-     '420x360': {
           type: String,
           default: null
      },

@@ -2,14 +2,16 @@ let _ = require('underscore'),
      q = require('q'),
      utils = require('../../../utils'),
      preFlight = require("../../../amqp-connections/helpers/preFlight"),
-     saveAsActive = require('./method/saveAsActive');
+     saveAsActive = require('./method/saveAsActive'),
+     reject = require('./method/reject');
+
 /**
  * process pageScan request message from rabbitMQ
  * @param  {Buffer} msg buffered message from rabbitMQ
  * @return {Promise} promise function
  */
 function process(msg) {
-     console.log('request/pageScan.js init', msg);
+     console.log('request/pageScan.js init');
      var promise = q.defer();
      var input = preFlight(promise, msg, reject);
      if (input === false) {
@@ -38,7 +40,6 @@ module.exports = {
      saveAsActive: saveAsActive,
      resolve: require('./method/resolve'),
      notify: require('./method/notify'),
-     reject: require('./method/reject'),
      processsHar: require('./method/processHar'),
      processsUrl: require('./method/processUrl')
 };

@@ -8,23 +8,29 @@ var retryInit = require("../../settings/requests").types.retry,
  * @param  {object} ch rabbitMQ channel object
  */
 function processRequest(msg,ch) {
-    // console.log('consumers/retry.js processRequest');
+    console.log('consumers/retry.js processRequest');
+    let myVar = setTimeout(function(){
+       console.log('timed out resource',JSON.parse(msg.content));
+     }, 30000);
+     console.log('consumers/retry.js processRequest',JSON.parse(msg.content));
     retryInit(msg,ch).then(function (response) {
-          // console.log('consumers/retry.js request success');
+      clearTimeout(myVar);
+          console.log('consumers/retry.js request success');
           if (response && response.notify === true) {
                notify(response);
           }
-          //console.log('ACK--1',msg);
+          console.log('ACK--1',msg);
           ch.ack(msg);
     }).catch(function (err) {
-        // console.log('consumers/retry.js request failed',err);
+      clearTimeout(myVar);
+        console.log('consumers/retry.js request failed',err);
           if (err && err.notify === true) {
                notify(err);
           }
           if (err && err.softRetry === true) {
                return ch.nack(msg);
           } else if (err && err.retry === true) {
-                // console.log('retry');
+                console.log('retry');
                 err.objectType = 'request';
                 retry(err).then(function(){
                   ch.ack(msg);

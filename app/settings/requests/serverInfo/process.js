@@ -1,16 +1,15 @@
 var _ = require('underscore'),
-     //  metaData = require('../../../models/metaData'),
      publisher = require('../../../amqp-connections/publisher'),
      sh = require("shorthash"),
-     utils = require('../../../utils');
-Scan = require('../../../models/scan'),
+     utils = require('../../../utils'),
+     Scan = require('../../../models/scan'),
      serverInfo = require('../../../actions/serverInfo/index');
 
 function publish(data) {
      let input = data.input;
-     console.log('input res', input.res.url);
      let _data = {
-          url: input.res.url.url,
+          test: (data && data.test) ? data.test : null,
+          url: utils.convertUrl(input.res.url.url),
           requestId: input.input.requestId,
           action: 'serverInfo'
      };
@@ -24,19 +23,24 @@ function process(_input) {
      let input = _input.input;
      var requestId = input.requestId;
      serverInfo(input.url).then(function (results) {
+          let updates = {
+               serverInfo: results
+          };
           utils.updateBy(Scan, {
                requestId: requestId
-          }, {
-               serverInfo: results
-          }, function (err) {
+          }, updates, function (err) {
                if (err === null) {
                     promise.resolve({
                          requestId: requestId,
                          status: 'success',
-                         data: 'Action completed'
+                         message: 'success:serverInfo',
+                         data: updates
                     });
                } else {
+                    console.log('serverInfo err1', err);
+
                     promise.reject({
+                         data: err,
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',
@@ -60,19 +64,27 @@ function process(_input) {
                }
           });
      }).catch(function (err) {
+          console.log('serverInfo err1', err);
+          let updates = {
+               serverInfo: 'failed:serverInfo'
+          }
           utils.updateBy(Scan, {
                requestId: requestId
-          }, {
-               serverInfo: 'failed:serverInfo'
-          }, function (err) {
-               if (err === null) {
+          }, updates, function (e) {
+               if (e === null) {
+                    console.log('serverInfo err-->', serverInfo);
                     promise.resolve({
                          requestId: requestId,
-                         status: 'success',
-                         data: 'Action completed'
+                         status: 'error',
+                         message: 'failed:serverInfo',
+                         data: updates
                     });
                } else {
                     promise.reject({
+                         data: {
+                              saving: e,
+                              processing: err
+                         },
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',
@@ -95,7 +107,7 @@ function process(_input) {
                     });
                }
           });
-     })
+     });
 }
 
 module.exports = {

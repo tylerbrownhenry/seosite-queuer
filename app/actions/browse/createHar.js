@@ -1,10 +1,15 @@
-// var utils = require('../../utils'),
-_ = require('underscore');
-// The contents of these types of files should be included in the HAR.
-var ALLOWED_CONTENT_TYPES = ['css', 'js', 'json', 'doc'];
+_ = require('underscore'),
+     ALLOWED_CONTENT_TYPES = ['css', 'js', 'json', 'doc'];
 
+/**
+ * gets data from a page resource
+ * @param  {Object} page    response for page
+ * @param  {String} key     id of resource
+ * @param  {Array} entries
+ * @param  {String} address address of page
+ */
 function processResource(page, key, entries, address) {
-     var resource = page.resources[key],
+     let resource = page.resources[key],
           request = resource.request,
           startReply = resource.startReply,
           endReply = resource.endReply,
@@ -32,15 +37,15 @@ function processResource(page, key, entries, address) {
           endReply.status = null;
      }
 
-     var requestTime = new Date(request.time).getTime();;
-     var startReplyTime = new Date(startReply.time).getTime();
-     var endReplyTime = new Date(endReply.time).getTime();
+     let requestTime = new Date(request.time).getTime(),
+          startReplyTime = new Date(startReply.time).getTime(),
+          endReplyTime = new Date(endReply.time).getTime(),
 
-     var startedDateTime = request.time.toISOString();
-     var time = endReplyTime - requestTime;
+          startedDateTime = request.time.toISOString(),
+          time = endReplyTime - requestTime,
 
-     var waitTime = startReplyTime - requestTime;
-     var receivedTime = endReplyTime - startReplyTime;
+          waitTime = startReplyTime - requestTime,
+          receivedTime = endReplyTime - startReplyTime;
 
      entries.push({
           pageref: address,
@@ -81,16 +86,15 @@ function processResource(page, key, entries, address) {
  * @return {Object}      a log object of the scanned page
  */
 function createHAR(page) {
-     var address = page.address,
+     let address = page.address,
           title = page.title,
           isoTime = page.startTime.toISOString(),
           endTime = new Date(page.endTime).getTime(),
           startTime = new Date(page.startTime).getTime(),
-          onLoadTime = endTime - startTime;
+          onLoadTime = endTime - startTime,
+          entries = [];
 
-     var entries = [];
-
-     _.each(_.keys(page.resources), function (key) {
+     _.each(_.keys(page.resources), (key) => {
           processResource(page, key, entries, address);
      });
 

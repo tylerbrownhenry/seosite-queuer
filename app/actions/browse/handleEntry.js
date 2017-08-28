@@ -1,10 +1,10 @@
-var q = require('q'),
+let q = require('q'),
      _ = require('underscore'),
      request = require('request'),
      http = require('http'),
      zlib = require('zlib');
 
-function tally(promise, options, entry, rawReqHeaders, rawResHeaders,body,bodySize,uncompressedSize,idx) {
+function tally(promise, options, entry, rawReqHeaders, rawResHeaders, body, bodySize, uncompressedSize, idx) {
      entry.request.headerSize = Buffer.byteLength(rawReqHeaders, 'utf8');
 
      if (options.bodies && ALLOWED_CONTENT_TYPES.indexOf(entry.response.content._type) !== -1) {
@@ -41,7 +41,7 @@ function processRequest(promise, res, entry, options, idx, rawReqHeaders) {
                     body += data;
                     uncompressedSize += data.length;
                }).on('end', function () {
-                    tally(promise, options, entry, rawReqHeaders, rawResHeaders,body,bodySize,uncompressedSize,idx);
+                    tally(promise, options, entry, rawReqHeaders, rawResHeaders, body, bodySize, uncompressedSize, idx);
                });
 
                res.on('data', function (data) {
@@ -56,7 +56,7 @@ function processRequest(promise, res, entry, options, idx, rawReqHeaders) {
                     body += data;
                     uncompressedSize += data.length;
                }).on('end', function () {
-                    tally(promise, options, entry, rawReqHeaders, rawResHeaders,body,bodySize,uncompressedSize,idx);
+                    tally(promise, options, entry, rawReqHeaders, rawResHeaders, body, bodySize, uncompressedSize, idx);
                });
 
                res.on('data', function (data) {
@@ -69,7 +69,7 @@ function processRequest(promise, res, entry, options, idx, rawReqHeaders) {
                     body += data;
                     uncompressedSize += bodySize += data.length;
                }).on('end', function () {
-                    tally(promise, options, entry, rawReqHeaders, rawResHeaders,body,bodySize,uncompressedSize,idx);
+                    tally(promise, options, entry, rawReqHeaders, rawResHeaders, body, bodySize, uncompressedSize, idx);
                });
 
                break;

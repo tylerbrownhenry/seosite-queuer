@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">57.14% </span>
+        <span class="strong">62.5% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>8/14</span>
+        <span class='fraction'>5/8</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">33.33% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>1/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">57.14% </span>
+        <span class="strong">62.5% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>8/14</span>
+        <span class='fraction'>5/8</span>
       </div>
     </div>
   </div>
@@ -105,8 +105,7 @@
 60
 61
 62
-63
-64</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+63</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -123,8 +122,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">5×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -134,14 +132,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">5×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,11 +149,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -168,16 +159,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var sh = require('shorthash'),
      publisher = require('../amqp-connections/publisher'),
-     utils = require('../utils'),
+     email = require('./email/send-email'),
      q = require('q'),
      retry = require('../settings/requests/retry').publish,
      Update = require('../models/update');
 /**
  * [notify description]
- * @param  {String} type       page || summary || link
+ * @param  {String} type       pageScan || site || link
  * @param  {String} uid        user id
  * @param  {String} i_id       item's unique id
  * @param  {String} status     status to give this message
@@ -185,25 +183,20 @@
  * @param  {String} message    message for this update
  * @param  {String} statusType label, to instruct how to handle this update
  */
-function notify(msg) {
-     console.log('app/actions/notify.js', msg);
+module.exports.notify = function(msg) {
      var msg = {
           id: sh.unique(msg.status + msg.uid + (msg.i_id || <span class="branch-1 cbranch-no" title="branch not covered" >msg.requestId)</span>),
           uid: msg.uid,
           i_id: msg.i_id || <span class="branch-1 cbranch-no" title="branch not covered" >msg.requestId,</span>
           status: msg.status, // 'success' || 'error'
           statusType: msg.statusType, // 'update' || 'complete' || 'failed'
-          //(success) 'pending' || 'complete' (error) 'database' || 'system' || 'invalidInput'
           type: msg.type, //'page:scan'
           message: msg.message,
-          page: msg.page
+          source: msg.source
      };
-     console.log('app/actions/notify.js -&gt; new Update');
      var update = new Update(msg);
-     utils.saveModel(update, <span class="fstat-no" title="function not covered" >function (err) {</span>
+     update.save(<span class="fstat-no" title="function not covered" >function (err) {</span>
 <span class="cstat-no" title="statement not covered" >          if (err) {</span>
-<span class="cstat-no" title="statement not covered" >               console.log('actions/notify.js -&gt; update save:failed');</span>
-               //console.log('err2', err);
 <span class="cstat-no" title="statement not covered" >               retry({</span>
                     statusType: msg.type,
                     status: msg.status,
@@ -211,34 +204,38 @@ function notify(msg) {
                     type: msg.type,
                     i_id: msg.i_id,
                     uid: msg.uid,
-                    page: msg.page,
+                    msg: msg.requestType,
+                    source: msg.source,
                     retry: true,
                     retryCommand: 'notify',
                     retryOptions: msg
                });
           } else {
-<span class="cstat-no" title="statement not covered" >               console.log('actions/notify.js -&gt; update save:passed', err);</span>
                /*
                Let user know there is an update
                */
 <span class="cstat-no" title="statement not covered" >              publisher.publish("", "update", new Buffer(JSON.stringify({</span>
-                   uid: msg.uid
+                   uid: msg.uid,
+                   requestType: msg.requestType,
+                   i_id: msg.i_id,
+                   type: msg.type,
+                   status: msg.status
               }))).then(<span class="fstat-no" title="function not covered" >function (res) {</span>
-<span class="cstat-no" title="statement not covered" >                   console.log('res', res);</span>
+                  //  console.log('res', res);
               }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+&nbsp;
               });
+&nbsp;
           }
      });
 }
-&nbsp;
-module.exports = notify;
 &nbsp;</pre></td></tr>
 </table></pre>
 <div class='push'></div><!-- for sticky footer -->
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jul 14 2017 18:44:59 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../prettify.js"></script>

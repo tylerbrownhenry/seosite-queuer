@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/minifyCheck/index.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">app/actions/minifyCheck/</a> index.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">8.25% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>8/97</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/42</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/5</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">8.25% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>8/97</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const _ = require('underscore');
+bhttp = require("bhttp"),
+     minifyHtml = require('html-minifier').minify,
+     CleanCSS = require('clean-css'),
+     _minJS = require('yuicompressor').compress,
+     imagemin = require('imagemin'),
+     imageminJpegtran = require('imagemin-jpegtran'),
+     imageminPngquant = require('imagemin-pngquant'),
+     imageminGifsicle = require('imagemin-gifsicle'),
+     request = require('request').defaults({
+          encoding: null
+     });
+&nbsp;
+/**
+ * minifies a javascript screen and returns the minified length
+ * @param  {String}   code     stringified body of a javascript file
+ * @param  {Function} callback
+ */
+<span class="fstat-no" title="function not covered" >function minJs(code, callback) {</span>
+<span class="cstat-no" title="statement not covered" >     try {</span>
+<span class="cstat-no" title="statement not covered" >          _minJS(code, {</span>
+               charset: 'utf8',
+               type: 'js',
+               nomunge: true,
+               'line-break': 80
+          }, (err, data, extra) =&gt; {
+<span class="cstat-no" title="statement not covered" >               if (data &amp;&amp; data.length) {</span>
+<span class="cstat-no" title="statement not covered" >                    callback(data.length);</span>
+               } else {
+<span class="cstat-no" title="statement not covered" >                    callback();</span>
+               }
+          });
+     } catch (e) {
+<span class="cstat-no" title="statement not covered" >          console.log('minified js failed', e);</span>
+<span class="cstat-no" title="statement not covered" >          callback();</span>
+     }
+}
+&nbsp;
+/**
+ * checks a css file for media queries and print styles, then minifies it;
+ * @param  {String}   url      url of a css file to fetch
+ * @param  {Function} callback
+ */
+<span class="fstat-no" title="function not covered" >function checkCSS(url, callback) {</span>
+<span class="cstat-no" title="statement not covered" >     bhttp.get(url, {</span>
+          responseTimeout: 30000
+     }, (err, response) =&gt; {
+<span class="cstat-no" title="statement not covered" >          if (response &amp;&amp; response.body) {</span>
+<span class="cstat-no" title="statement not covered" >               let body = response.body.toString(),</span>
+                    hasMediaQueries = (body.search('@media[^{]*\{(?:(?!\}\s*\}).)*') !== -1) ? true : false,
+                    hasPrintStyles = (body.search('@media print') !== -1) ? true : false,
+                    resp = 0;
+<span class="cstat-no" title="statement not covered" >               try {</span>
+<span class="cstat-no" title="statement not covered" >                    resp = new CleanCSS({}).minify(body);</span>
+               } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    resp = 0;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               callback(resp, hasMediaQueries, hasPrintStyles);</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >               callback(0, false, false);</span>
+          }
+     });
+}
+&nbsp;
+/**
+ * gets the contents of a javascript file and passes it to a minifier
+ * @param  {String}   url      url of javascript file
+ * @param  {Function} callback
+ */
+<span class="fstat-no" title="function not covered" >function checkJS(url, callback) {</span>
+<span class="cstat-no" title="statement not covered" >     bhttp.get(url, {</span>
+          responseTimeout: 30000
+     }, (err, response) =&gt; {
+<span class="cstat-no" title="statement not covered" >          if (response &amp;&amp; response.body) {</span>
+<span class="cstat-no" title="statement not covered" >               try {</span>
+<span class="cstat-no" title="statement not covered" >                    var resp = response.body.toString();</span>
+<span class="cstat-no" title="statement not covered" >                    minJs(resp, (minSize) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                         if (minSize) {</span>
+<span class="cstat-no" title="statement not covered" >                              var originalSize = resp.length;</span>
+<span class="cstat-no" title="statement not covered" >                              var results = {</span>
+                                   stats: {
+                                        efficiency: 1 - minSize / originalSize,
+                                        minifiedSize: minSize,
+                                        originalSize: originalSize
+                                   }
+                              }
+<span class="cstat-no" title="statement not covered" >                              callback(results);</span>
+                         } else {
+<span class="cstat-no" title="statement not covered" >                              console.log('minified js failure!', minSize);</span>
+<span class="cstat-no" title="statement not covered" >                              callback();</span>
+                         }
+                    });
+               } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    console.log('minified js failure!', e);</span>
+<span class="cstat-no" title="statement not covered" >                    callback();</span>
+               }
+          } else {
+<span class="cstat-no" title="statement not covered" >               console.log('resource minified failed', err, url);</span>
+<span class="cstat-no" title="statement not covered" >               callback();</span>
+          }
+     });
+}
+&nbsp;
+/**
+ * fetches an html file and then attempts to minifiy it
+ * @param  {String}   url      url to an html file
+ * @param  {Function} callback
+ */
+<span class="fstat-no" title="function not covered" >function checkHTML(url, callback) {</span>
+<span class="cstat-no" title="statement not covered" >     bhttp.get(url, {</span>
+          responseTimeout: 30000
+     }, (err, response) =&gt; {
+<span class="cstat-no" title="statement not covered" >          if (response &amp;&amp; response.body) {</span>
+<span class="cstat-no" title="statement not covered" >               try {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    let body = response.body.toString(),</span>
+                         minSize = Number(minifyHtml(body).length),
+                         originalSize = body.length,
+                         results = {
+                              stats: {
+                                   efficiency: 1 - minSize / originalSize,
+                                   minifiedSize: minSize,
+                                   originalSize: originalSize
+                              }
+                         }
+<span class="cstat-no" title="statement not covered" >                    callback(results);</span>
+               } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    console.log('minified html failed', e);</span>
+<span class="cstat-no" title="statement not covered" >                    callback();</span>
+               }
+          }
+     });
+}
+&nbsp;
+/**
+ * fetches and img and then to minifies it and returns the comparsion of minfied to original
+ * @param  {String}   url
+ * @param  {Function} callback
+ */
+<span class="fstat-no" title="function not covered" >function checkIMAGE(url, callback) {</span>
+<span class="cstat-no" title="statement not covered" >     request.get(url, {</span>
+          timeout: 30000
+     }, (error, response, body) =&gt; {
+<span class="cstat-no" title="statement not covered" >          if (!error &amp;&amp; response.statusCode == 200) {</span>
+<span class="cstat-no" title="statement not covered" >               try {</span>
+<span class="cstat-no" title="statement not covered" >                    let data = new Buffer(body),</span>
+                         originalSize = data.byteLength;
+<span class="cstat-no" title="statement not covered" >                    imagemin.buffer(data, {</span>
+                         options: {
+                              optimizationLevel: 3,
+&nbsp;
+                         },
+                         plugins: [
+                              imageminGifsicle(),
+                              imageminJpegtran(),
+                              imageminPngquant({
+                                   quality: '65-80'
+                              })
+                         ]
+                    }).then(files =&gt; {
+<span class="cstat-no" title="statement not covered" >                         let minSize = files.byteLength;</span>
+<span class="cstat-no" title="statement not covered" >                         let results = {</span>
+                              stats: {
+                                   efficiency: 1 - minSize / originalSize,
+                                   minifiedSize: minSize,
+                                   originalSize: originalSize
+                              }
+                         }
+<span class="cstat-no" title="statement not covered" >                         callback(results);</span>
+                    }).catch((e) =&gt; {
+<span class="cstat-no" title="statement not covered" >                         console.log('minified image failed', e);</span>
+<span class="cstat-no" title="statement not covered" >                         callback();</span>
+                    })
+               } catch (e) {
+<span class="cstat-no" title="statement not covered" >                    console.log('minified image failed', e);</span>
+<span class="cstat-no" title="statement not covered" >                    callback();</span>
+               }
+          } else {
+<span class="cstat-no" title="statement not covered" >               console.log('minified image failed', error);</span>
+<span class="cstat-no" title="statement not covered" >               callback();</span>
+          }
+     });
+}
+&nbsp;
+/**
+ * sorts the input to the correct minify function
+ * @param  {Object}   resource contains a type and url to fetch and minify
+ * @param  {Function} callback
+ */
+module.exports = (resource, callback) =&gt; {
+<span class="cstat-no" title="statement not covered" >     if (resource.type === 'js') {</span>
+<span class="cstat-no" title="statement not covered" >          try {</span>
+<span class="cstat-no" title="statement not covered" >               checkJS(resource.url, (resp) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    if (resp) {</span>
+<span class="cstat-no" title="statement not covered" >                         callback(null, resp);</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                         console.log('resource minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >                         callback(true);</span>
+                    }
+               });
+          } catch (e) {
+<span class="cstat-no" title="statement not covered" >               console.log('resource minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >               callback(true);</span>
+          }
+     } else <span class="cstat-no" title="statement not covered" >if (resource.type === 'css') {</span>
+<span class="cstat-no" title="statement not covered" >          try {</span>
+<span class="cstat-no" title="statement not covered" >               checkCSS(resource.url, (resp, hasMediaQueries, hasPrintStyles) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    resp.css = {</span>
+                         hasMediaQueries: hasMediaQueries,
+                         hasPrintStyles: hasPrintStyles
+                    }
+<span class="cstat-no" title="statement not covered" >                    if (resp) {</span>
+<span class="cstat-no" title="statement not covered" >                         callback(null, resp);</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                         console.log('css minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >                         callback(true);</span>
+                    }
+               });
+          } catch (e) {
+<span class="cstat-no" title="statement not covered" >               console.log('css minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >               callback(true);</span>
+          }
+     } else <span class="cstat-no" title="statement not covered" >if (resource.type === 'html') {</span>
+<span class="cstat-no" title="statement not covered" >          try {</span>
+<span class="cstat-no" title="statement not covered" >               checkHTML(resource.url, (resp) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    if (resp) {</span>
+<span class="cstat-no" title="statement not covered" >                         callback(null, resp);</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                         console.log('html minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >                         callback(true);</span>
+                    }
+               });
+          } catch (e) {
+<span class="cstat-no" title="statement not covered" >               console.log('html minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >               callback(true);</span>
+          }
+     } else <span class="cstat-no" title="statement not covered" >if (resource.type === 'img') {</span>
+<span class="cstat-no" title="statement not covered" >          try {</span>
+<span class="cstat-no" title="statement not covered" >               checkIMAGE(resource.url, (resp) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >                    if (resp) {</span>
+<span class="cstat-no" title="statement not covered" >                         callback(null, resp);</span>
+                    } else {
+<span class="cstat-no" title="statement not covered" >                         console.log('img minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >                         callback(true);</span>
+                    }
+               });
+          } catch (e) {
+<span class="cstat-no" title="statement not covered" >               console.log('img minified failed', resource.url);</span>
+<span class="cstat-no" title="statement not covered" >               callback(true);</span>
+          }
+     } else {
+<span class="cstat-no" title="statement not covered" >          callback(true)</span>
+     }
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

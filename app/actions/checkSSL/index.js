@@ -1,33 +1,33 @@
-var https = require('https');
-var q = require('q');
-const {
-     URL
-} = require('url');
-
-module.exports = function (url) {
-     var promise = q.defer();
-     console.log('HERE4', url);
-
-     var hostUrl = new URL(url);
-
-     var options = {
-          host: hostUrl.hostname,
-          method: 'get',
-          path: '/'
-     };
-
-     var req = https.request(options,
-          function (res) {
-               promise.resolve((res.socket.authorized) ? 'ssl:enabled' : 'ssl:not:enabled');
-          });
-
-     /* http on error? test before host part*/
-
-     req.on('error', function (e) {
-          // console.error('error', e);
-          promise.reject('ssl:not:enabled');
+const https = require('https'),
+     q = require('q'),
+     {
+          URL
+     } = require('url');
+/**
+ * https check, attempts to connect to url with https and waits to see if certificate exists
+ * @param  {String} url
+ * @return {Object}     promise
+ */
+module.exports = (url) => {
+     let deferred = q.defer(),
+          hostUrl = new URL(url),
+          options = {
+               host: hostUrl.hostname,
+               timeout: 30000,
+               method: 'get',
+               path: '/'
+          },
+          req = https.request(options,
+               (res) => {
+                    if (res && res.socket) {
+                         deferred.resolve((res.socket.authorized) ? 'ssl:enabled' : 'ssl:not:enabled');
+                    } else {
+                         deferred.resolve('ssl:not:enabled');
+                    }
+               });
+     req.on('error', (e) => {
+          deferred.reject('ssl:not:enabled');
      });
-
      req.end();
-     return promise.promise;
+     return deferred.promise;
 };

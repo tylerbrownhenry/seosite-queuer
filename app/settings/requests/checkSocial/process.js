@@ -8,7 +8,17 @@ let _ = require('underscore'),
 function publish(data) {
      let input = data.input,
           _data = {
-               url: input.res.url.url,
+               test: (data && data.test) ? data.test : null,
+               url: utils.convertUrl(input.res.url.url),
+              //  url: input.res.url.url,
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
+               /* Should handle the invalid url properly... */
                socialInfo: input.res.socialInfo,
                requestId: input.input.requestId,
                action: 'checkSocial'
@@ -22,19 +32,21 @@ function process(_input) {
           input = _input.input,
           requestId = input.requestId;
      checkSocial(input.url, input.socialInfo.twitterUsername).then((results) => {
-          utils.updateBy(Scan, {
-               requestId: requestId
-          }, {
+          let updates = {
                social: {
                     results: results,
                     onPage: input.socialInfo
                }
-          }, (err) => {
+          };
+          utils.updateBy(Scan, {
+               requestId: requestId
+          }, updates, (err) => {
                if (err === null) {
                     promise.resolve({
                          requestId: requestId,
                          status: 'success',
-                         data: 'Action completed'
+                         message: 'success:save:checkSocial',
+                         data: updates
                     });
                } else {
                     promise.reject({
@@ -44,6 +56,7 @@ function process(_input) {
                          status: 'error',
                          source: '--',
                          message: 'error:save:checkSocial',
+                         data: err,
                          notify: false,
                          retry: true,
                          i_id: input.requestId,
@@ -63,7 +76,7 @@ function process(_input) {
                     });
                }
           });
-     }).catch((err) => {
+     }).catch((e) => {
           utils.updateBy(Scan, {
                requestId: requestId
           }, {
@@ -73,10 +86,15 @@ function process(_input) {
                     promise.resolve({
                          requestId: requestId,
                          status: 'success',
-                         data: 'Action completed'
+                         message: 'failed:checkSocial',
+                         data: e
                     });
                } else {
                     promise.reject({
+                         data: {
+                              processing: e,
+                              saving: err
+                         },
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',

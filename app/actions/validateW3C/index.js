@@ -2,7 +2,6 @@ var _ = require('underscore');
 var q = require('q');
 var w3cjs = require('w3cjs');
 
-
 /**
  * checks W3C Compatibility of string of html
  * @param  {String}   html      string of html
@@ -15,8 +14,9 @@ module.exports = (html, parse) => {
          input: html,
          output: 'json',
          callback: function (err,res) {
-            if(err){
-              promise.reject(err);
+            if(err || !res ){
+              console.log('w3cjs error',err);
+              return promise.reject(err);
             }
              var resp = {
                   valid: false,

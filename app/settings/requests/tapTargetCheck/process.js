@@ -1,5 +1,4 @@
 var _ = require('underscore'),
-     //  metaData = require('../../../models/metaData'),
      publisher = require('../../../amqp-connections/publisher'),
      sh = require("shorthash"),
      utils = require('../../../utils'),
@@ -8,9 +7,10 @@ var _ = require('underscore'),
 
 function publish(data) {
      let input = data.input,
-          newScan = data.newScan;
-     var _data = {
-          url: input.res.url.url,
+     url = utils.convertUrl(input.res.url.url);
+     let _data = {
+          test: (data && data.test) ? data.test: null,
+          url: url,
           requestId: input.input.requestId,
           action: 'tapTargetCheck'
      };
@@ -35,10 +35,12 @@ function process(_input) {
                     promise.resolve({
                          requestId: requestId,
                          status: 'success',
-                         data: 'Action completed'
+                         message: 'success:tap:target:check',
+                         data: results
                     });
                } else {
                     promise.reject({
+                         data: err,
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',
@@ -61,24 +63,29 @@ function process(_input) {
                     });
                }
           });
-     }).catch(function (err) {
+     }).catch((err) =>{
           utils.updateBy(Scan, {
                requestId: requestId
           }, {
                tapTargetCheck: {
                     err: 'failed:tap:target:check'
                }
-          }, function (err) {
-               if (err === null) {
+          }, (e) => {
+               if (e === null) {
                     promise.resolve({
                          requestId: requestId,
-                         status: 'success',
-                         data: 'Action completed'
+                         status: 'error',
+                         message: 'failed:tap:target:check',
+                         data: err
                     });
                } else {
                     promise.reject({
+                         data: {
+                           saving:e,
+                           processing: err
+                         },
                          system: 'dynamo',
-                         systemError: err,
+                         systemError: e,
                          statusType: 'failed',
                          status: 'error',
                          source: '--',

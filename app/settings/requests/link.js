@@ -26,8 +26,9 @@ function completeLink(promise, link, resp) {
                }
           },
           function (err) {
-               //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):response');
+              //  console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):response');
                if (err !== null) {
+                 console.log('consume link update err',err);
                     //console.log('request/link.js init --> linkScanner:passed --> updateBy(Link):error');
                     // console.log('save link update error', err, resp);
                     promise.reject(_.extend({
@@ -48,6 +49,7 @@ function completeLink(promise, link, resp) {
                          }
                     }, resp));
                } else {
+                //  console.log('consume link retryUpdateRequest');
                     utils.retryUpdateRequest(link, promise);
                }
           });
@@ -72,7 +74,12 @@ function findAttr(arr, key, value) {
  * @param  {Object} msg message from RabbitMQ
  */
 function init(msg) {
-     //console.log('request/link.js init -->');
+
+  let myVar = setTimeout(function(){
+     console.log('timed out link',JSON.parse(msg.content));
+   }, 30000);
+
+    //  console.log('request/link.js init -->');
      var promise = q.defer();
      var link = JSON.parse(msg.content);
      //console.log('request/link.js init --> link:', link);
@@ -81,7 +88,9 @@ function init(msg) {
           url: link.url,
           baseUrl: link.baseUrl
      }).then(function (response) {
-          // console.log('request/link.js init --> linkScanner:passed##', response, 'link',link);
+       clearTimeout(myVar);
+          console.log('request/link.js init --> linkScanner:passed##');
+          try{
           var isImg = link._link.html.tagName === 'img';
           var hasParams = null;
           if (link && link._link.url && link._link.url.original) {
@@ -123,10 +132,18 @@ function init(msg) {
                     resp.statusMessage = response.http.response.statusMessage;
                }
           }
+        }catch(e){
+          console.log('consume llink process error',e);
+        }
+
           //console.log('request/link.js init --> linkScanner:passed --> updateBy');
           completeLink(promise, link, resp);
 
-     });
+     }).catch((err)=>{
+       clearTimeout(myVar);
+
+       console.log('consume link err from link scanner',err);
+     })
      return promise.promise;
 }
 module.exports.init = init;

@@ -12,7 +12,11 @@ function processLink(msg, ch) {
      console.log('consumer/link.js processLink');
      var type = 'link';
      var promise = q.defer();
+     let myVar = setTimeout(function(){
+        console.log('timed out link!!',JSON.parse(msg.content));
+      }, 30000);
      settings.types.link(msg).then(function (response) {
+       clearTimeout(myVar);
           console.log('consumer/link.js ackking message processLink', response);
           if (response && response.notify === true) {
                notify(response);
@@ -21,25 +25,19 @@ function processLink(msg, ch) {
           promise.resolve(response);
 
      }).catch(function (err) {
-          console.log('consumer/link.js  failed message', err);
+       clearTimeout(myVar);
+          console.log('consumer/link.js failed message', err);
           if (err.notify === true) {
                notify(err);
           }
           if (err.softRetry === true) {
-               //console.log('break0');
                ch.nack(msg);
-               //console.log('break4');
           } else if (err.retry === true) {
-               //console.log('retry');
                err.objectType = 'link';
-               //console.log('break2', typeof retry);
                retry(err);
-               //console.log('break3');
           }
-          //console.log('break4');
           ch.ack(msg);
           promise.reject(err);
-          //console.log('consumer/link.js  failed message', err);
      });
      return promise.promise;
 }

@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">50% </span>
+        <span class="strong">33.33% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/6</span>
+        <span class='fraction'>3/9</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -32,16 +32,16 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/3</span>
+        <span class='fraction'>0/4</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">50% </span>
+        <span class="strong">33.33% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/6</span>
+        <span class='fraction'>3/9</span>
       </div>
     </div>
   </div>
-  <div class='status-line medium'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -70,7 +70,16 @@
 25
 26
 27
-28</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+28
+29
+30
+31
+32
+33
+34
+35</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -78,6 +87,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -87,17 +102,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var publisher = require("../../../amqp-connections/publisher");
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const publisher = require("../../../amqp-connections/publisher"),
+     Capture = require('../../../models/capture');
+&nbsp;
 /**
  * publishes the message to get the screen captures for this request
  * @param  {Object} input page request object
@@ -105,22 +121,27 @@
  */
 <span class="fstat-no" title="function not covered" >function publishCaptures(input, res) {</span>
 <span class="cstat-no" title="statement not covered" >     if (input.options &amp;&amp; input.options.save &amp;&amp; input.options.save.captures === true) {</span>
-<span class="cstat-no" title="statement not covered" >          publisher.publish("", "capture", new Buffer(JSON.stringify({</span>
-               url: res.url.resolvedUrl,
-               requestId: requestId,
-               uid: input.uid,
-               sizes: ['1920x1080']
-               // sizes: ['1920x1080','1600x1200','1400x900','1024x768','800x600','420x360']
-          })), {
-               url: res.url.resolvedUrl,
-               requestId: requestId
-          }).then(<span class="fstat-no" title="function not covered" >function (err, data) {</span>
-               //console.log('Capture published');
-          }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-               //console.log('Error publishing capture');
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          var capture = new Capture({</span>
+               requestId: input.requestId
           });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          capture.save(<span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >               publisher.publish("", "capture", new Buffer(JSON.stringify({</span>
+                    requestId: input.requestId,
+                    uid: input.uid,
+                    url: res.url.url,
+                    sizes: ['iPhone 6', 'iPad landscape', '1920x1080']
+               })), {
+                    url: res.url.url,
+                    requestId: input.requestId
+               }).then(<span class="fstat-no" title="function not covered" >function (err, data) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Capture published');</span>
+               }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('Error publishing capture');</span>
+               });
+          })
      }
-<span class="cstat-no" title="statement not covered" >     return;</span>
 }
 &nbsp;
 module.exports = publishCaptures;
@@ -130,7 +151,7 @@ module.exports = publishCaptures;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Fri Jul 14 2017 18:44:59 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>

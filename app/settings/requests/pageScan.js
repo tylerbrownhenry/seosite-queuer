@@ -236,10 +236,10 @@ function processHar(input, res) {
 
 
         waitCount += 35;
-        publishCaptures(input, res);
-        actions('softwareSummary',input,res,newScan)
+        // publishCaptures(input, res);
+        // actions('softwareSummary',input,res,newScan)
         actions('checkSSL',input,res,newScan)
-        actions('tapTargetCheck',input,res,newScan)
+        // actions('tapTargetCheck',input,res,newScan)
         actions('checkSocial',input,res,newScan)
         actions('serverInfo',input,res,newScan);
 

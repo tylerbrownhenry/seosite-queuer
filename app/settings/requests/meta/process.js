@@ -7,6 +7,9 @@ var _ = require('underscore'),
 
 function findKeywords(keywords, text) {
      var foundWords = {};
+     if(typeof text !== 'string' || text === null){
+       return foundWords;
+     }
      var words = text.split(' ');
      _.each(words, function (word) {
           var cleanWord = word.toLowerCase();

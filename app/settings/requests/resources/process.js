@@ -166,7 +166,7 @@ function processResources(input, res) {
           let resources = postProcess(res),
                commands = [],
                checkResource = [],
-               hostUrl = new URL(input.url),
+               hostUrl = new URL(utils.convertUrl(input.url)),
                hostname = hostUrl.protocol + '//' + hostUrl.hostname,
                robotsUrl = hostname + '/robots.txt',
                robots = {

@@ -12,28 +12,28 @@ var q = require('q'),
      getHostKey = require("./linkChecker/getHostKey");
 
 var enqueue = function (input, options) {
-    //  var idOrError;
+     //  var idOrError;
      var id = input.id;
-    //  if (typeof input === "string" || input instanceof String === true) {
-    //       input = {
-    //            url: input
-    //       };
-    //  }
+     //  if (typeof input === "string" || input instanceof String === true) {
+     //       input = {
+     //            url: input
+     //       };
+     //  }
      var hostKey = getHostKey(input.url, options);
      //console.log('getHostKey',hostKey);
      options.items[id] = {
-       active: false,
-       hostKey: hostKey,
-       id: id,
-       input: input
+          active: false,
+          hostKey: hostKey,
+          id: id,
+          input: input
      };
      if (hostKey === false) {
           return new Error("Invalid URI");
      } else {
-       return id;
+          return id;
      }
-    //  idOrError = _enqueue(input, options);
-    //  return idOrError;
+     //  idOrError = _enqueue(input, options);
+     //  return idOrError;
 };
 
 // function _enqueue(input, options) {
@@ -60,10 +60,10 @@ var clean = function (link) {
 };
 
 function enqueueLink(link, instance) {
-    /* Do we get link.url set here ? */
-      /* Do we get link.url set here ? */
-      /* Do we get link.url set here ? */
-      /* Do we get link.url set here ? */
+     /* Do we get link.url set here ? */
+     /* Do we get link.url set here ? */
+     /* Do we get link.url set here ? */
+     /* Do we get link.url set here ? */
      linkObj.resolve(link, instance.baseUrl, instance.options);
      var excludedReason = excludeLink(link, instance);
      if (excludedReason !== false) {
@@ -75,7 +75,7 @@ function enqueueLink(link, instance) {
           return;
      }
 
-    //  link.html.offsetIndex = link.html.index - instance.excludedLinks;
+     //  link.html.offsetIndex = link.html.index - instance.excludedLinks;
      link.excluded = false;
 
      instance.linkEnqueued = enqueue(link, instance.options);
@@ -121,9 +121,9 @@ function copyResponseData(response, link) {
 function checkUrl(link, baseUrl, options, retry, method) {
      var cached;
      if (typeof retry === "undefined") {
-           if(!link){
-             link = {};
-           }
+          if (!link) {
+               link = {};
+          }
           if (isString(link) === true) {
                link = linkObj(link);
                linkObj.resolve(link, baseUrl, options);
@@ -136,14 +136,20 @@ function checkUrl(link, baseUrl, options, retry, method) {
           }
      }
 
+     let myVar = setTimeout(function () {
+          console.log('timed out link--', link.url.resolved);
+     }, 30000);
      var request = bhttp.request(link.url.resolved, // TODO :: https://github.com/joepie91/node-bhttp/issues/3
           {
                discardResponse: true,
                headers: {
                     "user-agent": options.userAgent
                },
+               responseTimeout: 30000,
                method: retry !== 405 ? options.requestMethod : method
           }).then(function (response) {
+          clearTimeout(myVar);
+
           response = simpleResponse(response);
           if (response.statusCode === 405 && method !== 'post' && options.requestMethod === "head" && options.retry405Head === true && retry !== 405) {
                return checkUrl(link, baseUrl, options, 405, "get"); // Retry possibly broken server with "get"
@@ -153,6 +159,7 @@ function checkUrl(link, baseUrl, options, retry, method) {
           }
           return response;
      }).catch(function (error) {
+          clearTimeout(myVar);
           return error; // The error will be stored as a response
      });
 
@@ -168,14 +175,13 @@ function checkUrl(link, baseUrl, options, retry, method) {
 }
 
 module.exports.init = function (input) {
-  //console.log('test');
      var promise = q.defer();
      var instance = {
-          id:1,
+          id: 1,
           items: {
 
           },
-          url:{
+          url: {
 
           },
           baseUrl: input.baseUrl,
@@ -202,9 +208,7 @@ module.exports.init = function (input) {
      });;
 
      enqueueLink(link, instance);
-     //console.log('test--');
      var resp = checkUrl(link.url.original, input.baseUrl, defaultOptions);
-     //console.log('testw',resp);
      resp.then(function (_link) {
           promise.resolve(_link);
      });

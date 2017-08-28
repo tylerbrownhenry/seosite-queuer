@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/actions/serverInfo/index.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">app/actions/serverInfo/</a> index.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">11.63% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>5/43</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/10</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">11.63% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>5/43</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">let q = require('q'),
+     _ = require('underscore'),
+     dns = require('native-dns'),
+     dnsNs = require('dns'),
+     {
+          URL
+     } = require('url');
+&nbsp;
+/**
+ * finds ip from url
+ * @param  {String} url
+ */
+<span class="fstat-no" title="function not covered" >function checkIp(url) {</span>
+<span class="cstat-no" title="statement not covered" >     let deferred = q.defer(),</span>
+          myVar = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('timed out serverInfo checkIp');</span>
+          }, 30000);
+<span class="cstat-no" title="statement not covered" >     dns.lookup(url, (err, address, family) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >          if (!err &amp;&amp; typeof address != 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
+                    'ip': address
+               });
+          } else {
+<span class="cstat-no" title="statement not covered" >               console.log('serverInfo lookup ip error');</span>
+<span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
+                    'ip': null
+               });
+          }
+     });
+<span class="cstat-no" title="statement not covered" >     return deferred.promise;</span>
+}
+&nbsp;
+/**
+ * finds name servers of url
+ * @param  {String} url
+ */
+<span class="fstat-no" title="function not covered" >function checkNameServers(url) {</span>
+<span class="cstat-no" title="statement not covered" >     let deferred = q.defer(),</span>
+          myVar = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('timed out checkNameServers');</span>
+          }, 30000);
+<span class="cstat-no" title="statement not covered" >     url = url.replace(/^(www\.)/, "");</span>
+<span class="cstat-no" title="statement not covered" >     dnsNs.resolveNs(url, <span class="fstat-no" title="function not covered" >function (err, addresses) {</span></span>
+<span class="cstat-no" title="statement not covered" >         clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >          if (err) {</span>
+<span class="cstat-no" title="statement not covered" >               console.log('resolveNs error', err);</span>
+<span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
+                    nameservers: null
+               });
+          } else {
+<span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
+                    nameservers: addresses
+               });
+          }
+     });
+<span class="cstat-no" title="statement not covered" >     return deferred.promise;</span>
+};
+&nbsp;
+/**
+ * wrapper for checking IP address and nameservers of a url
+ * @param  {String} url
+ */
+<span class="fstat-no" title="function not covered" >function checkInfo(url) {</span>
+<span class="cstat-no" title="statement not covered" >     var deferred = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var hostUrl = new URL(url).hostname;</span>
+<span class="cstat-no" title="statement not covered" >     try {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          if (typeof hostUrl === 'undefined') {</span>
+<span class="cstat-no" title="statement not covered" >               deferred.reject(null);</span>
+          } else {
+&nbsp;
+<span class="cstat-no" title="statement not covered" >               let myVar = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span></span>
+<span class="cstat-no" title="statement not covered" >                    console.log('timed out serverInfo');</span>
+               }, 30000);
+<span class="cstat-no" title="statement not covered" >               q.all([checkIp(hostUrl), checkNameServers(hostUrl)]).then(<span class="fstat-no" title="function not covered" >function (res) {</span></span>
+<span class="cstat-no" title="statement not covered" >                    clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >                    var resp = {};</span>
+<span class="cstat-no" title="statement not covered" >                    _.each(res, <span class="fstat-no" title="function not covered" >function (item) {</span></span>
+<span class="cstat-no" title="statement not covered" >                         var key = _.keys(item)[0];</span>
+<span class="cstat-no" title="statement not covered" >                         resp[key] = item[key];</span>
+                    })
+<span class="cstat-no" title="statement not covered" >                    deferred.resolve(resp);</span>
+               }).catch(<span class="fstat-no" title="function not covered" >function (e) {</span>
+<span class="cstat-no" title="statement not covered" >                    console.log('serverInfo error', e);</span>
+<span class="cstat-no" title="statement not covered" >                    clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >                    deferred.reject(err);</span>
+               });
+          }
+     } catch (e) {
+<span class="cstat-no" title="statement not covered" >          console.log('serverInfo error', e);</span>
+     }
+<span class="cstat-no" title="statement not covered" >     return deferred.promise;</span>
+}
+module.exports = checkInfo;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

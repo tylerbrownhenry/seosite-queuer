@@ -30,10 +30,7 @@ function updateCount(requestId, updatedCount, response) {
 }
 
 function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input) {
-     console.log('saveUpdatedCount', requestId, updatedCount, newScan, commands, linkObj, input);
-     updateCount(requestId, updatedCount, newScan).then(function (resp) {
-          console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount:passed');
-          //console.log('commands',commands);
+     updateCount(requestId, updatedCount, newScan).then((resp) => {
           _.each(commands, function (command) {
                var id = command._id;
 
@@ -45,32 +42,10 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, l
                     baseUrl: newScan.url.url,
                     _link: linkObj[id]
                }));
-               publisher.publish("", "links", buffer).then(function (err) {
-                    //  if(err){
-                    //    console.log('request/links/process.js updatedCount--> build commands:passed --> batchPut:passed --> updateCount:passed --> publish link to queue:failed',err);
-                    //    promise.reject({
-                    //      system: 'rabbitMQ',
-                    //      systemError:err,
-                    //      source: input.source,
-                    //      requestId: requestId,
-                    //      uid: input.uid,
-                    //      status: 'error',
-                    //      statusType: 'failed',
-                    //      message: 'error:publish:link',
-                    //      type: 'page:scan',
-                    //      retry: true,
-                    //      retryCommand: 'publish:link',
-                    //      retryOptions: {
-                    //        buffer: buffer,
-                    //        type: newScan.url.url,
-                    //        messageId: linkObj[id]._id,
-                    //        uid: input.uid
-                    //      }
-                    //    });
+               publisher.publish("", "links", buffer).then((err) => {
+
                });
           });
-          // } else {
-          // console.log('pageScan.js successfully published to queue');
           promise.resolve({
                source: input.source,
                requestId: requestId,
@@ -81,11 +56,7 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, l
                param: commands.length,
                message: 'success:found:links'
           });
-          // }
-          //  });
-          // });
      }).catch(function (err) {
-          //console.log('request/links/process.js --> saveUpdatedCount:failed',err);
           promise.reject({
                system: err.system,
                systemError: err.systemError,
@@ -121,7 +92,6 @@ function saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, l
  * @return {Promise}
  */
 function init(input, res, requestId, newScan, waitCount) {
-     //console.log('request/links/process.js', newScan);
      var promise = q.defer();
      var links = res.links;
      res.links = undefined;
@@ -130,14 +100,10 @@ function init(input, res, requestId, newScan, waitCount) {
      var parentLink = newScan.url.url;
      var commands = [];
      var linkObj = {};
-
-     console.log('request/links/process.js --> build commands');
-     _.each(links, function (link) {
+     _.each(links, (link) => {
           if (link.url) {
                var linkId = sh.unique(link.url.original + requestId);
                if (typeof linkObj[linkId] === 'undefined') {
-                    //  console.log('link.html.attrs',link.html.attrs);
-                    //  console.log('link.##',link);
                     commands.push({
                          "_id": linkId,
                          "__scan": {},
@@ -158,10 +124,8 @@ function init(input, res, requestId, newScan, waitCount) {
                }
           }
      });
-     //  console.log('request/links/process.js --> build commands:passed --> batchPut');
-     var updatedCount = waitCount;
-     utils.batchPut(Link, commands, function (err, e) {
-          console.log('err', e);
+     let updatedCount = waitCount;
+     utils.batchPut(Link, commands, (err, e) => {
           if (err !== null) {
                promise.reject({
                     system: 'dynamo',
@@ -176,7 +140,6 @@ function init(input, res, requestId, newScan, waitCount) {
                     retry: true,
                     type: 'page:scan',
                     retryCommand: 'settings.request.links.process.init',
-                    /* Add to retryables */
                     retryOptions: {
                          res: res,
                          requestId: requestId,
@@ -187,26 +150,7 @@ function init(input, res, requestId, newScan, waitCount) {
                          }
                     }
                });
-               //console.log('request/links/process.js --> build commands:passed --> batchPut:failed',err);
-               // FIRST FIX HERE
-               // FIRST FIX HERE
-               // FIRST FIX HERE
-               // FIRST FIX HERE
-               // FIRST FIX HERE
-               // FIRST FIX HERE
-               //  return promise.reject(promise, 'database', 'Trouble saving request links.', true, input, page, true, 'links.process.batchPut', {
-               //       requestId: requestId,
-               //       updatedCount: updatedCount,
-               //       newScan: newScan,
-               //       commands: commands,
-               //       parentLink: parentLink,
-               //       requestId: requestId
-               //  });
           }
-          //console.log('request/links/process.js --> build commands:passed --> batchPut:passed --> updateCount');
-          /*
-          checkcheck if e is undeinfed...
-          */
           updatedCount = commands.length;
           saveUpdatedCount(promise, requestId, updatedCount, newScan, commands, linkObj, input);
      });

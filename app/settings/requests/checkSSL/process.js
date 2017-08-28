@@ -1,9 +1,8 @@
 var _ = require('underscore'),
-     //  metaData = require('../../../models/metaData'),
      publisher = require('../../../amqp-connections/publisher'),
      sh = require("shorthash"),
-     utils = require('../../../utils');
-Scan = require('../../../models/scan'),
+     utils = require('../../../utils'),
+     Scan = require('../../../models/scan'),
      checkSSL = require('../../../actions/checkSSL/index');
 
 function publish(data) {
@@ -11,7 +10,8 @@ function publish(data) {
           res = data.res,
           newScan = data.newScan;
      let _data = {
-          url: input.res.url.url,
+          test: (data && data.test) ? data.test : null,
+          url: utils.convertUrl(input.res.url.url),
           requestId: input.input.requestId,
           action: 'checkSSL'
      };
@@ -28,21 +28,26 @@ function process(_input) {
      console.log('TEST3', input);;
      checkSSL(input.url).then(function (results) {
           console.log('TEST', results);;
+          let updates = {
+               sslEnabled: results
+          }
           utils.updateBy(Scan, {
                requestId: requestId
-          }, {
-               sslEnabled: results
-          }, function (err) {
+          }, updates, function (err) {
                console.log('TEST', err);
                if (err === null) {
                     promise.resolve({
                          requestId: requestId,
                          status: 'success',
-                         data: 'Action completed'
+                         message: 'success:checkSSL',
+                         data: updates
                     });
                } else {
 
                     promise.reject({
+                         data: {
+                            saving: err
+                         },
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',
@@ -66,21 +71,27 @@ function process(_input) {
                }
           });
      }).catch(function (err) {
+          let updates = {
+               sslEnabled: 'failed:checkSSL'
+          };
           utils.updateBy(Scan, {
                requestId: requestId
-          }, {
-               sslEnabled: 'failed:checkSSL'
-          }, function (err) {
-               if (err === null) {
+          }, updates, function (e) {
+               if (e === null) {
                     promise.resolve({
                          requestId: requestId,
-                         status: 'success',
-                         data: 'Action completed'
+                         status: 'error',
+                         message: 'error:save:checkSSL',
+                         data: updates
                     });
                } else {
                     promise.reject({
+                         data: {
+                            saving:e,
+                            processing: err
+                         },
                          system: 'dynamo',
-                         systemError: err,
+                         systemError: e,
                          statusType: 'failed',
                          status: 'error',
                          source: '--',

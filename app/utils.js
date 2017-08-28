@@ -15,8 +15,7 @@ function getNowUTC() {
      return t;
 }
 
-function sendEmail() {
-}
+function sendEmail() {}
 
 /**
  * checks that an object contains properties listed in an array
@@ -392,7 +391,19 @@ function retryUpdateRequest(input, promise) {
           });
 }
 
+/**
+ * adds http:// to a url if it is missing
+ * @param  {String} url
+ */
+function convertUrl(url) {
+     if (typeof url === 'string' && url.trim().indexOf('http') === -1) {
+          url = 'http://' + url;
+     }
+     return url
+}
+
 module.exports.getNowUTC = getNowUTC;
+module.exports.convertUrl = convertUrl;
 module.exports.retryUpdateRequest = retryUpdateRequest;
 module.exports.completeRequest = completeRequest;
 module.exports.findBy = findBy;

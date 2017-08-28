@@ -12,28 +12,28 @@ var Capture = require('../../models/capture');
 function processCapture(msg, ch) {
      var type = 'capture';
      var promise = q.defer();
-     console.log('consumers/capture.js msg', msg);
-     settings.types[type](msg).then(function (response) {
+     settings.types[type](msg).then((response) => {
           var updates = {
                status: true
           };
-          _.each(response.captures, function (capture) {
-               updates[capture.device] = capture.url
-          })
+          console.log('response.captures',response.captures);
+          _.each(response.captures, (capture) => {
+               const name = capture.device.replace(' ','').toLowerCase();
+               updates[name] = capture.url
+          });
           utils.updateBy(Capture, {
                requestId: response.requestId,
-          }, updates, function (err, res) {
+          }, updates, (err, res) => {
                utils.retryUpdateRequest({
                     requestId: response.requestId
                }, promise);
-               promise.promise.then(function () {
+               promise.promise.then(() => {
                     ch.ack(msg);
                }).catch(() => {
                     ch.ack(msg);
                });
           });
-     }).catch(function (err) {
-          console.log('consumers/capture.js error happened making capture', err);
+     }).catch((err) => {
           ch.ack(msg);
      })
 }

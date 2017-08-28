@@ -1,53 +1,100 @@
 require('dotenv').config();
-var bhttp = require('bhttp');
-var q = require('q');
+const bhttp = require('bhttp'),
+     Twitter = require('twit'),
+     q = require('q');
+let tokens = require('twitter-tokens');
+tokens.timeout_ms = 30000;
 
-function checkTwitter(id) {
-     var promise = q.defer();
-     var tokens = require('twitter-tokens');
-     var getTwitterFollowers = require('get-twitter-followers');
-     if (typeof id !== 'undefined' && id !== null && id !== '') {
-          getTwitterFollowers(tokens, id).then(followers => {
-               if (typeof followers === 'object' && followers.length) {
-                    promise.resolve({'twitter-followers':followers.length});
-               } else {
-                    promise.resolve(null);
-               }
-          }).catch(function () {
-               promise.resolve(null);
-          });
-     } else {
-          promise.resolve(null)
-     }
-     return promise.promise;
+/**
+ * calls api to get the follower count of a twitter handle
+ * @param  {Object}   tokens   token/options for connecting to twitter
+ * @param  {String}   username twitter username
+ * @return {Object}            promise
+ */
+function getTwitterFollowers(tokens, username) {
+     const client = new Twitter(tokens);
+     let deferred = q.defer();
+     client.get('users/lookup.json?screen_name=' + username + ',', function (err, data, response) {
+          if (err) {
+               console.log('getTwitterFollowers error', err);
+               deferred.reject(err);
+          } else if (data && data[0]) {
+               deferred.resolve(data[0].followers_count)
+          }
+     })
+     return deferred.promise;
 }
 
-function checkShareCount(url) {
-     var promise = q.defer();
-     var shareCountURL = 'https://api.sharedcount.com/v1.0/?apikey=' + process.env.SHARED_COUNT_APIKEY + '&url=' + url
+/**
+ * wrapper for get twitter followers
+ * @param  {String} id twitter username
+ * @return {Object}    promise
+ */
+function checkTwitter(username) {
+     var deferred = q.defer();
+     if (typeof username !== 'undefined' && username !== null && username !== '') {
+          getTwitterFollowers(tokens, username).then(followers => {
+               if (typeof followers === 'object' && followers) {
+                    deferred.resolve({
+                         'twitter-followers': followers
+                    });
+               } else {
+                    deferred.resolve(null);
+               }
+          }).catch(function (err) {
+               console.log('checkTwitter error', err);
+               deferred.resolve(null);
+          });
+     } else {
+          deferred.resolve(null)
+     }
+     return deferred.promise;
+}
 
-     bhttp.get(shareCountURL, {}, function (err, response) {
+/**
+ * calls sharedcount api for getting social media information of url
+ * @param  {String} url url to scan
+ * @return {Object}     promise
+ */
+function checkShareCount(url) {
+     let deferred = q.defer(),
+          shareCountURL = 'https://api.sharedcount.com/v1.0/?apikey=' + process.env.SHARED_COUNT_APIKEY + '&url=' + url
+
+     bhttp.get(shareCountURL, {
+          responseTimeout: 30000
+     }, function (err, response) {
           if (response && response.body) {
                if (response.body.Error) {
-                    promise.reject(response.body.Error);
+                    console.log('checkShareCount err response', err);
+                    deferred.reject(response.body.Error);
                } else {
-                    promise.resolve({'shared-count':response.body});
+                    deferred.resolve({
+                         'shared-count': response.body
+                    });
                }
           } else {
-               promise.reject(err);
+               console.log('checkShareCount err', err);
+               deferred.reject(err);
           }
      });
-     return promise.promise;
+     return deferred.promise;
 };
 
-
-function checkSocial(url,twitterId) {
-    var promise = q.defer();
-     q.all([checkShareCount(url), checkTwitter(twitterId)]).then(function(res){
-       promise.resolve(res);
-     }).catch(function(err){
-       promise.reject(err);
+/**
+ * wrapper for twitter and sharedcount api calls for url
+ * @param  {String} url       url to scan
+ * @param  {String} twitterId twitter username
+ * @return {Object}           promise
+ */
+function checkSocial(url, twitterId) {
+     var deferred = q.defer();
+     q.all([checkShareCount(url), checkTwitter(twitterId)]).then(function (res) {
+          deferred.resolve(res);
+     }).catch(function (err) {
+          console.log('checkSocial err', err);
+          deferred.reject(err);
      })
-     return promise.promise;
- }
- module.exports = checkSocial;
+     return deferred.promise;
+}
+
+module.exports = checkSocial;

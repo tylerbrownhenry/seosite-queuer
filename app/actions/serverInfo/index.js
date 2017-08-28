@@ -1,68 +1,95 @@
-var q = require('q');
-var _ = require('underscore');
-var dns = require('native-dns');
-var dnsNs = require('dns');
+let q = require('q'),
+     _ = require('underscore'),
+     dns = require('native-dns'),
+     dnsNs = require('dns'),
+     {
+          URL
+     } = require('url');
 
-const {
-     URL
-} = require('url');
-
+/**
+ * finds ip from url
+ * @param  {String} url
+ */
 function checkIp(url) {
-     var promise = q.defer();
+     let deferred = q.defer(),
+          myVar = setTimeout(function () {
+               console.log('timed out serverInfo checkIp');
+          }, 30000);
      dns.lookup(url, (err, address, family) => {
+          clearTimeout(myVar);
           if (!err && typeof address != 'undefined') {
-               promise.resolve({
+               deferred.resolve({
                     'ip': address
                });
           } else {
-               promise.resolve({
+               console.log('serverInfo lookup ip error');
+               deferred.resolve({
                     'ip': null
                });
           }
      });
-     return promise.promise;
+     return deferred.promise;
 }
 
+/**
+ * finds name servers of url
+ * @param  {String} url
+ */
 function checkNameServers(url) {
-     var promise = q.defer();
+     let deferred = q.defer(),
+          myVar = setTimeout(function () {
+               console.log('timed out checkNameServers');
+          }, 30000);
+     url = url.replace(/^(www\.)/, "");
      dnsNs.resolveNs(url, function (err, addresses) {
+         clearTimeout(myVar);
           if (err) {
-               promise.resolve({
+               console.log('resolveNs error', err);
+               deferred.resolve({
                     nameservers: null
                });
           } else {
-               promise.resolve({
+               deferred.resolve({
                     nameservers: addresses
                });
           }
      });
-     return promise.promise;
+     return deferred.promise;
 };
 
+/**
+ * wrapper for checking IP address and nameservers of a url
+ * @param  {String} url
+ */
 function checkInfo(url) {
-  console.log('URL',url);
-     var promise = q.defer();
+     var deferred = q.defer();
      var hostUrl = new URL(url).hostname;
-     try{
+     try {
 
-     if (typeof hostUrl === 'undefined') {
-          promise.reject(null);
-     } else {
+          if (typeof hostUrl === 'undefined') {
+               deferred.reject(null);
+          } else {
 
-          q.all([checkIp(hostUrl), checkNameServers(hostUrl)]).then(function (res) {
-               var resp = {};
-               _.each(res, function (item) {
-                    var key = _.keys(item)[0];
-                    resp[key] = item[key];
-               })
-               promise.resolve(resp);
-          }).catch(function (err) {
-               promise.reject(err);
-          });
+               let myVar = setTimeout(function () {
+                    console.log('timed out serverInfo');
+               }, 30000);
+               q.all([checkIp(hostUrl), checkNameServers(hostUrl)]).then(function (res) {
+                    clearTimeout(myVar);
+                    var resp = {};
+                    _.each(res, function (item) {
+                         var key = _.keys(item)[0];
+                         resp[key] = item[key];
+                    })
+                    deferred.resolve(resp);
+               }).catch(function (e) {
+                    console.log('serverInfo error', e);
+                    clearTimeout(myVar);
+                    deferred.reject(err);
+               });
+          }
+     } catch (e) {
+          console.log('serverInfo error', e);
      }
-   }catch(e){
-     console.log('e',e);
-   }
-     return promise.promise;
+     return deferred.promise;
 }
 module.exports = checkInfo;

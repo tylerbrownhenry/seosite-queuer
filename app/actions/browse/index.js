@@ -1,10 +1,10 @@
-processResponses = require('./processResponses'),
+const processResponses = require('./processResponses'),
      utils = require('./utils'),
-     q = require('q');
-
-const evaluatePageContent = require('./evaluatePageContent');
-const evaluteResults = require('./evaluteResults');
-const open = require('./open');
+     q = require('q'),
+     checkElements = require('../tapTargetCheck/index'),
+     evaluatePageContent = require('./evaluatePageContent'),
+     evaluteResults = require('./evaluteResults'),
+     open = require('./open');
 
 if (!Date.prototype.toISOString) {
      Date.prototype.toISOString = function () {
@@ -25,40 +25,53 @@ if (!Date.prototype.toISOString) {
      }
 }
 
+/**
+ * wrapper for opening a url in headless browser and collecting resource data
+ * @param  {Object} opts options for the page scan
+ */
 function openPage(opts) {
-     var promise = q.defer();
+     let deferred = q.defer();
      open({
           addToResponse: {
                resources: {},
           },
           processRequest: true,
+          checkElements: checkElements,
+          checkElementResults: function(response,option,resp){
+              return {failed:resp.failed};
+          },
           evalutePage: evaluatePageContent,
           evaluteResults: evaluteResults,
           address: opts.url,
           requestId: opts.requestId
      }).then(function (har) {
-          promise.resolve(har);
+          deferred.resolve(har);
      }).catch(function (e) {
-          promise.reject(e);
+          console.log('browser/index openPage open failed',e);
+          deferred.reject(e);
      })
-     return promise.promise;
+     return deferred.promise;
 }
 
-function har(opts) {
-     var promise = q.defer();
-     openPage(opts).then(function (data) {
+/**
+ * wrapper for opening, then processes the response
+ * @param  {Object} opts options for the page scan
+ */
+module.exports = function (opts) {
+     let deferred = q.defer();
+     openPage(opts).then((data) => {
           processResponses({
                data: data,
                options: opts
-          }).then(function (res) {
-               promise.resolve(res);
-          }).catch(function (err) {
-               promise.reject(err);
+          }).then((res) => {
+               deferred.resolve(res);
+          }).catch((e) => {
+              console.log('browse/index openPage processResponses failed', e);
+               deferred.reject(e);
           })
-     }).catch(function (err) {
-          promise.reject(err);
+     }).catch((e) => {
+          console.log('browse/index openPage failed', e);
+          deferred.reject(e);
      });
-     return promise.promise;
+     return deferred.promise;
 }
-
-module.exports.har = har;

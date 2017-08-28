@@ -1,6 +1,7 @@
 let markedRequestAsFailed = require('./markedRequestAsFailed'),
      reject = require('./reject'),
      q = require('q'),
+     utils = require('../../../../utils'),
      sniff = require('../../../../actions/browse/index'),
      _ = require('underscore'),
      processHar = require('./processHar');
@@ -24,33 +25,51 @@ function shouldRetry(input, err) {
  * @param  {Object} input request Object
  */
 function processUrl(input) {
+  console.log('processUrl1',input);
      var promise = q.defer();
-     sniff.har({
-          url: input.url,
+     try{
+
+
+     sniff({
+          url: utils.convertUrl(input.url),
           uid: input.uid,
           options: input.options,
           requestId: input.requestId
      }).then(function (res) {
+       console.log('processUrl2');
           processHar(input, res);
           return promise.resolve();
      }).catch(function (err) {
-       console.log('err',err);
-          if (shouldRetry(input, err)) {
-               return reject(input.promise,
-                    _.extend({
-                         message: 'error:scan:retry',
-                         statusType: 'scan',
-                         notify: true,
-                         retry: true,
-                         retryCommand: 'request.pageScan.processUrl',
-                         retryOptions: input
-                    }, input));
+          console.log('processURl err', err,'input',input);
+          try {
+               var retry = shouldRetry(input, err)
+              //  if () {
+                    // reject(input.promise,
+                    //      _.extend({
+                    //           message: 'error:scan:retry',
+                    //           statusType: 'scan',
+                    //           notify: true,
+                    //           retry: retry,
+                    //           retryCommand: 'request.pageScan.processUrl',
+                    //           retryOptions: input
+                    //      }, input));
+              //  }
+               markedRequestAsFailed(_.extend({
+                   message: 'error:scan:retry',
+                   statusType: 'scan',
+                   notify: true,
+                   retry: retry,
+                   retryCommand: 'request.pageScan.processUrl',
+                   retryOptions: input
+               }, input),'processURL-->');
+               return promise.reject({});
+          } catch (e) {
+               console.log('eee', e);
           }
-          markedRequestAsFailed(_.extend({
-               message: 'error:unable:to:scan',
-          }, input));
-          return promise.reject({});
      });
+   }catch(e){
+     console.log('e',e);
+   }
      return promise.promise;
 }
 

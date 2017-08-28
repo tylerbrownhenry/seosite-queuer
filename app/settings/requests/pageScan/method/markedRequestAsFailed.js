@@ -10,7 +10,8 @@ Request = dynamoose.model('Request', requestSchema);
  * save request status as failed
  * @param  {Object} input
  */
-function markedRequestAsFailed(input) {
+function markedRequestAsFailed(input,test) {
+console.log('markedRequestAsFailed  input',input,'test',test)
      utils.updateBy(Request, {
           requestId: input.requestId
      }, {
@@ -20,6 +21,8 @@ function markedRequestAsFailed(input) {
           }
      }, (_err) => {
           if (_err === null) {
+            console.log('markedRequestAsFailed input1',input)
+
                return reject(input.promise,
                     _.extend({
                          statusType: 'failed',
@@ -27,6 +30,8 @@ function markedRequestAsFailed(input) {
                          notify: true
                     }, input))
           } else {
+            console.log('markedRequestAsFailed 2',input)
+
                return reject(input.promise,
                     _.extend({
                          system: 'dynamo',

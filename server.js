@@ -1,9 +1,12 @@
 require('dotenv').config();
+require('./app/epipebomb');
+
 var dynamoose = require('dynamoose');
 dynamoose.AWS.config.update({
      region: "us-west-2",
      endpoint: process.env.AWS_DYNAMODB_ENDPOINT
 });
+
 
 var dynamoose = require('dynamoose');
 var AWS = require('aws-sdk');

@@ -10,10 +10,14 @@ var dynamoose = require('dynamoose'),
  */
 function processResource(msg, ch) {
     //  console.log('consumer/link.js processResource',msg);
-     var type = 'link';
-     var promise = q.defer();
+     let type = 'link',
+     promise = q.defer();
+     let myVar = setTimeout(function(){
+        console.log('timed out resource',JSON.parse(msg.content));
+      }, 30000);
      settings.types.resource(msg).then(function (response) {
           console.log('consumer/link.js ackking message processResource', response);
+          clearTimeout(myVar);
           if (response.notify === true) {
                notify(response);
           }
@@ -21,6 +25,8 @@ function processResource(msg, ch) {
           promise.resolve(response);
 
      }).catch(function (err) {
+       clearTimeout(myVar);
+
           console.log('consumer/link.js  failed message', err);
           if (err.notify === true) {
                notify(err);

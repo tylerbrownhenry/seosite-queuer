@@ -2,6 +2,7 @@ let utils = require('../../../../utils'),
 reject = require('./reject'),
 notify = require('./notify'),
 _ = require('underscore'),
+q = require('q'),
 processUrl = require('./processUrl'),
 dynamoose = require('dynamoose'),
 requestSchema = require("../../../../models/request"),
@@ -66,7 +67,9 @@ function _saveAsActive(opts) {
  * @param  {Object} opts request Options
  */
 function saveAsActive(opts) {
+  console.log('saveAsActive',opts);
      _saveAsActive(opts).then(function (res) {
+       console.log('processUrl',res);
           processUrl(res);
      }).catch(function (err) {
           savingAsActiveError({

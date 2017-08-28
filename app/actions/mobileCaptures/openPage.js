@@ -1,24 +1,25 @@
-let open = require('../browse/open');
-let sharp = require('sharp');
-let q = require('q');
-let _ = require('underscore');
-let saveImageToAWS = require('./saveCapture');
-const devices = require('puppeteer/DeviceDescriptors');
-const iPhone = devices['iPhone 6'];
+const open = require('../browse/open'),
+     sharp = require('sharp'),
+     q = require('q'),
+     _ = require('underscore'),
+     saveImageToAWS = require('./saveCapture'),
+     devices = require('puppeteer/DeviceDescriptors');
 
 /**
  * saves a thumbnail image of the current page being scanned
- * @param  {Object}   page          phantomJS page object
- * @param  {String}   filename      name of the file
+ * @param  {Object} page          phantomJS page object
+ * @param  {String} filename  name for the image being generated
+ * @param  {String} thumbName name for the thumbnail being generated
+ * @param  {Object} device    type of device to emulate
+ * @param  {String} requestId
  * @param  {Function} callback      success callback
- * @param  {Function}   errorCallback error callback
+ * @param  {Function} errorCallback error callback
  */
 function saveImage(_filename, thumbName, device, requestId, callback, errorCallback) {
      sharp(_filename)
           .resize(200)
-          .toFile(thumbName, function (err, info) {
-               saveImageToAWS(_filename, thumbName, function (err, url) {
-                    /** Delete both files */
+          .toFile(thumbName, (err, info) => {
+               saveImageToAWS(_filename, thumbName, (err, url) => {
                     if (err === 'success') {
                          callback(url);
                     } else {
@@ -28,68 +29,85 @@ function saveImage(_filename, thumbName, device, requestId, callback, errorCallb
           });
 }
 
+/**
+ * wrapper for saving
+ * @param  {String} filename  name for the image being generated
+ * @param  {String} thumbName name for the thumbnail being generated
+ * @param  {String} requestId
+ * @param  {Object} device    type of device to emulate
+ * @return {Object}           promise
+ */
 function handleSave(filename, thumbName, requestId, device) {
      var promise = q.defer();
      saveImage(filename, thumbName, requestId, device,
-          function (url) {
+          (url) => {
                promise.resolve({
                     err: null,
-                    size: device,
+                    device: device,
                     url: url
                });
           },
-          function (err) {
+          (e,messageId) => {
+               console.log('mobileCapture handleSave error',e);
                promise.reject({
-                    err: err,
-                    size: device
+                    err: message,
+                    device: device
                });
           });
      return promise.promise;
 }
 
+/**
+ * process to go open a chrome browser, take a screeshot and save it to AWS
+ * @param  {Object} opts   options for capture
+ * @param  {Object} device device to emulate for screenshot
+ * @return {Object}        promise
+ */
 function takeScreenShot(opts, device) {
-     console.log('CUSTOM ACTION NEVER DIE!-->', opts);
      var promise = q.defer();
-
      open({
-          emulate: function (page) {
-               console.log('test');
-               return page.emulate(iPhone);
+          emulate: (page) => {
+                if(typeof devices[device] !== 'undefined'){
+                  return page.emulate(devices[device]);
+                } else {
+                  const sizes = device.split('x'),
+                  viewPortSettings = {
+                    width: Number(sizes[0]),
+                    height: Number(sizes[1])
+                  }
+                  return page.setViewport(viewPortSettings);
+                }
           },
           viewPortSettings: 'disabled',
-          customAction: function (page, browser, response, options, deferred) {
-               console.log('CUSTOM ACTION NEVER DIE!');
-
-               console.log('TEST-->>');
-               var filename = opts.siteName + device + '.png';
-               var imageDir = './temp/';
-               var _filename = imageDir + filename;
-               var thumbName = imageDir + '_thumb_' + filename;
+          customAction: (page, browser, response, options, deferred) => {
+               let filename = opts.siteName + device + '.png',
+               imageDir = './temp/',
+               _filename = imageDir + filename,
+               thumbName = imageDir + '_thumb_' + filename;
 
                page.screenshot({
                     path: _filename
-               }).then(function () {
-                    console.log('_filename TEST-->>',_filename);
-                    handleSave(_filename, thumbName, opts.requestId, device).then(function (res) {
+               }).then(() => {
+                    handleSave(_filename, thumbName, opts.requestId, device).then((res) => {
                          browser.close();
                          deferred.resolve(res);
-                    }).catch(function (e) {
-                      console.log('--TEST-->>>', e);
+                    }).catch((e) => {
+                         console.log('mobileCapture failed',e);
                          browser.close();
-                         deferred.resolve(e);
+                         deferred.reject(e);
                     });
-               }).catch(function (e) {
-                    console.log('--TEST-->>>', e);
-
+               }).catch((e) => {
+                    console.log('mobileCapture failed',e);
+                    browser.close();
+                    deferred.reject(e);
                });
           },
           address: opts.siteURL,
           requestId: opts.requestId
-     }).then(function (res) {
-          console.log('test');
+     }).then((res) => {
           promise.resolve(res);
-     }).catch(function (e) {
-          console.log('test2');
+     }).catch((e) => {
+          console.log('mobileCapture failed',e);
           promise.reject(e);
      })
      return promise.promise;

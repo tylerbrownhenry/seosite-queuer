@@ -16,19 +16,22 @@ function minifiedCheck(efficiency) {
 }
 
 function completeResource(promise, resource, response, robots) {
+  try{
+
+
      var updates = {};
-    //  console.log('completeResource-->!!',resource,response,robots);
+     //  console.log('completeResource-->!!',resource,response,robots);
      if (robots !== true) {
           update = {
                scanStatus: "complete",
                minified: minifiedCheck(response.stats.efficiency),
                minifiedDetails: response.stats
           };
-          if(response.css){
-            update.css = {
-              hasMediaQueries: response.css.hasMediaQueries,
-              hasPrintStyles: response.css.hasPrintStyles
-            }
+          if (response.css) {
+               update.css = {
+                    hasMediaQueries: response.css.hasMediaQueries,
+                    hasPrintStyles: response.css.hasPrintStyles
+               }
           }
           response.styles = '';
           // console.log('response CSS',response);
@@ -42,14 +45,15 @@ function completeResource(promise, resource, response, robots) {
                }
           };
      }
+     console.log('RESOURECE',resource._id,resource);
      utils.updateBy(Resource, {
                requestId: resource.requestId,
                _id: resource._id
           }, updates,
           function (err) {
                if (err !== null) {
-                    // console.log('save resource update error', err, response);
-                    promise.reject(_.extend({
+                    console.log('save resource update error', err, response);
+                    promise.reject({
                          system: 'dynamo',
                          systemError: err,
                          statusType: 'failed',
@@ -66,36 +70,43 @@ function completeResource(promise, resource, response, robots) {
                               resource: resource,
                               robots: robots
                          }
-                    }, resp));
+                    });
                } else {
                     utils.retryUpdateRequest(resource, promise);
                }
           });
+        }catch(e){
+          console.log('e',e);
+        }
 }
 
 function checkMin(obj) {
      var promise = q.defer();
-     //  console.log('CHECKMIN', obj);
-     minifyCheck(obj, function (err, resp) {
-          // console.log('CHECKMIN RESP', resp);
-          promise.resolve({
-               err: err,
-               resp: resp
-          });
-     })
+      console.log('CHECKMIN', obj);
+     try {
+          minifyCheck(obj, function (err, resp) {
+               console.log('CHECKMIN RESP', resp);
+               promise.resolve({
+                    err: err,
+                    resp: resp
+               });
+          })
+     } catch (e) {
+          console.log('resource failed', e);
+          promise.reject(e);
+     }
      return promise.promise;
 }
-
 
 function init(msg) {
      var promise = q.defer();
      var resource = JSON.parse(msg.content);
-    //  console.log('processResource$$$$ checkRobots-->', resource);
+      console.log('processResource$$$$ checkRobots-->', resource);
      if (resource.type === 'robots') {
-          // console.log('yy checkRobots-->');
-          checkRobots(resource, function (error, response) {
-              //  console.log('xx checkRobots-->', error, 'response', response);
-               if (error) {
+          console.log('yy checkRobots-->');
+          checkRobots(resource, (error, response) => {
+                console.log('xx time out checkRobots-->', error, 'response', resource.url);
+               if (error || !response) {
                     response = {
                          sitemap: false,
                          robots: false
@@ -109,14 +120,42 @@ function init(msg) {
                          robots: response.robots
                     }
                }, function (e, r) {
-                    // console.log('checkRobots-->-->', e, r);
+                    if (e !== null) {
+                         promise.reject({
+                              system: 'dynamo',
+                              systemError: e,
+                              statusType: 'failed',
+                              status: 'error',
+                              source: '--',
+                              message: 'error:save:resource:robots',
+                              notify: false,
+                              retry: true,
+                              i_id: resource.requestId,
+                              retryCommand: 'utils.updateBy',
+                              retryOptions: {
+                                   model: 'Issue',
+                                   input: {
+                                        requestId: resource.requestId
+                                   },
+                                   update: {
+                                        $PUT: {
+                                             sitemap: response.sitemap,
+                                             robots: response.robots
+                                        }
+                                   }
+                              }
+                         });
+                    }
                });
                completeResource(promise, resource, response, true);
           });
      } else {
-          checkMin(resource).then(function (response) {
-              //  console.log('processResource$$$$', response.err, '-->', response.resp, 'resource', resource);
-               if (response.err) {
+          checkMin(resource).then((response) => {
+                console.log('processResource$$$$', response.err, '-->', response.resp, 'resource', resource);
+               if (!response || response.err) {
+                    console.log('resource error checkMin-->--> failed');
+                    response = response || {};
+                    response.resp = response.resp || {};
                     response.resp.stats = {
                          minifiedSize: 0,
                          originalSize: 0,

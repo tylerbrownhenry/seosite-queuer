@@ -1,33 +1,46 @@
-var _ = require('underscore');
-var q = require('q');
-var entryHandler = require('./handleEntry').entryHandler;
+const _ = require('underscore'),
+     q = require('q'),
+     entryHandler = require('./handleEntry').entryHandler;
+
+/**
+ * handles entries individually
+ * @param  {Object} opts page scan data and options
+ */
 function processResponses(opts) {
-     var promise = q.defer();
+     let deferred = q.defer();
      opts = opts || {};
-     var data = opts.data;
-     var options = opts.options || {};
-     var reqPromises = [];
+     let data = opts.data;
+     options = opts.options || {},
+          reqPromises = [],
+          failed = false;
      if (!data) {
-          promise.reject('Could not process the page');
+          console.log('processResponses entryHandler err', e);
+          deferred.reject('Could not process the page');
+          return deferred.promise;
      }
-     _.each(_.keys(data.log.entries), function (key, idx) {
+     _.each(_.keys(data.log.entries), (key, idx) => {
           try {
                var entry = data.log.entries[key];
                reqPromises.push(new entryHandler(entry, idx, options));
-          } catch (err) {
-               promise.reject(err);
+          } catch (e) {
+               console.log('processResponses entryHandler err', e);
+               failed = true;
+               deferred.reject(e);
           }
      });
-     q.all(reqPromises).then(function (responses) {
-          _.each(_.keys(responses), function (key) {
-               var res = responses[key];
-               data.log.entries[res.idx] = res.data;
+     if (failed !== true) {
+          q.all(reqPromises).then((responses) => {
+               _.each(_.keys(responses), function (key) {
+                    var res = responses[key];
+                    data.log.entries[res.idx] = res.data;
+               });
+               deferred.resolve(data);
+          }).catch((e) => {
+               console.log('processResponses err', e);
+               deferred.reject(e);
           });
-          promise.resolve(data);
-     }).catch(function (err) {
-          promise.reject(err);
-     });
-     return promise.promise;
+     }
+     return deferred.promise;
 }
 
 module.exports = processResponses;

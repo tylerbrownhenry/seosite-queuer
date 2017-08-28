@@ -11,12 +11,12 @@ var chai = require('chai'),
      _notify = require('../../../../app/actions/notify').notify,
      _retry = require('../../../../app/amqp-connections/consumers/retry'),
      /* Also calls notify */
-     _summary = require('../../../../app/amqp-connections/consumers/summary'),
+    //  _summary = require('../../../../app/amqp-connections/consumers/summary'),
      /* Also calls notify */
      /* Files that call notify (And subsequently calls retry) */
      _linksRequest = require('../../../../app/settings/requests/link').init,
      _retryables = require('../../../../app/settings/requests/retry/retryables'),
-     _summaryRequest = require('../../../../app/settings/requests/summary'),
+    //  _summaryRequest = require('../../../../app/settings/requests/summary'),
      utils = require('../../../../app/utils'),
      _consumeLink = require('../../../../app/amqp-connections/consumers/link');
 

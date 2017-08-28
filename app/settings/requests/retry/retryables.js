@@ -1,3 +1,5 @@
+const q = require('q');
+
 function requiresDatabase() {
      /**
       * Check if connected to database?
@@ -31,22 +33,22 @@ function notify(promise, msg) {
 }
 
 function markedRequestAsFailed(promise, opts) {
-     // console.log('test');
+     console.log('markedRequestAsFailed test',promise);
      var markedRequestAsFailed = require('../pageScan/process').markedRequestAsFailed;
      markedRequestAsFailed({
           isRetry: true,
           promise: promise,
           requestId: opts.requestId,
           message: opts.message
-     });
+     },'retryables-->');
      //  console.log('test');
 
      return promise.promise;
 }
 
 function processUrl(promise, opts) {
-     ////console.log('retrables.js --> processUrl', opts);
-     var _processUrl = require('../pageScan/process').processUrl;
+     console.log('retrables.js --> processUrl', opts);
+     var _processUrl = require('../pageScan/method/processUrl');
      var promise = q.defer();
      opts.promise = promise;
      opts.isRetry = true;
@@ -73,6 +75,7 @@ function completeResource(promise, opts) {
 }
 
 function retryUpdateRequest(promise, opts) {
+  console.log('retryUpdateRequest',retryUpdateRequest);
      var _retryUpdateRequest = require('../../../utils').retryUpdateRequest;
      _retryUpdateRequest(opts.input, promise);
      return promise.promise;

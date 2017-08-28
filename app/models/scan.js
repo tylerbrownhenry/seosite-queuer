@@ -17,6 +17,9 @@ var scanSchema = new dynamoose.Schema({
      thumb: {
           type: String
      },
+     tapTargetCheck: {
+       type: Object
+     },
      url: {
           type: Object,
           default: {}
@@ -44,6 +47,9 @@ var scanSchema = new dynamoose.Schema({
         type: Object
      },
      tapTargetCheck: {
+       type:Object
+     },
+     softwareSummary: {
        type:Object
      },
      status: {
