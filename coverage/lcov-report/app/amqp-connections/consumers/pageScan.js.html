@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/amqp-connections/consumers/pageScan.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../prettify.css" />
+    <link rel="stylesheet" href="../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../index.html">all files</a> / <a href="index.html">app/amqp-connections/consumers/</a> pageScan.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">39.39% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>13/33</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>4/16</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>1/4</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">39.39% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>13/33</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var pageScan = require("../../settings/requests").types.pageScan,
+     notify = require('../../actions/notify').notify,
+     retry = require('../../settings/requests/retry').publish,
+     actions = require('../../settings/requests/actions'),
+     _action = actions.actions.pageScan,
+     utils = require('../../utils'),
+     dynamoose = require('dynamoose'),
+     requestSchema = require('../../models/request'),
+     Request = dynamoose.model('Request', requestSchema),
+     q = require('q');
+&nbsp;
+/**
+ * on a interval function is ran to check for when the request is complete, then marks it complete,
+ * can we conditionally do this?
+ * if save an object with 0 processes and status === 'active'?
+ * @param  {Object} input   parsed rabbitMQ pageScan message
+ * @param  {Object} ch      rabbitMQ Channel Object
+ * @param  {Object} timeOut setInterval object
+ */
+<span class="fstat-no" title="function not covered" >function pollRequest(input, ch, timeOut) {</span>
+<span class="cstat-no" title="statement not covered" >     let deferred = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     utils.findBy(Request, {</span>
+          requestId: input.requestId
+     }, <span class="fstat-no" title="function not covered" >function (err, data) {</span>
+<span class="cstat-no" title="statement not covered" >          if (data &amp;&amp; data.status === 'running' &amp;&amp; (data.processes === 0 || data.processes &lt; 0)) {</span>
+<span class="cstat-no" title="statement not covered" >               utils.completeRequest(deferred, input);</span>
+<span class="cstat-no" title="statement not covered" >               deferred.promise.catch(retry);</span>
+<span class="cstat-no" title="statement not covered" >               ch.ack(true);</span>
+<span class="cstat-no" title="statement not covered" >               clearInterval(timeOut);</span>
+          } else {
+<span class="cstat-no" title="statement not covered" >               deferred.resolve(true);</span>
+          }
+     });
+}
+&nbsp;
+/**
+ * consumer of a page sumamry request from rabbitMQ
+ * @param  {object} msg content of rabbitMQ message
+ * @param  {object} cj  rabbitMQ channel
+ */
+function processSummary(msg, ch, isRetry, timer = 20000) {
+     let type = 'page:scan',
+          input = JSON.parse(msg.content);
+&nbsp;
+     let timeOut = setInterval(<span class="fstat-no" title="function not covered" >function () {</span>
+<span class="cstat-no" title="statement not covered" >          pollRequest(input, ch, timeOut);</span>
+     }, timer);
+&nbsp;
+   pageScan(msg, 'process').then((response) =&gt; {
+<span class="cstat-no" title="statement not covered" >          actions.checkTest(input, response);</span>
+<span class="cstat-no" title="statement not covered" >          if (response.notify === true) {</span>
+<span class="cstat-no" title="statement not covered" >               notify({</span>
+                    message: 'success:scan:active',
+                    uid: input.uid,
+                    requestType: 'page:scan',
+                    source: input.source,
+                    type: 'page:scan',
+                    status: 'success',
+                    statusType: 'init',
+                    i_id: input.requestId
+               });
+          }
+<span class="cstat-no" title="statement not covered" >          updateRequestWithProcesses();</span>
+<span class="cstat-no" title="statement not covered" >          updateRequestWithStatusRunning();</span>
+     }).catch((err) =&gt; {
+          /* TODO Kill all related processes before restarting */
+          clearInterval(timeOut);
+          <span class="missing-if-branch" title="if path not taken" >I</span>if(err.processes){
+<span class="cstat-no" title="statement not covered" >            updateRequestWithProcesses();</span>
+          }
+          <span class="missing-if-branch" title="if path not taken" >I</span>if(err.retry === true &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >isRetry !== true)</span>{
+<span class="cstat-no" title="statement not covered" >               retry(err);</span>
+          } else <span class="missing-if-branch" title="else path not taken" >E</span>if (isRetry !== true) {
+               retry({
+                    requestId: input.requestId,
+                    retryCommand: 'page:scan',
+                    retryOptions: input
+                });
+          } else {
+<span class="cstat-no" title="statement not covered" >               notify({</span>
+                    uid: input.uid,
+                    requestId: input.requestId,
+                    status: 'error',
+                    statusType: 'error:scanning',
+                    message: 'error:scanning',
+                    source: input.source,
+                    type: input.type
+               });
+<span class="cstat-no" title="statement not covered" >               utils.completeRequest(deferred, input, 'error:scanning', 'error');</span>
+<span class="cstat-no" title="statement not covered" >               let deferred = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >               deferred.promise.catch(retry);</span>
+          }
+          ch.ack(msg);
+&nbsp;
+     });
+}
+module.exports = processSummary;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../sorter.js"></script>
+</body>
+</html>

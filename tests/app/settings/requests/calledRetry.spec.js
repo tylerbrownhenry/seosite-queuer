@@ -17,8 +17,8 @@ var chai = require('chai'),
      _linksRequest = require('../../../../app/settings/requests/link').init,
      _retryables = require('../../../../app/settings/requests/retry/retryables'),
     //  _summaryRequest = require('../../../../app/settings/requests/summary'),
-     utils = require('../../../../app/utils'),
-     _consumeLink = require('../../../../app/amqp-connections/consumers/link');
+     utils = require('../../../../app/utils');
+    //  _consumeLink = require('../../../../app/amqp-connections/consumers/link');
 
 describe('retry init should fail if', function (done) {
 
@@ -186,29 +186,29 @@ describe('calledRetry linkRequest', function (done) {
           });
      });
 
-     it('_consumeLink should response with retry', function (done) {
-          // expect(retry.originalIssueResolved()).to.equal(true);
-          _consumeLink({
-               content: buffer
-          }, channel).catch(function (e) {
-               //  //console.log('--!!> made it :()', e);
-               //  //console.log('resBuffer', resBuffer);
-               //  _retry -->amqp-connections/consumers/retry
-               //  requests/retry.js --> init
-               //  -->amqp-connections/helpers/preFlight
-               _retry(resBuffer, {
-                    ack: function (res) {
-                         //console.log('HERE', res);
-                         expect(res.retry = true).to.equal(true);
-                         done();
-                    }
-               });
-               expect(e.retry === true).to.equal(true);
-               expect(channel.ack.calledOnce).to.equal(true);
-               expect(typeof e.i_id !== 'undefined').to.equal(true);
-               expect(typeof e.retryCommand !== 'undefined').to.equal(true);
-               expect(typeof e.retryOptions !== 'undefined').to.equal(true);
-          });
-     });
+    //  it('_consumeLink should response with retry', function (done) {
+    //       // expect(retry.originalIssueResolved()).to.equal(true);
+    //       _consumeLink({
+    //            content: buffer
+    //       }, channel).catch(function (e) {
+    //            //  //console.log('--!!> made it :()', e);
+    //            //  //console.log('resBuffer', resBuffer);
+    //            //  _retry -->amqp-connections/consumers/retry
+    //            //  requests/retry.js --> init
+    //            //  -->amqp-connections/helpers/preFlight
+    //            _retry(resBuffer, {
+    //                 ack: function (res) {
+    //                      //console.log('HERE', res);
+    //                      expect(res.retry = true).to.equal(true);
+    //                      done();
+    //                 }
+    //            });
+    //            expect(e.retry === true).to.equal(true);
+    //            expect(channel.ack.calledOnce).to.equal(true);
+    //            expect(typeof e.i_id !== 'undefined').to.equal(true);
+    //            expect(typeof e.retryCommand !== 'undefined').to.equal(true);
+    //            expect(typeof e.retryOptions !== 'undefined').to.equal(true);
+    //       });
+    //  });
 
 });

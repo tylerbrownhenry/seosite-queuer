@@ -1,7 +1,7 @@
 const scrapeHtml = require("../sniff/linkChecker/initScrapeHtml"),
-     createHAR = require("./createHAR"),
+     createHAR = require("./createHar").createHAR,
+     actions = require("../../settings/requests/action_list"),
      softwareSummary = require('../softwareSummary'),
-     validateW3C = require("../../settings/requests/w3cValidate/process").publish,
      _ = require("underscore"),
      q = require("q");
 
@@ -21,7 +21,6 @@ function extractEmails(text) {
  * @param  {Object} pageInfo results from parsing html
  */
 module.exports = (response, options, pageInfo) => {
-     console.log('tapTargetCheck',pageInfo);
      let deferred = q.defer();
      response.title = pageInfo.title;
      pageInfo.content = (pageInfo && pageInfo.content) ? pageInfo.content : '';
@@ -31,15 +30,17 @@ module.exports = (response, options, pageInfo) => {
      };
 
      let emails = extractEmails(pageInfo.content);
-
-     validateW3C({
+     options.actions.w3cValidate.commands.publish.command({params:{
+          command: 'publish',
+          action: 'validateW3C',
           html: pageInfo.content,
           parse: true,
-          requestId: options.requestId
-     });
+          requestId: options.requestId,
+          res: {},
+          newScan: {}
+     },promise:q.defer()});
 
      softwareSummary(options.address, response, pageInfo).then((res) => {
-          console.log('evaluate results softwareSummary res', res);
           scrapeHtml(pageInfo.content, options.address, options.customHeaders, options.requestId).then((instance) => {
                var har = createHAR(response);
                har.fontInfo = pageInfo.fontInfo;
@@ -51,6 +52,7 @@ module.exports = (response, options, pageInfo) => {
                     resolvedUrl: options.url,
                     url: options.address
                };
+               har.pageInfo = pageInfo.content;
                har.emails = emails;
                deferred.resolve(har);
           }).catch((e) => {

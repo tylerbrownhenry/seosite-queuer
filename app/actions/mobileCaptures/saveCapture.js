@@ -30,7 +30,6 @@ function saveImage(originalFileName,filenameFull, callback, requestId, device) {
                //start uploading
                s3.putObject(upload_params, function (err, s3_data) {
                     if (err != null) {
-                         console.log('mobileCapture failed failed to save to s3',err);
                          fs.unlink(filenameFull, function (err) {}); //delete local file
                          fs.unlink(originalFileName, function (err) {}); //delete local file
                          callback('error', err.message);

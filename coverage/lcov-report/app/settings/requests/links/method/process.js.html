@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for app/settings/requests/links/method/process.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../../../../../prettify.css" />
+    <link rel="stylesheet" href="../../../../../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../../../../../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../../../../../index.html">all files</a> / <a href="index.html">app/settings/requests/links/method/</a> process.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.24% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>6/49</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/33</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/5</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">12.24% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>6/49</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">let dynamoose = require('dynamoose'),
+     querystring = require('querystring'),
+     linkScanner = require("../../../../actions/sniff/linkScanner"),
+     linkSchema = require("../../../../models/link"),
+     Link = dynamoose.model('Link', linkSchema),
+     notify = require('../../../../actions/notify').notify,
+     utils = require('../../../../utils'),
+     _ = require('underscore'),
+     q = require('q');
+&nbsp;
+/**
+ * saves a link with results
+ * @param  {Object} promise
+ * @param  {Object} link
+ * @param  {Object} resp
+ */
+<span class="fstat-no" title="function not covered" >function completeLink(promise, link, resp) {</span>
+<span class="cstat-no" title="statement not covered" >     utils.updateBy(Link, {</span>
+               requestId: resp.requestId,
+               _id: link.linkId
+          }, {
+               $PUT: {
+                    status: "complete",
+                    results: resp
+               }
+          },
+<span class="fstat-no" title="function not covered" >          function (err) {</span>
+<span class="cstat-no" title="statement not covered" >               if (err !== null) {</span>
+<span class="cstat-no" title="statement not covered" >                    promise.reject(_.extend({</span>
+                         system: 'dynamo',
+                         systemError: err,
+                         statusType: 'failed',
+                         status: 'error',
+                         source: '--',
+                         url: link.baseUrl,
+                         message: 'error:save:link',
+                         notify: true,
+                         retry: true,
+                         i_id: resp.requestId,
+                         retryCommand: 'request.link.completeLink',
+                         retryOptions: {
+                              resp: resp,
+                              link: link
+                         }
+                    }, resp));
+               } else {
+<span class="cstat-no" title="statement not covered" >                    utils.retryUpdateRequest(link, promise);</span>
+               }
+          });
+}
+&nbsp;
+/**
+ * looks in an array for a key or key value pair
+ * @param  {Array} arr
+ * @param  {String} key
+ * @param  {String} value
+ * @return {Boolean}
+ */
+<span class="fstat-no" title="function not covered" >function findAttr(arr, key, value) {</span>
+<span class="cstat-no" title="statement not covered" >     return typeof _.find(_.keys(arr), (_key) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          if (_key === key) {</span>
+<span class="cstat-no" title="statement not covered" >               if (value) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (value === arr[key]) {</span>
+<span class="cstat-no" title="statement not covered" >                         return arr[key];</span>
+                    }
+               } else {
+<span class="cstat-no" title="statement not covered" >                    return arr[key];</span>
+               }
+          }
+     }) !== 'undefined';
+}
+&nbsp;
+/**
+ * wrapper for linkScanner, parses message from RabbitMQ and passes it to LinkScanner
+ * @param  {Object} mata parsed message from RabbitMQ
+ */
+<span class="fstat-no" title="function not covered" >function process(data) {</span>
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     let myVar = setTimeout(() =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          console.log('timed out link', data.params);</span>
+     }, 30000);
+&nbsp;
+<span class="cstat-no" title="statement not covered" >     let promise = data.promise,</span>
+          link = data.params;
+<span class="cstat-no" title="statement not covered" >     linkScanner.init({</span>
+          _link: link._link,
+          url: link.url,
+          baseUrl: link.baseUrl
+     }).then(<span class="fstat-no" title="function not covered" >function (response) {</span>
+<span class="cstat-no" title="statement not covered" >          clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >          try {</span>
+<span class="cstat-no" title="statement not covered" >               var isImg = link._link.html.tagName === 'img';</span>
+<span class="cstat-no" title="statement not covered" >               var hasParams = null;</span>
+<span class="cstat-no" title="statement not covered" >               if (link &amp;&amp; link._link.url &amp;&amp; link._link.url.original) {</span>
+<span class="cstat-no" title="statement not covered" >                    hasParams = _.keys(querystring.parse(link._link.url.original.split('?')[1], null, null)).length &gt; 0;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               var resp = {</span>
+                    hasParams: (response.internal) ? hasParams : null,
+                    isImg: isImg,
+                    hasNoFollow: (response.internal) ? null : findAttr(link._link.html.attrs, 'rel', 'nofollow'),
+                    hasAlt: (isImg) ? findAttr(link._link.html.attrs, 'alt') : null,
+                    selector: link._link.html.selector,
+                    tag: link._link.html.tag,
+                    tagName: link._link.html.tagName,
+                    internal: response.internal,
+                    samePage: response.samePage,
+                    linkId: link.linkId,
+                    uid: link.uid,
+                    requestId: link.requestId
+               };
+&nbsp;
+<span class="cstat-no" title="statement not covered" >               if (response) {</span>
+<span class="cstat-no" title="statement not covered" >                    if (response.broken === true) {</span>
+<span class="cstat-no" title="statement not covered" >                         resp.broken = response.broken;</span>
+<span class="cstat-no" title="statement not covered" >                         resp.brokenReason = response.brokenReason;</span>
+<span class="cstat-no" title="statement not covered" >                         resp._brokenReason = response._brokenReason;</span>
+<span class="cstat-no" title="statement not covered" >                         resp.excluded = response.excluded;</span>
+<span class="cstat-no" title="statement not covered" >                         resp.excludedReason = response.excludedReason;</span>
+                    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (response.url &amp;&amp; response.url.parsed &amp;&amp; response.url.parsed.extra) {</span>
+<span class="cstat-no" title="statement not covered" >                         resp.filename = response.url.parsed.extra.filename</span>
+                    }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >                    if (response.http &amp;&amp; response.http.response &amp;&amp; response.http.response.headers) {</span>
+<span class="cstat-no" title="statement not covered" >                         resp["content-type"] = response.http.response.headers["content-type"];</span>
+<span class="cstat-no" title="statement not covered" >                         resp["content-length"] = response.http.response.headers["content-length"];</span>
+<span class="cstat-no" title="statement not covered" >                         resp.statusCode = response.http.response.statusCode;</span>
+<span class="cstat-no" title="statement not covered" >                         resp.statusMessage = response.http.response.statusMessage;</span>
+                    }
+               }
+          } catch (e) {
+<span class="cstat-no" title="statement not covered" >               clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >               console.log('consume llink process error', e);</span>
+<span class="cstat-no" title="statement not covered" >               promise.reject();</span>
+          }
+<span class="cstat-no" title="statement not covered" >          completeLink(promise, link, resp);</span>
+     }).catch((err) =&gt; {
+<span class="cstat-no" title="statement not covered" >          clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >          console.log('consume link err from link scanner', err);</span>
+<span class="cstat-no" title="statement not covered" >          promise.reject();</span>
+     })
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+module.exports.process = process;
+module.exports.completeLink = completeLink;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../../../../../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../../../../../sorter.js"></script>
+</body>
+</html>

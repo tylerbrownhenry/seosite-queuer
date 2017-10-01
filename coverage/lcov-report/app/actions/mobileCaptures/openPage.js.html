@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">13.51% </span>
+        <span class="strong">15.15% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>5/37</span>
+        <span class='fraction'>5/33</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">13.51% </span>
+        <span class="strong">15.15% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>5/37</span>
+        <span class='fraction'>5/33</span>
       </div>
     </div>
   </div>
@@ -151,15 +151,7 @@
 106
 107
 108
-109
-110
-111
-112
-113
-114
-115
-116
-117</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+109</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -208,12 +200,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -255,12 +242,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -268,7 +253,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -300,7 +284,7 @@
 <span class="cstat-no" title="statement not covered" >                    if (err === 'success') {</span>
 <span class="cstat-no" title="statement not covered" >                         callback(url);</span>
                     } else {
-<span class="cstat-no" title="statement not covered" >                         errorCallback(err)</span>
+<span class="cstat-no" title="statement not covered" >                         errorCallback('error:capture:save:to:aws')</span>
                     }
                }, requestId, device);
           });
@@ -319,17 +303,12 @@
 <span class="cstat-no" title="statement not covered" >     saveImage(filename, thumbName, requestId, device,</span>
           (url) =&gt; {
 <span class="cstat-no" title="statement not covered" >               promise.resolve({</span>
-                    err: null,
                     device: device,
                     url: url
                });
           },
-          (e,messageId) =&gt; {
-<span class="cstat-no" title="statement not covered" >               console.log('mobileCapture handleSave error',e);</span>
-<span class="cstat-no" title="statement not covered" >               promise.reject({</span>
-                    err: message,
-                    device: device
-               });
+          (e) =&gt; {
+<span class="cstat-no" title="statement not covered" >               promise.reject(e);</span>
           });
 <span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
 }
@@ -338,10 +317,10 @@
  * process to go open a chrome browser, take a screeshot and save it to AWS
  * @param  {Object} opts   options for capture
  * @param  {Object} device device to emulate for screenshot
- * @return {Object}        promise
+ * @return {Object}        deferred
  */
 <span class="fstat-no" title="function not covered" >function takeScreenShot(opts, device) {</span>
-<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var deferred = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     open({</span>
           emulate: (page) =&gt; {
 <span class="cstat-no" title="statement not covered" >                if(typeof devices[device] !== 'undefined'){</span>
@@ -369,25 +348,22 @@
 <span class="cstat-no" title="statement not covered" >                         browser.close();</span>
 <span class="cstat-no" title="statement not covered" >                         deferred.resolve(res);</span>
                     }).catch((e) =&gt; {
-<span class="cstat-no" title="statement not covered" >                         console.log('mobileCapture failed',e);</span>
 <span class="cstat-no" title="statement not covered" >                         browser.close();</span>
 <span class="cstat-no" title="statement not covered" >                         deferred.reject(e);</span>
                     });
                }).catch((e) =&gt; {
-<span class="cstat-no" title="statement not covered" >                    console.log('mobileCapture failed',e);</span>
 <span class="cstat-no" title="statement not covered" >                    browser.close();</span>
-<span class="cstat-no" title="statement not covered" >                    deferred.reject(e);</span>
+<span class="cstat-no" title="statement not covered" >                    deferred.reject('error:captures:screenshot');</span>
                });
           },
           address: opts.siteURL,
           requestId: opts.requestId
      }).then((res) =&gt; {
-<span class="cstat-no" title="statement not covered" >          promise.resolve(res);</span>
+<span class="cstat-no" title="statement not covered" >          deferred.resolve(res);</span>
      }).catch((e) =&gt; {
-<span class="cstat-no" title="statement not covered" >          console.log('mobileCapture failed',e);</span>
-<span class="cstat-no" title="statement not covered" >          promise.reject(e);</span>
+<span class="cstat-no" title="statement not covered" >          deferred.reject(e);</span>
      })
-<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+<span class="cstat-no" title="statement not covered" >     return deferred.promise;</span>
 }
 &nbsp;
 module.exports = takeScreenShot;
@@ -397,7 +373,7 @@ module.exports = takeScreenShot;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

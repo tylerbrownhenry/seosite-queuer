@@ -1,8 +1,8 @@
 var sh = require('shorthash'),
      publisher = require('../amqp-connections/publisher'),
-     email = require('./email/send-email'),
+     //  email = require('./email/send-email'),
      q = require('q'),
-     retry = require('../settings/requests/retry').publish,
+    //  retry = require('../settings/requests/retry').publish,
      Update = require('../models/update');
 /**
  * [notify description]
@@ -14,8 +14,8 @@ var sh = require('shorthash'),
  * @param  {String} message    message for this update
  * @param  {String} statusType label, to instruct how to handle this update
  */
-module.exports.notify = function(msg) {
-     var msg = {
+module.exports.notify = function (msg,deferred) {
+     let update = {
           id: sh.unique(msg.status + msg.uid + (msg.i_id || msg.requestId)),
           uid: msg.uid,
           i_id: msg.i_id || msg.requestId,
@@ -25,38 +25,39 @@ module.exports.notify = function(msg) {
           message: msg.message,
           source: msg.source
      };
-     var update = new Update(msg);
+     update = new Update(update);
      update.save(function (err) {
           if (err) {
-               retry({
-                    statusType: msg.type,
-                    status: msg.status,
-                    message: msg.message,
-                    type: msg.type,
-                    i_id: msg.i_id,
-                    uid: msg.uid,
-                    msg: msg.requestType,
-                    source: msg.source,
-                    retry: true,
-                    retryCommand: 'notify',
-                    retryOptions: msg
-               });
+            if(deferred && deferred.resolve){
+              deferred.reject();
+            }
+              //  retry({
+              //       statusType: update.type,
+              //       status: update.status,
+              //       message: update.message,
+              //       type: update.type,
+              //       i_id: update.i_id,
+              //       uid: update.uid,
+              //       msg: update.requestType,
+              //       source: update.source,
+              //       retry: true,
+              //       retryCommand: 'notify',
+              //       retryOptions: msg
+              //  });
           } else {
-               /*
-               Let user know there is an update
-               */
-              publisher.publish("", "update", new Buffer(JSON.stringify({
-                   uid: msg.uid,
-                   requestType: msg.requestType,
-                   i_id: msg.i_id,
-                   type: msg.type,
-                   status: msg.status
-              }))).then(function (res) {
-                  //  console.log('res', res);
-              }).catch(function (err) {
-
-              });
-
+               publisher.publish("", "update", new Buffer(JSON.stringify({
+                    uid: update.uid,
+                    requestType: update.requestType,
+                    i_id: update.i_id,
+                    type: update.type,
+                    status: update.status
+               })));
+               if(deferred && deferred.resolve){
+                 deferred.resolve(update);
+               }
           }
      });
+     if(deferred && deferred.promise){
+       return deferred.promise
+     }
 }

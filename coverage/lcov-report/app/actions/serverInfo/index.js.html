@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">11.63% </span>
+        <span class="strong">12.5% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>5/43</span>
+        <span class='fraction'>5/40</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/10</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">11.63% </span>
+        <span class="strong">12.5% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>5/43</span>
+        <span class='fraction'>5/40</span>
       </div>
     </div>
   </div>
@@ -133,12 +133,7 @@
 88
 89
 90
-91
-92
-93
-94
-95
-96</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+91</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -163,7 +158,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -185,7 +179,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -205,10 +198,8 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -222,7 +213,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,7 +247,6 @@
                     'ip': address
                });
           } else {
-<span class="cstat-no" title="statement not covered" >               console.log('serverInfo lookup ip error');</span>
 <span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
                     'ip': null
                });
@@ -279,7 +268,6 @@
 <span class="cstat-no" title="statement not covered" >     dnsNs.resolveNs(url, <span class="fstat-no" title="function not covered" >function (err, addresses) {</span></span>
 <span class="cstat-no" title="statement not covered" >         clearTimeout(myVar);</span>
 <span class="cstat-no" title="statement not covered" >          if (err) {</span>
-<span class="cstat-no" title="statement not covered" >               console.log('resolveNs error', err);</span>
 <span class="cstat-no" title="statement not covered" >               deferred.resolve({</span>
                     nameservers: null
                });
@@ -300,11 +288,9 @@
 <span class="cstat-no" title="statement not covered" >     var deferred = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     var hostUrl = new URL(url).hostname;</span>
 <span class="cstat-no" title="statement not covered" >     try {</span>
-&nbsp;
 <span class="cstat-no" title="statement not covered" >          if (typeof hostUrl === 'undefined') {</span>
 <span class="cstat-no" title="statement not covered" >               deferred.reject(null);</span>
           } else {
-&nbsp;
 <span class="cstat-no" title="statement not covered" >               let myVar = setTimeout(<span class="fstat-no" title="function not covered" >function () {</span></span>
 <span class="cstat-no" title="statement not covered" >                    console.log('timed out serverInfo');</span>
                }, 30000);
@@ -317,7 +303,6 @@
                     })
 <span class="cstat-no" title="statement not covered" >                    deferred.resolve(resp);</span>
                }).catch(<span class="fstat-no" title="function not covered" >function (e) {</span>
-<span class="cstat-no" title="statement not covered" >                    console.log('serverInfo error', e);</span>
 <span class="cstat-no" title="statement not covered" >                    clearTimeout(myVar);</span>
 <span class="cstat-no" title="statement not covered" >                    deferred.reject(err);</span>
                });
@@ -334,7 +319,7 @@ module.exports = checkInfo;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

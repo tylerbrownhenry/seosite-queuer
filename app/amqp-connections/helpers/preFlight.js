@@ -9,6 +9,7 @@ function preFlight(promise, msg, callback) {
      var input = {};
      if (!msg || !msg.content) {
           callback(promise, {
+               notify: true,
                statusType: 'invalidInput',
                message: 'error:no:content'
           });
@@ -18,6 +19,7 @@ function preFlight(promise, msg, callback) {
           input = JSON.parse(msg.content);
      } catch (e) {
           callback(promise, {
+               notify: true,
                statusType: 'invalidInput',
                message: 'error:unparsable'
           });

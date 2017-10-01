@@ -22,7 +22,6 @@ function checkIp(url) {
                     'ip': address
                });
           } else {
-               console.log('serverInfo lookup ip error');
                deferred.resolve({
                     'ip': null
                });
@@ -42,9 +41,8 @@ function checkNameServers(url) {
           }, 30000);
      url = url.replace(/^(www\.)/, "");
      dnsNs.resolveNs(url, function (err, addresses) {
-         clearTimeout(myVar);
+          clearTimeout(myVar);
           if (err) {
-               console.log('resolveNs error', err);
                deferred.resolve({
                     nameservers: null
                });
@@ -62,33 +60,44 @@ function checkNameServers(url) {
  * @param  {String} url
  */
 function checkInfo(url) {
-     var deferred = q.defer();
-     var hostUrl = new URL(url).hostname;
+     var deferred = q.defer(),
+          invalidUrl = false,
+          hostUrl = '';
      try {
-
-          if (typeof hostUrl === 'undefined') {
-               deferred.reject(null);
-          } else {
-
-               let myVar = setTimeout(function () {
-                    console.log('timed out serverInfo');
-               }, 30000);
-               q.all([checkIp(hostUrl), checkNameServers(hostUrl)]).then(function (res) {
-                    clearTimeout(myVar);
-                    var resp = {};
-                    _.each(res, function (item) {
-                         var key = _.keys(item)[0];
-                         resp[key] = item[key];
-                    })
-                    deferred.resolve(resp);
-               }).catch(function (e) {
-                    console.log('serverInfo error', e);
-                    clearTimeout(myVar);
-                    deferred.reject(err);
-               });
-          }
+          hostUrl = new URL(url).hostname;
      } catch (e) {
-          console.log('serverInfo error', e);
+          console.log('e',e,'url',url);
+          deferred.reject({
+               nameservers: null,
+               ip: null
+          });
+          invalidUrl = true;
+     }
+     if (invalidUrl !== true) {
+          try {
+               if (typeof hostUrl === 'undefined') {
+                    console.log('hostUrl invalid');
+                    deferred.reject(null);
+               } else {
+                    let myVar = setTimeout(function () {
+                         console.log('timed out serverInfo');
+                    }, 30000);
+                    q.all([checkIp(hostUrl), checkNameServers(hostUrl)]).then(function (res) {
+                         clearTimeout(myVar);
+                         var resp = {};
+                         _.each(res, function (item) {
+                              var key = _.keys(item)[0];
+                              resp[key] = item[key];
+                         })
+                         deferred.resolve(resp);
+                    }).catch(function (e) {
+                         clearTimeout(myVar);
+                         deferred.reject(err);
+                    });
+               }
+          } catch (e) {
+               console.log('serverInfo error', e);
+          }
      }
      return deferred.promise;
 }

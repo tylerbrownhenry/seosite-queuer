@@ -32,6 +32,7 @@ if (!Date.prototype.toISOString) {
 function openPage(opts) {
      let deferred = q.defer();
      open({
+          actions:opts.actions,
           addToResponse: {
                resources: {},
           },
@@ -47,7 +48,7 @@ function openPage(opts) {
      }).then(function (har) {
           deferred.resolve(har);
      }).catch(function (e) {
-          console.log('browser/index openPage open failed',e);
+          // console.log('browser/index openPage open failed',e);
           deferred.reject(e);
      })
      return deferred.promise;
@@ -66,7 +67,7 @@ module.exports = function (opts) {
           }).then((res) => {
                deferred.resolve(res);
           }).catch((e) => {
-              console.log('browse/index openPage processResponses failed', e);
+               console.log('browse/index openPage processResponses failed', e);
                deferred.reject(e);
           })
      }).catch((e) => {

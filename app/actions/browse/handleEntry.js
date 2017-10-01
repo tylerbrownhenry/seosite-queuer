@@ -122,8 +122,10 @@ function entryHandler(entry, idx, options) {
      return promise.promise;
 };
 
-module.exports.entryHandler = entryHandler;
-module.exports.tally = tally;
-module.exports.processRequest = processRequest;
-module.exports.createHeaders = createHeaders;
-module.exports.handleHeaders = handleHeaders;
+module.exports = {
+     entryHandler: entryHandler,
+     tally: tally,
+     processRequest: processRequest,
+     createHeaders: createHeaders,
+     handleHeaders: handleHeaders
+}

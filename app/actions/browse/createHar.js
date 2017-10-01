@@ -1,4 +1,4 @@
-_ = require('underscore'),
+const _ = require('underscore'),
      ALLOWED_CONTENT_TYPES = ['css', 'js', 'json', 'doc'];
 
 /**
@@ -114,4 +114,8 @@ function createHAR(page) {
           }
      };
 }
-module.exports = createHAR;
+
+module.exports = {
+  processResource:processResource,
+  createHAR:createHAR
+}

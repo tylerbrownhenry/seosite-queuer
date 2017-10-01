@@ -8,7 +8,6 @@ module.exports.promisify = function (func) {
 
      return function () {
           var args = Array.prototype.slice.apply(arguments);
-
           return new Prom(function (resolve, reject) {
                func.apply({}, args.concat(function (err, value) {
                     if (err) {

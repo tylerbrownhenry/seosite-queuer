@@ -1,5 +1,7 @@
 let _ = require('underscore'),
      sh = require('shorthash'),
+     process = require('./method/minifyCheck').init,
+     q = require('q'),
      _mime = require('mime'),
      publisher = require('../../../amqp-connections/publisher'),
      ResourceModel = require('../../../models/resource'),
@@ -32,7 +34,7 @@ function checkByType(resource) {
           return testType;
      }
      if (resource && resource.type && resource.type !== null) {
-          var type = _mime.extension(resource.type);
+          let type = _mime.extension(resource.type);
           if (type === 'application/octet-stream') {
                return null;
           }
@@ -141,11 +143,11 @@ function Resource(e) {
 
 /**
  * turns any discovered page resources into Resource Objects
- * @param  {[type]} scan [description]
- * @return {[type]}      [description]
+ * @param  {Object} scan [description]
+ * @return {Array}      [description]
  */
 function postProcess(scan) {
-     var response = [];
+     let response = [];
      if (scan && scan.log && scan.log.entries) {
           _.each(scan.log.entries, (entry) => {
                response.push(new Resource(entry))
@@ -159,94 +161,119 @@ function postProcess(scan) {
  * @param  {Object} input page request object
  * @param  {Object} res   parsed information from url
  */
-function processResources(input, res) {
-     if (input.options &&
-          input.options.save &&
-          input.options.save.resources === true) {
-          let resources = postProcess(res),
-               commands = [],
-               checkResource = [],
-               hostUrl = new URL(utils.convertUrl(input.url)),
-               hostname = hostUrl.protocol + '//' + hostUrl.hostname,
-               robotsUrl = hostname + '/robots.txt',
-               robots = {
-                    url: robotsUrl,
-                    hostname: hostname,
-                    type: 'robots',
-                    status: 0,
-                    cleanType: 'robots',
-                    _id: sh.unique(robotsUrl + input.requestId),
-                    requestId: input.requestId
-               };
-
-          checkResource.push(robots);
-          commands.push(robots);
-          var first = true;
-          _.each(resources, (resource) => {
-               let cleanType = findType(resource),
-                    canMinify = false;
-               if (cleanType === 'img' || cleanType === 'js' || cleanType === 'css' || cleanType === 'html') {
-                    canMinify = true;
-               }
-               let hostname = null;
-               try {
-                    hostname = new URL(resource.url).hostname
-               } catch (e) {
-                    hostname = null;
-               }
-               let _resource = {
-                    mainPage: first,
-                    url: resource.url,
-                    hostname: hostname,
-                    timings: resource.timings,
-                    start: resource.start,
-                    duration: resource.duration,
-                    cached: resource.cached,
-                    gzip: resource.gzip,
-                    canMinify: canMinify,
-                    minified: resource.minified,
-                    bodySize: resource.bodySize,
-                    type: resource.type,
-                    cleanType: cleanType,
-                    _id: sh.unique(resource.url + input.requestId),
-                    status: resource.status,
-                    server: resource.server,
-                    requestId: input.requestId
-               }
-               if (canMinify === false) {
-                    _resource.scanStatus = 'complete';
-               }
-               commands.push(_resource);
-               if (canMinify === true) {
-                    checkResource.push(_resource);
-               }
-               first = false;
-          });
-
-          utils.batchPut(ResourceModel, commands, (err, e) => {
-               if (err === null) {
-                    _.each(checkResource, (_command) => {
-                         let buffer = new Buffer(JSON.stringify({
-                              url: _command.url,
-                              type: _command.cleanType,
-                              hostname: _command.hostname,
-                              requestId: _command.requestId,
-                              _id: _command._id
-                         }));
-                         publisher.publish("", "resource", buffer).then((err) => {
-                              /* Mark for retry */
-                              /* Subtract From Count? */
-                         });
-                    });
-               }
-          })
-          return {
-               resources: resources,
-               waitCount: checkResource.length
+function publish(data) {
+     let deferred = q.defer(),
+          input = data.params.input,
+          res = data.params.res,
+          resources = postProcess(res),
+          commands = [],
+          checkResource = [],
+          hostUrl = new URL(utils.convertUrl(input.url)),
+          hostname = hostUrl.protocol + '//' + hostUrl.hostname,
+          robotsUrl = hostname + '/robots.txt',
+          robots = {
+               url: robotsUrl,
+               hostname: hostname,
+               type: 'robots',
+               status: 0,
+               cleanType: 'robots',
+               _id: sh.unique(robotsUrl + input.requestId),
+               requestId: input.requestId
           };
-     }
-     return;
+
+     checkResource.push(robots);
+     commands.push(robots);
+     var first = true;
+
+     resources = _.uniq(resources, function (item, key, a) {
+          return item.url;
+     });
+
+     _.each(resources, (resource) => {
+          let cleanType = findType(resource),
+               canMinify = false;
+          if (cleanType === 'img' || cleanType === 'js' || cleanType === 'css' || cleanType === 'html') {
+               canMinify = true;
+          }
+          let hostname = null;
+          try {
+               hostname = new URL(resource.url).hostname
+          } catch (e) {
+               hostname = null;
+          }
+          let _resource = {
+               mainPage: first,
+               url: resource.url,
+               hostname: hostname,
+               timings: resource.timings,
+               start: resource.start,
+               duration: resource.duration,
+               cached: resource.cached,
+               gzip: resource.gzip,
+               canMinify: canMinify,
+               minified: resource.minified,
+               bodySize: resource.bodySize,
+               type: resource.type,
+               cleanType: cleanType,
+               _id: sh.unique(resource.url + input.requestId),
+               status: resource.status,
+               server: resource.server,
+               requestId: input.requestId
+          }
+          if (canMinify === false) {
+               _resource.scanStatus = 'complete';
+          }
+          commands.push(_resource);
+          if (canMinify === true) {
+               checkResource.push(_resource);
+          }
+          first = false;
+     });
+
+     deferred.resolve({
+          commands: commands,
+          processes: checkResource.length
+     });
+return deferred.promise;
 }
-module.exports.processResources = processResources;
-module.exports.postProcess = postProcess;
-module.exports.Resource = Resource;
+
+function init(data) {
+     let deferred = q.defer(),
+          commands = data.params.commands,
+          requestId = data.params.requestId;
+     utils.batchPut(ResourceModel, commands, (err, e) => {
+          if (err !== null) {
+               deferred.reject();
+          } else {
+               _.each(commands, (_command) => {
+                  let isProcess = _command.canMinify === true || _command.type === 'robots';
+                   if(isProcess){
+                    let buffer = new Buffer(JSON.stringify({
+                         url: _command.url,
+                         type: _command.cleanType,
+                         hostname: _command.hostname,
+                         requestId: _command.requestId,
+                         _id: _command._id,
+                         command: 'process',
+                         action: 'checkResources'
+                    }));
+                    publisher.publish("", "actions", buffer);
+                  }
+               });
+               deferred.resolve();
+          }
+     });
+     return deferred.promise;
+}
+
+module.exports = {
+     process: process,
+     Resource: Resource,
+     publish: publish,
+     init: init,
+     checkHeaders: checkHeaders,
+     findType: findType,
+     checkByFileExtension: checkByFileExtension,
+     checkByType: checkByType,
+     postProcess: postProcess
+};

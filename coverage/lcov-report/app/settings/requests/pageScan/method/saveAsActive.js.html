@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">31.25% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>5/20</span>
+        <span class='fraction'>5/16</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -32,12 +32,12 @@
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/5</span>
+        <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">31.25% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>5/20</span>
+        <span class='fraction'>5/16</span>
       </div>
     </div>
   </div>
@@ -108,25 +108,7 @@
 63
 64
 65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76
-77
-78
-79
-80
-81
-82
-83</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+66</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -142,14 +124,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -174,9 +148,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -196,47 +167,33 @@
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">let utils = require('../../../../utils'),
-reject = require('./reject'),
-notify = require('./notify'),
-_ = require('underscore'),
-q = require('q'),
-processUrl = require('./processUrl'),
-dynamoose = require('dynamoose'),
-requestSchema = require("../../../../models/request"),
-Request = dynamoose.model('Request', requestSchema);
-&nbsp;
+     reject = require('./reject'),
+     notify = require('./notify'),
+     _ = require('underscore'),
+     q = require('q'),
+     processUrl = require('./processUrl'),
+     dynamoose = require('dynamoose'),
+     requestSchema = require("../../../../models/request"),
+     Request = dynamoose.model('Request', requestSchema);
 &nbsp;
 /**
  * if there is an error saving the request, this sets to queue to retry until the save is performed
  * @param  {Object} opts request options
  */
-<span class="fstat-no" title="function not covered" >function savingAsActiveError(e) {</span>
-<span class="cstat-no" title="statement not covered" >     let promise = e.opts.promise;</span>
-<span class="cstat-no" title="statement not covered" >     opts.promise = undefined;</span>
-<span class="cstat-no" title="statement not covered" >     return reject(promise,</span>
-          _.extend({
-               system: 'dynamo',
-               systemError: e.err,
-               status: 'error',
-               statusType: 'failed',
-               notify: true,
-               message: 'error:save:scan:active',
-               retry: true,
-               retryCommand: 'request.pageScan.saveAsActive',
-               retryOptions: e.opts
-          }, opts));
+<span class="fstat-no" title="function not covered" >function savingAsActiveError(opts) {</span>
+<span class="cstat-no" title="statement not covered" >     opts.promise.reject({</span>
+          requestId: opts.requestId,
+          retry: true,
+          retryCommand: 'request.pageScan.saveAsActive',
+          retryOptions: opts
+     });
 }
 &nbsp;
 /**
@@ -254,10 +211,7 @@ Request = dynamoose.model('Request', requestSchema);
           }
      }, (err) =&gt; {
 <span class="cstat-no" title="statement not covered" >          if (err !== null) {</span>
-<span class="cstat-no" title="statement not covered" >               promise.reject({</span>
-                    opts: opts,
-                    err: err
-               });
+<span class="cstat-no" title="statement not covered" >               promise.reject();</span>
           } else {
 <span class="cstat-no" title="statement not covered" >               notify(_.extend({</span>
                     type: 'page:scan',
@@ -276,15 +230,10 @@ Request = dynamoose.model('Request', requestSchema);
  * @param  {Object} opts request Options
  */
 <span class="fstat-no" title="function not covered" >function saveAsActive(opts) {</span>
-<span class="cstat-no" title="statement not covered" >  console.log('saveAsActive',opts);</span>
-<span class="cstat-no" title="statement not covered" >     _saveAsActive(opts).then(<span class="fstat-no" title="function not covered" >function (res) {</span></span>
-<span class="cstat-no" title="statement not covered" >       console.log('processUrl',res);</span>
+<span class="cstat-no" title="statement not covered" >     _saveAsActive(opts).then((res) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          processUrl(res);</span>
-     }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >          savingAsActiveError({</span>
-               opts: e.opts,
-               err: e.err
-          });
+     }).catch(() =&gt; {
+<span class="cstat-no" title="statement not covered" >          savingAsActiveError(opts);</span>
      });
 }
 &nbsp;
@@ -295,7 +244,7 @@ module.exports = saveAsActive;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../../prettify.js"></script>

@@ -1,5 +1,5 @@
 require('dotenv').config();
-require('./app/epipebomb');
+require('./epipebomb');
 
 var dynamoose = require('dynamoose');
 dynamoose.AWS.config.update({

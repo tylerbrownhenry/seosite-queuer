@@ -20,24 +20,24 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">75.86% </span>
+        <span class="strong">58.62% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>22/29</span>
+        <span class='fraction'>17/29</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">55% </span>
+        <span class="strong">45% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>11/20</span>
+        <span class='fraction'>9/20</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">66.67% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>4/6</span>
+        <span class='fraction'>3/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">75.86% </span>
+        <span class="strong">58.62% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>22/29</span>
+        <span class='fraction'>17/29</span>
       </div>
     </div>
   </div>
@@ -102,32 +102,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">5×</span>
-<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5×</span>
-<span class="cline-any cline-yes">5×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-yes">2×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -156,14 +156,14 @@ function processRequest(msg,ch) {
 <span class="cstat-no" title="statement not covered" >       console.log('timed out resource',JSON.parse(msg.content));</span>
      }, 30000);
      console.log('consumers/retry.js processRequest',JSON.parse(msg.content));
-    retryInit(msg,ch).then(function (response) {
-      clearTimeout(myVar);
-          console.log('consumers/retry.js request success');
-          <span class="missing-if-branch" title="if path not taken" >I</span>if (response &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >response.notify === true)</span> {
+    retryInit(msg,ch).then(<span class="fstat-no" title="function not covered" >function (response) {</span>
+<span class="cstat-no" title="statement not covered" >      clearTimeout(myVar);</span>
+<span class="cstat-no" title="statement not covered" >          console.log('consumers/retry.js request success');</span>
+<span class="cstat-no" title="statement not covered" >          if (response &amp;&amp; response.notify === true) {</span>
 <span class="cstat-no" title="statement not covered" >               notify(response);</span>
           }
-          console.log('ACK--1',msg);
-          ch.ack(msg);
+<span class="cstat-no" title="statement not covered" >          console.log('ACK--1',msg);</span>
+<span class="cstat-no" title="statement not covered" >          ch.ack(msg);</span>
     }).catch(function (err) {
       clearTimeout(myVar);
         console.log('consumers/retry.js request failed',err);
@@ -196,7 +196,7 @@ module.exports = processRequest;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Aug 28 2017 23:59:42 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

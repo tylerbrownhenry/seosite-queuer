@@ -106,7 +106,9 @@ function extendOptions(options) {
           options.checkElements = () => {};
      }
      if (typeof options.checkElementResults === 'undefined') {
-          options.checkElementResults = (r) => {return r;};
+          options.checkElementResults = (r) => {
+               return r;
+          };
      }
      if (typeof options.customHeaders === 'undefined') {
           options.customHeaders = {
@@ -128,10 +130,8 @@ function extendOptions(options) {
  * @param  {Object} options configurations for performing on the url/html content
  */
 module.exports = function (options) {
-     console.log('browse/open init');
      var deferred = q.defer();
-     (async(options) => {
-          console.log('browse/open aysnc');
+     (async function go(options){
 
           let resourcesComplete = q.defer(),
                response = extendResponse(options, {
@@ -151,19 +151,12 @@ module.exports = function (options) {
 
           options = extendOptions(options);
 
-          try {
-               browser = await puppeteer.launch({
-                    timeout: 3000
-               }).catch((e) => {
-                    console.log('test', e);
-               })
-               console.log('browse/open aysnc2');
-               page = await browser.newPage();
-
-          } catch (e) {
-               console.log('3', e);
-          }
-          console.log('browse/open extendOptions');
+          browser = await puppeteer.launch({
+               timeout: 3000
+          }).catch((e) => {
+               console.log('puppeteer launch failed', e);
+          })
+          page = await browser.newPage();
 
           /**
            * after the page is finished loading, we can process the information received
@@ -180,44 +173,39 @@ module.exports = function (options) {
 
                resourcesComplete.promise.then(function () {
                     if (typeof options.evalutePage == 'function') {
-                         console.log('browse/open resourcesComplete evalutePage', options.address);
                          let checkElements = {};
-                         page.evaluate(options.checkElements).then((res)=> {
+                         page.evaluate(options.checkElements).then((res) => {
                               checkElements = options.checkElementResults(response, options, res);
-                              page.evaluate(options.evalutePage).then((res)=> {
+                              page.evaluate(options.evalutePage).then((res) => {
                                    if (typeof options.evaluteResults == 'function') {
                                         try {
                                              return options.evaluteResults(response, options, res);
                                         } catch (e) {
-                                             console.log('e evaluteResults', e);
+                                             console.log('browse open e',e)
                                              browser.close();
-                                             deferred.reject(e);
+                                             deferred.reject('error:browse:open:evalute:results');
                                         }
                                    }
                                    return;
-                              }).then((res)=> {
+                              }).then((res) => {
                                    res.checkElements = checkElements;
                                    requests.complete = true;
                                    browser.close();
                                    deferred.resolve(res);
-                              }).catch((e)=> {
-                                   console.log('browse/open resourcesComplete err --->', e);
+                              }).catch((e) => {
                                    browser.close();
-                                   deferred.reject(e);
+                                   deferred.reject('error:browse:open:evalute:page:second');
                               });
                          }).catch((e) => {
-                              console.log('browse/open tapTargetCheck err -->', e);
                               browser.close();
-                              deferred.reject(e);
-
+                              deferred.reject('error:browse:open:evalute:page:first');
                          })
                     }
                     if (typeof options.customAction === 'function') {
                          options.customAction(page, browser, response, options, deferred);
                     }
                }).catch(function (e) {
-                    console.log('browse/open resourcesComplete err', e);
-                    deferred.reject(e);
+                    deferred.reject('error:browse:open:resources:complete');
                });
           }
 
@@ -264,7 +252,7 @@ module.exports = function (options) {
            */
           function checkStatus(res) {
                if (res.ok !== true) {
-                    deferred.reject('Failed to load the URL');
+                    deferred.reject('error:browse:open:load:url');
                     browser.close();
                     return false;
                }
@@ -286,9 +274,8 @@ module.exports = function (options) {
                }
                conditionalComplete(key, page, browser, requests);
           }
-          console.log('browse/open request');
+
           page.on('request', (request) => {
-               console.log('request', requests);
                if (conditionalStop(requests) === false) {
                     if (request) {
                          requests.running++;
@@ -299,7 +286,6 @@ module.exports = function (options) {
                     }
                }
           });
-          console.log('browse/open requestfailed');
 
           page.on('requestfailed', (request) => {
                _completeResource(page, browser, request, response, 'failed')
@@ -326,7 +312,6 @@ module.exports = function (options) {
                page.setViewport(viewPortSettings);
           }
 
-          console.log('browse/open emulate');
           if (typeof options.emulate == 'function') {
                await options.emulate(page);
           }
@@ -336,14 +321,11 @@ module.exports = function (options) {
                networkIdleTimeout: 500
           };
 
-          console.log('browse/open startTime');
 
           response.startTime = new Date();
-          console.log('page request in', options.address);
-          await page.goto(options.address, options.waitFor).then((res) => {
-               console.log('page request out', res.headers);
-               try {
 
+          await page.goto(options.address, options.waitFor).then((res) => {
+               try {
                     if (res && res.headers) {
                          response.headers = res.headers;
                          for (var key of res.headers.keys()) {
@@ -354,9 +336,8 @@ module.exports = function (options) {
                     }
                     checkStatus(res);
                } catch (e) {
-                    console.log('e', e);
+
                }
-               console.log('requests', requests);
                if (requests.stopping !== true) {
                     evaluatePage(page, browser, requests, response);
                }
@@ -364,14 +345,12 @@ module.exports = function (options) {
           }).catch((e) => {
                if (requests.complete !== true) {
                     try {
-                         console.log('browse/open goto failed', e, 'options.address', options.address);
                          browser.close();
-                         deferred.reject(e);
+                         deferred.reject('error:browse:open:goto');
                     } catch (e) {
-                         console.log('failed rehect', e);
                     }
                } else {
-                    console.log('failed already rejected?', e);
+
                }
           })
      })(options);

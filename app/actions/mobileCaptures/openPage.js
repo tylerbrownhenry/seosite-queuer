@@ -1,6 +1,7 @@
 const open = require('../browse/open'),
      sharp = require('sharp'),
      q = require('q'),
+     sh = require('shorthash'),
      _ = require('underscore'),
      saveImageToAWS = require('./saveCapture'),
      devices = require('puppeteer/DeviceDescriptors');
@@ -23,7 +24,7 @@ function saveImage(_filename, thumbName, device, requestId, callback, errorCallb
                     if (err === 'success') {
                          callback(url);
                     } else {
-                         errorCallback(err)
+                         errorCallback('error:capture:save:to:aws')
                     }
                }, requestId, device);
           });
@@ -42,17 +43,12 @@ function handleSave(filename, thumbName, requestId, device) {
      saveImage(filename, thumbName, requestId, device,
           (url) => {
                promise.resolve({
-                    err: null,
                     device: device,
                     url: url
                });
           },
-          (e,messageId) => {
-               console.log('mobileCapture handleSave error',e);
-               promise.reject({
-                    err: message,
-                    device: device
-               });
+          (e) => {
+               promise.reject(e);
           });
      return promise.promise;
 }
@@ -61,10 +57,10 @@ function handleSave(filename, thumbName, requestId, device) {
  * process to go open a chrome browser, take a screeshot and save it to AWS
  * @param  {Object} opts   options for capture
  * @param  {Object} device device to emulate for screenshot
- * @return {Object}        promise
+ * @return {Object}        deferred
  */
 function takeScreenShot(opts, device) {
-     var promise = q.defer();
+     var deferred = q.defer();
      open({
           emulate: (page) => {
                 if(typeof devices[device] !== 'undefined'){
@@ -80,7 +76,7 @@ function takeScreenShot(opts, device) {
           },
           viewPortSettings: 'disabled',
           customAction: (page, browser, response, options, deferred) => {
-               let filename = opts.siteName + device + '.png',
+               let filename = sh.unique(opts.siteName) + device + '.png',
                imageDir = './temp/',
                _filename = imageDir + filename,
                thumbName = imageDir + '_thumb_' + filename;
@@ -92,25 +88,23 @@ function takeScreenShot(opts, device) {
                          browser.close();
                          deferred.resolve(res);
                     }).catch((e) => {
-                         console.log('mobileCapture failed',e);
                          browser.close();
                          deferred.reject(e);
                     });
                }).catch((e) => {
-                    console.log('mobileCapture failed',e);
+                 console.log('error:captures:screenshot',e);
                     browser.close();
-                    deferred.reject(e);
+                    deferred.reject('error:captures:screenshot');
                });
           },
           address: opts.siteURL,
           requestId: opts.requestId
      }).then((res) => {
-          promise.resolve(res);
+          deferred.resolve(res);
      }).catch((e) => {
-          console.log('mobileCapture failed',e);
-          promise.reject(e);
+          deferred.reject(e);
      })
-     return promise.promise;
+     return deferred.promise;
 }
 
 module.exports = takeScreenShot;

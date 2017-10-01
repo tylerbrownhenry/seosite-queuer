@@ -1,6 +1,6 @@
 var chai = require('chai'),
      expect = chai.expect,
-     publish = require('../../../../../app/settings/requests/capture/publish'),
+    //  publish = require('../../../../../app/settings/requests/capture/publish'),
      _ = require('underscore'),
      sinon = require('sinon');
 

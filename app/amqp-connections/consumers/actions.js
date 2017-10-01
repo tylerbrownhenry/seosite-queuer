@@ -1,10 +1,13 @@
-var settings = require("../../settings/requests");
+let process = require("../../settings/requests/clean_actions").init;
 
 /**
  * consumer of an action request from rabbitMQ
- * @param  {object} msg content of rabbitMQ message
+ * @param  {Object} msg content of rabbitMQ message
+ * @param  {Object} ch rabbitMq channel
  */
 function processAction(msg, ch) {
-     settings.types.actions(msg,ch);
+     console.log('consume!');
+     process(msg, ch);
 }
+
 module.exports = processAction;

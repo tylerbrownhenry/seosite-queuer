@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for amqp-connections/publisher.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">amqp-connections/</a> publisher.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>8/32</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/8</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">25% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>8/32</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var pubChannel = null;
+var offlinePubQueue = [];
+var errorHandler = require('./helpers/errorHandler');
+var q = require('q');
+var sh = require("shorthash");
+/**
+ * initilizes rabbitMQ publisher
+ * @param  {object} amqpConn rabbitMq connection object
+ */
+module.exports.start = <span class="fstat-no" title="function not covered" >function (amqpConn) {</span>
+<span class="cstat-no" title="statement not covered" >     amqpConn.createConfirmChannel(<span class="fstat-no" title="function not covered" >function (err, ch) {</span></span>
+<span class="cstat-no" title="statement not covered" >          if (errorHandler(amqpConn, err)) {</span>
+<span class="cstat-no" title="statement not covered" >               return;</span>
+          }
+<span class="cstat-no" title="statement not covered" >          ch.on("error", <span class="fstat-no" title="function not covered" >function (err) {</span></span>
+               //console.error("[AMQP] channel error", err.message);
+          });
+<span class="cstat-no" title="statement not covered" >          ch.on("close", <span class="fstat-no" title="function not covered" >function () {</span></span>
+               //console.log("[AMQP] channel closed");
+          });
+&nbsp;
+<span class="cstat-no" title="statement not covered" >          pubChannel = ch;</span>
+<span class="cstat-no" title="statement not covered" >          while (true) {</span>
+<span class="cstat-no" title="statement not covered" >               var m = offlinePubQueue.shift();</span>
+<span class="cstat-no" title="statement not covered" >               if (!m) {</span>
+<span class="cstat-no" title="statement not covered" >                    break;</span>
+               }
+<span class="cstat-no" title="statement not covered" >               publish(m[0], m[1], m[2]);</span>
+          }
+     });
+}
+&nbsp;
+/**
+ * method to publish a message, will queue messages internally if the connection is down and resend later
+ * @param  {String} exchange   name of rabbitMQ exchange to publish to
+ * @param  {String} routingKey
+ * @param  {Object|String} content    content of message to be published
+ * @param  {Object} options    rabbitMQ options for the message
+ * @return {promise}           promise object
+ */
+<span class="fstat-no" title="function not covered" >function publish(exchange, routingKey, content, options) {</span>
+     //console.log('publish');
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     var opts = (typeof options !== 'undefined') ? options : {};</span>
+<span class="cstat-no" title="statement not covered" >     opts.persistent = true;</span>
+<span class="cstat-no" title="statement not covered" >     try {</span>
+          //console.log('publisher.js -&gt; publish');
+<span class="cstat-no" title="statement not covered" >          pubChannel.publish(exchange, routingKey, content, opts, <span class="fstat-no" title="function not covered" >function (err, ok) {</span></span>
+<span class="cstat-no" title="statement not covered" >               if (err) {</span>
+<span class="cstat-no" title="statement not covered" >                    offlinePubQueue.push([exchange, routingKey, content]);</span>
+<span class="cstat-no" title="statement not covered" >                    pubChannel.connection.close();</span>
+<span class="cstat-no" title="statement not covered" >                    promise.reject('error:offline:queue');</span>
+               } else {
+<span class="cstat-no" title="statement not covered" >                    promise.resolve();</span>
+               }
+          });
+     } catch (e) {
+<span class="cstat-no" title="statement not covered" >          offlinePubQueue.push([exchange, routingKey, content]);</span>
+<span class="cstat-no" title="statement not covered" >          promise.reject('error:offline:queue');</span>
+     }
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+}
+&nbsp;
+module.exports.publish = publish;
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Sep 28 2017 22:15:39 GMT-0400 (EDT)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

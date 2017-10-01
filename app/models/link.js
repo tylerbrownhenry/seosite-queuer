@@ -29,9 +29,9 @@ var linkSchema = new dynamoose.Schema({
      linkId: {
           type: String
      },
-     uid: {
-          type: String
-     },
+    //  uid: {
+    //       type: String
+    //  },
      requestId: {
        type: String,
        hashKey: true,
@@ -40,9 +40,9 @@ var linkSchema = new dynamoose.Schema({
           type: String,
           default: 'pending'
      },
-     __link: {
-          type: Object
-     },
+    //  __link: {
+    //       type: Object
+    //  },
      attrs: {
           type: Object
      },

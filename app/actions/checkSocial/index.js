@@ -34,7 +34,7 @@ function checkTwitter(username) {
      var deferred = q.defer();
      if (typeof username !== 'undefined' && username !== null && username !== '') {
           getTwitterFollowers(tokens, username).then(followers => {
-               if (typeof followers === 'object' && followers) {
+               if (followers) {
                     deferred.resolve({
                          'twitter-followers': followers
                     });
@@ -42,7 +42,7 @@ function checkTwitter(username) {
                     deferred.resolve(null);
                }
           }).catch(function (err) {
-               console.log('checkTwitter error', err);
+            console.log('err followers',err);
                deferred.resolve(null);
           });
      } else {
@@ -65,7 +65,6 @@ function checkShareCount(url) {
      }, function (err, response) {
           if (response && response.body) {
                if (response.body.Error) {
-                    console.log('checkShareCount err response', err);
                     deferred.reject(response.body.Error);
                } else {
                     deferred.resolve({
@@ -73,7 +72,6 @@ function checkShareCount(url) {
                     });
                }
           } else {
-               console.log('checkShareCount err', err);
                deferred.reject(err);
           }
      });
@@ -91,7 +89,6 @@ function checkSocial(url, twitterId) {
      q.all([checkShareCount(url), checkTwitter(twitterId)]).then(function (res) {
           deferred.resolve(res);
      }).catch(function (err) {
-          console.log('checkSocial err', err);
           deferred.reject(err);
      })
      return deferred.promise;

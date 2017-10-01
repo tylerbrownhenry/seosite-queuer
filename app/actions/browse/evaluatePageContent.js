@@ -1,7 +1,9 @@
+/**
+ * searches html for facebook links, twitter links, fonts, page title, properites set on window, and the html content
+ * @return {Object}
+ */
  module.exports = function () {
-
      if (!window || !document || typeof document.querySelector('body') !== 'object') {
-          console.log('evaluatePageContent err');
           return {
                title: null,
                content: null,

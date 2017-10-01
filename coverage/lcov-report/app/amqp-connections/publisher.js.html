@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>8/32</span>
+        <span class='fraction'>16/32</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">12.5% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/8</span>
+        <span class='fraction'>1/8</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">16.67% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/6</span>
+        <span class='fraction'>1/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">25% </span>
+        <span class="strong">50% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>8/32</span>
+        <span class='fraction'>16/32</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -107,18 +107,7 @@
 62
 63
 64
-65
-66
-67
-68
-69
-70
-71
-72
-73
-74
-75
-76</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+65</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
@@ -160,42 +149,31 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">var pubChannel = null;
 var offlinePubQueue = [];
-var errorHandler = require('../settings/errorHandler');
+var errorHandler = require('./helpers/errorHandler');
 var q = require('q');
 var sh = require("shorthash");
 /**
@@ -224,7 +202,7 @@ module.exports.start = <span class="fstat-no" title="function not covered" >func
           }
      });
 }
-//
+&nbsp;
 /**
  * method to publish a message, will queue messages internally if the connection is down and resend later
  * @param  {String} exchange   name of rabbitMQ exchange to publish to
@@ -233,38 +211,27 @@ module.exports.start = <span class="fstat-no" title="function not covered" >func
  * @param  {Object} options    rabbitMQ options for the message
  * @return {promise}           promise object
  */
-<span class="fstat-no" title="function not covered" >function publish(exchange, routingKey, content, options) {</span>
+function publish(exchange, routingKey, content, options) {
      //console.log('publish');
-<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
-<span class="cstat-no" title="statement not covered" >     var opts = (typeof options !== 'undefined') ? options : {};</span>
-<span class="cstat-no" title="statement not covered" >     opts.persistent = true;</span>
-<span class="cstat-no" title="statement not covered" >     try {</span>
+     var promise = q.defer();
+     var opts = (typeof options !== 'undefined') ? <span class="branch-0 cbranch-no" title="branch not covered" >options </span>: {};
+     opts.persistent = true;
+     try {
           //console.log('publisher.js -&gt; publish');
-<span class="cstat-no" title="statement not covered" >          pubChannel.publish(exchange, routingKey, content, opts, <span class="fstat-no" title="function not covered" >function (err, ok) {</span></span>
+          pubChannel.publish(exchange, routingKey, content, opts, <span class="fstat-no" title="function not covered" >function (err, ok) {</span>
 <span class="cstat-no" title="statement not covered" >               if (err) {</span>
-                    //console.error("[AMQP] publish", err);
 <span class="cstat-no" title="statement not covered" >                    offlinePubQueue.push([exchange, routingKey, content]);</span>
 <span class="cstat-no" title="statement not covered" >                    pubChannel.connection.close();</span>
-<span class="cstat-no" title="statement not covered" >                    promise.reject({</span>
-                         system: 'amqp',
-                         status: 'warning',
-                         message: 'error:offline:queue'
-                    })
+<span class="cstat-no" title="statement not covered" >                    promise.reject('error:offline:queue');</span>
                } else {
-                    //console.log('publisher.js -&gt; publish:pass');
 <span class="cstat-no" title="statement not covered" >                    promise.resolve();</span>
                }
           });
      } catch (e) {
-          //console.error("[AMQP] publish", e.message);
-<span class="cstat-no" title="statement not covered" >          promise.reject({</span>
-               system: 'amqp',
-               status: 'warning',
-               message: 'error:offline:queue'
-          });
-<span class="cstat-no" title="statement not covered" >          offlinePubQueue.push([exchange, routingKey, content]);</span>
+          offlinePubQueue.push([exchange, routingKey, content]);
+          promise.reject('error:offline:queue');
      }
-<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
+     return promise.promise;
 }
 &nbsp;
 module.exports.publish = publish;
@@ -274,7 +241,7 @@ module.exports.publish = publish;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Sep 28 2017 23:11:49 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../prettify.js"></script>

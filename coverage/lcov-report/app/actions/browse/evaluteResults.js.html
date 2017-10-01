@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">11.54% </span>
+        <span class="strong">12% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/26</span>
+        <span class='fraction'>3/25</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/1</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">11.54% </span>
+        <span class="strong">12% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/26</span>
+        <span class='fraction'>3/25</span>
       </div>
     </div>
   </div>
@@ -106,7 +106,12 @@
 61
 62
 63
-64</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+64
+65
+66
+67
+68
+69</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -129,7 +134,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -146,7 +151,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -159,6 +168,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -170,9 +180,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const scrapeHtml = require("../sniff/linkChecker/initScrapeHtml"),
-     createHAR = require("./createHAR"),
+     createHAR = require("./createHar").createHAR,
      softwareSummary = require('../softwareSummary'),
-     validateW3C = require("../../settings/requests/w3cValidate/process").publish,
+     actions = require("../../settings/requests/actions").publish,
      _ = require("underscore"),
      q = require("q");
 &nbsp;
@@ -192,7 +202,7 @@
  * @param  {Object} pageInfo results from parsing html
  */
 module.exports = (response, options, pageInfo) =&gt; {
-<span class="cstat-no" title="statement not covered" >     console.log('tapTargetCheck',pageInfo);</span>
+    //  console.log('tapTargetCheck',pageInfo);
 <span class="cstat-no" title="statement not covered" >     let deferred = q.defer();</span>
 <span class="cstat-no" title="statement not covered" >     response.title = pageInfo.title;</span>
 <span class="cstat-no" title="statement not covered" >     pageInfo.content = (pageInfo &amp;&amp; pageInfo.content) ? pageInfo.content : '';</span>
@@ -203,14 +213,18 @@ module.exports = (response, options, pageInfo) =&gt; {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >     let emails = extractEmails(pageInfo.content);</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >     validateW3C({</span>
-          html: pageInfo.content,
-          parse: true,
-          requestId: options.requestId
+<span class="cstat-no" title="statement not covered" >     actions({</span>
+          action: 'validateW3C',
+          input: {
+               html: pageInfo.content,
+               parse: true,
+               requestId: options.requestId
+          },
+          res: {},
+          newScan: {}
      });
 &nbsp;
 <span class="cstat-no" title="statement not covered" >     softwareSummary(options.address, response, pageInfo).then((res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('evaluate results softwareSummary res', res);</span>
 <span class="cstat-no" title="statement not covered" >          scrapeHtml(pageInfo.content, options.address, options.customHeaders, options.requestId).then((instance) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >               var har = createHAR(response);</span>
 <span class="cstat-no" title="statement not covered" >               har.fontInfo = pageInfo.fontInfo;</span>
@@ -222,6 +236,7 @@ module.exports = (response, options, pageInfo) =&gt; {
                     resolvedUrl: options.url,
                     url: options.address
                };
+<span class="cstat-no" title="statement not covered" >               har.pageInfo = pageInfo.content;</span>
 <span class="cstat-no" title="statement not covered" >               har.emails = emails;</span>
 <span class="cstat-no" title="statement not covered" >               deferred.resolve(har);</span>
           }).catch((e) =&gt; {
@@ -238,7 +253,7 @@ module.exports = (response, options, pageInfo) =&gt; {
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

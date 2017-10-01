@@ -7,14 +7,18 @@ var User = require('./models/user'),
      Permission = require('./models/permission'),
      _ = require('underscore');
 
+/**
+ * returns current date as number
+ * @return {Number}
+ */
 function getNowUTC() {
      var t = +new Date();
-     //  var d = new Date()
-     //  var n = d.getTimezoneOffset();
-     //  t -= n * 60 * 1000;
      return t;
 }
 
+/**
+ * (todo?) send an email
+ */
 function sendEmail() {}
 
 /**
@@ -84,31 +88,9 @@ function checkActivity(oid, callback) {
  * @param  {Function} callback callback accepts two paramaters, err and premission data
  */
 function checkPermissions(plan, callback) {
-     //  Permission.get({
-     //       label: plan
-     //  }, function (err, permission) {
-     //       if (err) {
-     if (typeof callback === 'function') {
-          return callback(err);
-     }
-     // }
-     if (typeof callback === 'function') {
-          //  return callback(null, permission);
-          var permission = {
-               limits: {
-                    daily: {
-                         request: 3,
-                         scan: 3
-                    },
-                    monthly: {
-                         request: 1,
-                         scan: 1
-                    }
-               }
-          }
-          return callback(null, permission);
-     }
-     //  });
+     Permission.get({
+          label: plan
+     }, callback);
 }
 
 /**
@@ -221,7 +203,13 @@ function updateUser(args, updates, callback) {
  * @param  {Function} callback callback accepts one paramater, err
  */
 function saveModel(model, callback) {
-     model.save(callback);
+     try {
+          model.save(callback);
+     } catch (e) {
+          if (typeof callback == 'function') {
+               callback(e);
+          }
+     }
 }
 
 /**
@@ -229,23 +217,23 @@ function saveModel(model, callback) {
  * @param  {String}   uid user ID
  * @param  {Function} cb    callback accepts one paramaters, err
  */
-function deleteUser(uid, cb) {
+function deleteUser(uid, callback) {
      try {
           User.delete({
                uid: uid
           }, function (err) {
                if (err) {
-                    if (typeof cb === 'function') {
-                         return cb(err);
+                    if (typeof callback === 'function') {
+                         return callback(err);
                     }
                }
-               if (typeof cb === 'function') {
-                    return cb(null);
+               if (typeof callback === 'function') {
+                    return callback(null);
                }
           });
      } catch (err) {
-          if (typeof cb === 'function') {
-               return cb({
+          if (typeof callback === 'function') {
+               callback({
                     message: 'error:delete:user'
                });
           }
@@ -257,20 +245,24 @@ function deleteUser(uid, cb) {
  * @param  {Object}   scan
  * @param  {Function} cb    callback accepts one paramaters, err
  */
-function saveScan(scan, cb) {
+function saveScan(scan, callback) {
      try {
           scan.save(function (err) {
                if (err) {
-                    if (typeof cb === 'function') {
-                         return cb(err);
+                    if (typeof callback === 'function') {
+                         return callback(err);
                     }
                }
-               if (typeof cb === 'function') {
-                    return cb(null);
+               if (typeof callback === 'function') {
+                    return callback(null);
                }
           });
      } catch (e) {
-
+          if (typeof callback === 'function') {
+               callback({
+                    message: 'error:save:scan'
+               });
+          }
      }
 }
 
@@ -302,55 +294,87 @@ function findBy(model, args, cb) {
      }
 }
 
-function batchPut(model, commands, cb) {
-     model.batchPut(commands, function (err, e) {
-          cb(err, e);
-     });
+/**
+ * performs a batchput of commands to dynamodb
+ * @param  {Object}   model    dynamodb model constructor
+ * @param  {Array}   commands  array of commands to save
+ * @param  {Function} cb       callback
+ */
+function batchPut(model, commands, callback) {
+     try {
+          model.batchPut(commands, function (err, res) {
+               callback(err, res);
+          });
+     } catch (err) {
+          if (typeof callback === 'function') {
+               return callback({
+                    message: 'error:model:batchPut'
+               });
+          }
+     }
 }
 
-function completeRequest(promise, input, data) {
-     updateBy(Request, {
-          requestId: input.requestId
-     }, {
-          $PUT: {
-               status: 'complete'
-          }
-     }, function (err, e) {
-          if (err) {
-               promise.reject({
-                    system: 'dynamo',
-                    systemError: err,
-                    i_id: input.requestId,
-                    status: 'error',
-                    message: 'error:request:complete',
-                    requestId: input.requestId,
-                    retry: true,
-                    retryCommand: 'utils.completeRequest',
-                    retryOptions: {
-                         input: input,
-                         data: data
-                    }
-               });
-          } else {
-               notify.notify({
-                    message: 'success:scan:complete',
-                    uid: input.uid,
-                    requestType: data.requestType,
-                    source: data.source,
-                    type: 'page:scan',
-                    status: 'success',
-                    statusType: 'complete',
-                    i_id: input.requestId
-               });
-               promise.resolve(true);
-          }
-     });
+/**
+ * saves a request as complete and sends notificaton
+ * @param  {Object} promise
+ * @param  {Object} input
+ * @param  {Object} data
+ */
+function completeRequest(promise, input, message, status) {
+     try {
+          updateBy(Request, {
+               requestId: input.requestId
+          }, {
+               $PUT: {
+                    status: 'complete'
+               }
+          }, function (err, e) {
+               if (err) {
+                    promise.reject();
+               } else {
+                    notify.notify({
+                         message: (message) ? message : 'success:scan:complete',
+                         uid: input.uid,
+                         requestType: input.requestType,
+                         source: input.source,
+                         type: 'page:scan',
+                         status: (status)?status:'success',
+                         statusType: 'complete',
+                         i_id: input.requestId
+                    });
+                    _smoke(input.requestId);
+                    promise.resolve(true);
+               }
+          });
+     } catch (err) {
+          promise.reject({
+               reason:'dynamo',
+               system: 'dynamo',
+               systemError: err,
+               i_id: input.requestId,
+               status: 'error',
+               message: 'error:request:complete',
+               requestId: input.requestId,
+               retry: true,
+               retryCommand: 'utils.completeRequest',
+               retryOptions: {
+                    input: input,
+                    message:message,
+                    status:status
+               }
+          });
+     }
 }
 
+/**
+ * retry commands for updating request process count
+ * @param  {Object} input   request data
+ * @param  {Object} promise
+ */
 function retryUpdateRequest(input, promise) {
      var update = {
           $ADD: {
-               processes: -1
+               processes: (input.processes) ? (input.processes * -1) : -1
           }
      };
      var arg = {
@@ -360,35 +384,16 @@ function retryUpdateRequest(input, promise) {
      updateBy(Request, arg, update,
           function (err, data) {
                if (err) {
-                    promise.reject({
-                         system: 'dynamo',
-                         systemError: err,
-                         requestId: input.requestId,
-                         status: 'error',
-                         statusType: 'failed',
-                         type: 'page:scan',
-                         message: 'error:after:save:update:count',
-                         requestId: arg.requestId,
-                         i_id: arg.requestId,
-                         retry: true,
-                         retryCommand: 'utils.retryUpdateRequest',
-                         retryOptions: {
-                              input: arg
-                         }
-                    });
-                    /* Maybe push to queue to update it later? */
+                    _smoke(input.requestId);
+                    _count(update['$ADD'].processes);
+                    promise.reject();
                } else {
-                    findBy(Request, {
-                         requestId: input.requestId
-                    }, function (err, data) {
-                         if (data && (data.processes === 0 || data.processes < 0)) {
-                              completeRequest(promise, input, data);
-                         } else {
-                              promise.resolve(true);
-                         }
-                    });
+                 _smoke(input.requestId);
+                 _count(update['$ADD'].processes);
+                 promise.resolve();
                }
           });
+          return promise.promise;
 }
 
 /**
@@ -402,9 +407,38 @@ function convertUrl(url) {
      return url
 }
 
+
+let smokeCallback = ()=>{};
+
+function setSmoke(cb){
+  if(typeof cb == 'function'){
+    smokeCallback = cb;
+  } else {
+  }
+}
+
+function _smoke(res){
+  smokeCallback(res);
+}
+let _countProcesses = function(){
+_countProcesses}
+
+function countProcesses(cb){
+  if(typeof cb == 'function'){
+    _countProcesses = cb;
+  }
+}
+
+function _count(res){
+  _countProcesses(res);
+}
+
 module.exports.getNowUTC = getNowUTC;
+module.exports.setSmoke = setSmoke;
+module.exports.countProcesses = countProcesses;
 module.exports.convertUrl = convertUrl;
 module.exports.retryUpdateRequest = retryUpdateRequest;
+module.exports.updateRequestProcesses = retryUpdateRequest;
 module.exports.completeRequest = completeRequest;
 module.exports.findBy = findBy;
 module.exports.checkPermissions = checkPermissions;

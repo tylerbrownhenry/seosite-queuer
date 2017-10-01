@@ -20,9 +20,9 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">20.45% </span>
+        <span class="strong">22.5% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>9/44</span>
+        <span class='fraction'>9/40</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">0% </span>
@@ -35,9 +35,9 @@
         <span class='fraction'>0/9</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">20.45% </span>
+        <span class="strong">22.5% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>9/44</span>
+        <span class='fraction'>9/40</span>
       </div>
     </div>
   </div>
@@ -139,11 +139,7 @@
 94
 95
 96
-97
-98
-99
-100
-101</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+97</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-yes">1×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -188,7 +184,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -211,14 +206,12 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -236,7 +229,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -287,7 +279,6 @@ tokens.timeout_ms = 30000;
 <span class="cstat-no" title="statement not covered" >                    deferred.resolve(null);</span>
                }
           }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >               console.log('checkTwitter error', err);</span>
 <span class="cstat-no" title="statement not covered" >               deferred.resolve(null);</span>
           });
      } else {
@@ -310,7 +301,6 @@ tokens.timeout_ms = 30000;
      }, <span class="fstat-no" title="function not covered" >function (err, response) {</span>
 <span class="cstat-no" title="statement not covered" >          if (response &amp;&amp; response.body) {</span>
 <span class="cstat-no" title="statement not covered" >               if (response.body.Error) {</span>
-<span class="cstat-no" title="statement not covered" >                    console.log('checkShareCount err response', err);</span>
 <span class="cstat-no" title="statement not covered" >                    deferred.reject(response.body.Error);</span>
                } else {
 <span class="cstat-no" title="statement not covered" >                    deferred.resolve({</span>
@@ -318,7 +308,6 @@ tokens.timeout_ms = 30000;
                     });
                }
           } else {
-<span class="cstat-no" title="statement not covered" >               console.log('checkShareCount err', err);</span>
 <span class="cstat-no" title="statement not covered" >               deferred.reject(err);</span>
           }
      });
@@ -336,7 +325,6 @@ tokens.timeout_ms = 30000;
 <span class="cstat-no" title="statement not covered" >     q.all([checkShareCount(url), checkTwitter(twitterId)]).then(<span class="fstat-no" title="function not covered" >function (res) {</span></span>
 <span class="cstat-no" title="statement not covered" >          deferred.resolve(res);</span>
      }).catch(<span class="fstat-no" title="function not covered" >function (err) {</span>
-<span class="cstat-no" title="statement not covered" >          console.log('checkSocial err', err);</span>
 <span class="cstat-no" title="statement not covered" >          deferred.reject(err);</span>
      })
 <span class="cstat-no" title="statement not covered" >     return deferred.promise;</span>
@@ -349,7 +337,7 @@ module.exports = checkSocial;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../prettify.js"></script>

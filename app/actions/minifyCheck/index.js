@@ -86,16 +86,13 @@ function checkJS(url, callback) {
                               }
                               callback(results);
                          } else {
-                              console.log('minified js failure!', minSize);
                               callback();
                          }
                     });
                } catch (e) {
-                    console.log('minified js failure!', e);
                     callback();
                }
           } else {
-               console.log('resource minified failed', err, url);
                callback();
           }
      });
@@ -125,7 +122,6 @@ function checkHTML(url, callback) {
                          }
                     callback(results);
                } catch (e) {
-                    console.log('minified html failed', e);
                     callback();
                }
           }
@@ -168,24 +164,21 @@ function checkIMAGE(url, callback) {
                          }
                          callback(results);
                     }).catch((e) => {
-                         console.log('minified image failed', e);
                          callback();
                     })
                } catch (e) {
-                    console.log('minified image failed', e);
                     callback();
                }
           } else {
-               console.log('minified image failed', error);
                callback();
           }
      });
 }
 
 /**
- * sorts the input to the correct minify function
+ * sorts the input to the correct minify function,
  * @param  {Object}   resource contains a type and url to fetch and minify
- * @param  {Function} callback
+ * @param  {Function} callback returns with two parameters, err, and response.  Err equals null or true, response is an object with 'stats' and possible 'css' as properties
  */
 module.exports = (resource, callback) => {
      if (resource.type === 'js') {
@@ -194,12 +187,10 @@ module.exports = (resource, callback) => {
                     if (resp) {
                          callback(null, resp);
                     } else {
-                         console.log('resource minified failed', resource.url);
                          callback(true);
                     }
                });
           } catch (e) {
-               console.log('resource minified failed', resource.url);
                callback(true);
           }
      } else if (resource.type === 'css') {
@@ -212,12 +203,10 @@ module.exports = (resource, callback) => {
                     if (resp) {
                          callback(null, resp);
                     } else {
-                         console.log('css minified failed', resource.url);
                          callback(true);
                     }
                });
           } catch (e) {
-               console.log('css minified failed', resource.url);
                callback(true);
           }
      } else if (resource.type === 'html') {
@@ -226,12 +215,10 @@ module.exports = (resource, callback) => {
                     if (resp) {
                          callback(null, resp);
                     } else {
-                         console.log('html minified failed', resource.url);
                          callback(true);
                     }
                });
           } catch (e) {
-               console.log('html minified failed', resource.url);
                callback(true);
           }
      } else if (resource.type === 'img') {
@@ -240,12 +227,10 @@ module.exports = (resource, callback) => {
                     if (resp) {
                          callback(null, resp);
                     } else {
-                         console.log('img minified failed', resource.url);
                          callback(true);
                     }
                });
           } catch (e) {
-               console.log('img minified failed', resource.url);
                callback(true);
           }
      } else {

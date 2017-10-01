@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">12% </span>
+        <span class="strong">52% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>3/25</span>
+        <span class='fraction'>13/25</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">45.95% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>0/37</span>
+        <span class='fraction'>17/37</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">0% </span>
+        <span class="strong">100% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>0/1</span>
+        <span class='fraction'>1/1</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">12% </span>
+        <span class="strong">52% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>3/25</span>
+        <span class='fraction'>13/25</span>
       </div>
     </div>
   </div>
-  <div class='status-line low'></div>
+  <div class='status-line medium'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -101,12 +101,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -116,7 +114,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -132,16 +132,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3×</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
@@ -151,23 +151,23 @@
  * @param  {Object} promise promise object
  * @param  {Object} input   request data
  */
-<span class="fstat-no" title="function not covered" >function reject(promise, input) {</span>
-<span class="cstat-no" title="statement not covered" >     if (typeof input === 'undefined') {</span>
+function reject(promise, input) {
+     <span class="missing-if-branch" title="if path not taken" >I</span>if (typeof input === 'undefined') {
 <span class="cstat-no" title="statement not covered" >          input = {}</span>
      }
-<span class="cstat-no" title="statement not covered" >     let msg = {</span>
-          uid: input.uid || null,
-          requestId: input.requestId || null,
-          i_id: input.i_id || input.requestId || null,
+     let msg = {
+          uid: input.uid || <span class="branch-1 cbranch-no" title="branch not covered" >null,</span>
+          requestId: input.requestId || <span class="branch-1 cbranch-no" title="branch not covered" >null,</span>
+          i_id: input.i_id || input.requestId || <span class="branch-2 cbranch-no" title="branch not covered" >null,</span>
           url: input.url || null,
-          source: input.source || null,
-          type: input.type || 'page:scan',
+          source: input.source || <span class="branch-1 cbranch-no" title="branch not covered" >null,</span>
+          type: input.type || <span class="branch-1 cbranch-no" title="branch not covered" >'page:scan',</span>
           status: 'error',
-          statusType: input.statusType || null,
+          statusType: input.statusType || <span class="branch-1 cbranch-no" title="branch not covered" >null,</span>
           system: input.system || null,
           systemError: input.systemError || null
      };
-<span class="cstat-no" title="statement not covered" >     if (input.retry === true) {</span>
+     <span class="missing-if-branch" title="if path not taken" >I</span>if (input.retry === true) {
 <span class="cstat-no" title="statement not covered" >          msg.retry = true;</span>
 <span class="cstat-no" title="statement not covered" >          if (input.softRetry === true) {</span>
 <span class="cstat-no" title="statement not covered" >               msg.softRetry = true;</span>
@@ -183,16 +183,16 @@
                }
           }
      } else {
-<span class="cstat-no" title="statement not covered" >          msg.completedTime = utils.getNowUTC();</span>
+          msg.completedTime = utils.getNowUTC();
      }
-<span class="cstat-no" title="statement not covered" >     if (input.notify === true) {</span>
-<span class="cstat-no" title="statement not covered" >          msg.notify = true;</span>
-<span class="cstat-no" title="statement not covered" >          msg.message = 'Request updated';</span>
-<span class="cstat-no" title="statement not covered" >          if (input.message) {</span>
-<span class="cstat-no" title="statement not covered" >               msg.message = input.message;</span>
+     <span class="missing-if-branch" title="else path not taken" >E</span>if (input.notify === true) {
+          msg.notify = true;
+          msg.message = 'Request updated';
+          <span class="missing-if-branch" title="else path not taken" >E</span>if (input.message) {
+               msg.message = input.message;
           }
      }
-<span class="cstat-no" title="statement not covered" >     return promise.reject(msg)</span>
+     return promise.reject(msg)
 }
 &nbsp;
 module.exports = reject;
@@ -202,7 +202,7 @@ module.exports = reject;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Mon Sep 25 2017 22:30:03 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../../prettify.js"></script>

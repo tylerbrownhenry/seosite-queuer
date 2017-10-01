@@ -1,6 +1,6 @@
-var _ = require('underscore');
-var q = require('q');
-var w3cjs = require('w3cjs');
+let _ = require('underscore'),
+q = require('q'),
+w3cjs = require('./w3cjs/lib/w3cjs');
 
 /**
  * checks W3C Compatibility of string of html
@@ -8,15 +8,15 @@ var w3cjs = require('w3cjs');
  * @param  {Function} callback
  * @return {Boolean}
  */
-module.exports = (html, parse) => {
-     var promise = q.defer();
-     var results = w3cjs.validate({
+module.exports = (html) => {
+     let deferred = q.defer(),
+    results = w3cjs.validate({
          input: html,
          output: 'json',
          callback: function (err,res) {
             if(err || !res ){
-              console.log('w3cjs error',err);
-              return promise.reject(err);
+              console.log('w3cValidate failed');
+              return deferred.reject({message:'failed:validateW3C'});
             }
              var resp = {
                   valid: false,
@@ -35,8 +35,8 @@ module.exports = (html, parse) => {
                     }
                });
              }
-             promise.resolve(resp);
+             deferred.resolve(resp);
          }
      });
-     return promise.promise;
+     return deferred.promise;
 }

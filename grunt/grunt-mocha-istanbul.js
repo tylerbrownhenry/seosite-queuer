@@ -2,7 +2,7 @@ module.exports = function(grunt){
     grunt.initConfig({
         mocha_istanbul: {
             coverage: {
-                src: 'tests', // a folder works nicely
+                src: 'tests/_app/', // a folder works nicely
                 options: {
                     mask: '*/**/*.spec.js'
                 }
@@ -17,7 +17,7 @@ module.exports = function(grunt){
             //     }
             // },
             coveralls: {
-                src: ['tests/app/settings/requests/'], // multiple folders also works
+                src: ['tests/_app/*/**/*.spec.js'], // multiple folders also works
                 options: {
                     coverage:true, // this will make the grunt.event.on('coverage') event listener to be triggered
                     check: {
@@ -49,7 +49,6 @@ module.exports = function(grunt){
     });
 
     grunt.loadNpmTasks('grunt-mocha-istanbul');
-
     grunt.registerTask('coveralls', ['mocha_istanbul:coveralls']);
     grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
 };

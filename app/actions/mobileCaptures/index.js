@@ -11,11 +11,8 @@ const q = require('q'),
 function prepareScreenshots(url, requestId, devices) {
      let deferred = q.defer();
      if (typeof url !== 'string') {
-         console.log('mobileCapture failed (invalid url)');
           deferred.reject({
-               requestId: requestId,
-               status: 'error',
-               data: 'Captures not taken'
+               error: 'error:captures:url:invalid'
           });
      } else {
           let siteURL = url,
@@ -30,19 +27,14 @@ function prepareScreenshots(url, requestId, devices) {
           _.each(devices, (device) => {
                promises.push(openPage(options, device));
           });
+          
           q.all(promises).then((res) => {
                deferred.resolve({
-                    status: 'success',
                     captures: res,
-                    requestId: requestId,
-                    data: 'Captures taken'
                });
-          }).catch((e) => {
-               console.log('mobileCapture failed',e);
+          }).catch((err) => {
                deferred.reject({
-                    requestId: requestId,
-                    status: 'error',
-                    data: 'Captures not taken'
+                    error: err
                });
           });
      }

@@ -20,28 +20,28 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">30.77% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>13/13</span>
+        <span class='fraction'>4/13</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>2/2</span>
+        <span class='fraction'>0/2</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">0% </span>
         <span class="quiet">Functions</span>
-        <span class='fraction'>3/3</span>
+        <span class='fraction'>0/3</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">100% </span>
+        <span class="strong">30.77% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>13/13</span>
+        <span class='fraction'>4/13</span>
       </div>
     </div>
   </div>
-  <div class='status-line high'></div>
+  <div class='status-line low'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet">1
 2
@@ -123,7 +123,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -153,25 +153,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
-<span class="cline-any cline-yes">10×</span>
-<span class="cline-any cline-yes">10×</span>
-<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-yes">3×</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1×</span>
@@ -188,8 +188,8 @@
  * @param  {number} updatedCount  value of count that was attempting to save
  * @return {promise}              the rejected promise
  */
-function handleError(promise, err, requestId, updatedCount, putObject) {
-     return promise.reject({
+<span class="fstat-no" title="function not covered" >function handleError(promise, err, requestId, updatedCount, putObject) {</span>
+<span class="cstat-no" title="statement not covered" >     return promise.reject({</span>
           system: 'dynamo',
           systemError:err,
           system: 'database',
@@ -218,26 +218,26 @@ function handleError(promise, err, requestId, updatedCount, putObject) {
  * @param  {object} response     details of the page response
  * @return {promise}
  */
-function updateCount(requestId, updatedCount, putObject) {
-     console.log('app/settings/requests/page/updateCount.js:init');
-     var promise = q.defer();
-     utils.updateBy(Request, {
+<span class="fstat-no" title="function not covered" >function updateCount(requestId, updatedCount, putObject) {</span>
+<span class="cstat-no" title="statement not covered" >     console.log('app/settings/requests/page/updateCount.js:init');</span>
+<span class="cstat-no" title="statement not covered" >     var promise = q.defer();</span>
+<span class="cstat-no" title="statement not covered" >     utils.updateBy(Request, {</span>
           requestId: requestId
      }, {
           $PUT: putObject
-     }, function (err) {
-          if (err) {
+     }, <span class="fstat-no" title="function not covered" >function (err) {</span>
+<span class="cstat-no" title="statement not covered" >          if (err) {</span>
                //console.log('app/settings/requests/page/updateCount.js:failed');
-               return handleError(promise, err, requestId, updatedCount, putObject)
+<span class="cstat-no" title="statement not covered" >               return handleError(promise, err, requestId, updatedCount, putObject)</span>
           } else {
-               console.log('app/settings/requests/page/updateCount.js:passed');
-               promise.resolve({
+<span class="cstat-no" title="statement not covered" >               console.log('app/settings/requests/page/updateCount.js:passed');</span>
+<span class="cstat-no" title="statement not covered" >               promise.resolve({</span>
                     requestId: requestId,
                     updatedCount: updatedCount
                });
           }
      });
-     return promise.promise;
+<span class="cstat-no" title="statement not covered" >     return promise.promise;</span>
 }
 &nbsp;
 module.exports = updateCount;
@@ -247,7 +247,7 @@ module.exports = updateCount;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Sun Aug 27 2017 22:59:49 GMT-0400 (EDT)
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Aug 30 2017 19:53:55 GMT-0400 (EDT)
 </div>
 </div>
 <script src="../../../../prettify.js"></script>

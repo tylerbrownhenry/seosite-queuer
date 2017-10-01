@@ -1,6 +1,6 @@
 var pubChannel = null;
 var offlinePubQueue = [];
-var errorHandler = require('../settings/errorHandler');
+var errorHandler = require('./helpers/errorHandler');
 var q = require('q');
 var sh = require("shorthash");
 /**
@@ -29,7 +29,7 @@ module.exports.start = function (amqpConn) {
           }
      });
 }
-//
+
 /**
  * method to publish a message, will queue messages internally if the connection is down and resend later
  * @param  {String} exchange   name of rabbitMQ exchange to publish to
@@ -47,27 +47,16 @@ function publish(exchange, routingKey, content, options) {
           //console.log('publisher.js -> publish');
           pubChannel.publish(exchange, routingKey, content, opts, function (err, ok) {
                if (err) {
-                    //console.error("[AMQP] publish", err);
                     offlinePubQueue.push([exchange, routingKey, content]);
                     pubChannel.connection.close();
-                    promise.reject({
-                         system: 'amqp',
-                         status: 'warning',
-                         message: 'error:offline:queue'
-                    })
+                    promise.reject('error:offline:queue');
                } else {
-                    //console.log('publisher.js -> publish:pass');
                     promise.resolve();
                }
           });
      } catch (e) {
-          //console.error("[AMQP] publish", e.message);
-          promise.reject({
-               system: 'amqp',
-               status: 'warning',
-               message: 'error:offline:queue'
-          });
           offlinePubQueue.push([exchange, routingKey, content]);
+          promise.reject('error:offline:queue');
      }
      return promise.promise;
 }

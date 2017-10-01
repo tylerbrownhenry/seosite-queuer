@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 var dynamoose = require('dynamoose');
 dynamoose.AWS.config.update({
      region: "us-west-2",
@@ -10,7 +11,6 @@ var AWS = require('aws-sdk');
 var s3 = new AWS.S3({
      region: process.env.AWS_REGION
 });
-
 var amqpConnection = require('../../../app/amqp-connections/amqp');
 var fs = require('fs');
 amqpConnection();

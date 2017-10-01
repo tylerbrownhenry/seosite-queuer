@@ -18,7 +18,7 @@ var scanSchema = new dynamoose.Schema({
           type: String
      },
      tapTargetCheck: {
-       type: Object
+          type: Object
      },
      url: {
           type: Object,
@@ -37,23 +37,27 @@ var scanSchema = new dynamoose.Schema({
      sslEnabled: {
           type: String
      },
-     social:{
-       type:Object
+     social: {
+          type: Object
      },
-     serverInfo:{
-      type: Object
+     serverInfo: {
+          type: Object
      },
      fontInfo: {
-        type: Object
+          type: Object
      },
      tapTargetCheck: {
-       type:Object
+          type: Object
      },
      softwareSummary: {
-       type:Object
+          type: Object
      },
      status: {
-          type: String
+          type: String,
+          default: 'init'
+     },
+     w3cValidate: {
+          type: Object
      },
      thumb: String
 });
