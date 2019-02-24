@@ -1,8 +1,6 @@
 ## Overview
 
-This is a backend app that recevies commands via RabbitMQ, to scan a website for several SEO compatible features, including Twitter posts, hidden clickable links, being responsive, having inline css, too many links, dead links etc.
-
-The responses sent back including a status of the crawl and a completed report when it is finished.
+When running digests RabbitMQ messages and performs a scan of a url/page fro several SEO compatible features, including Twitter posts, hidden clickable links, being responsive, having inline css, too many links, dead links etc.
 
 ## Installation
 
