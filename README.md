@@ -1,3 +1,7 @@
+## Overview
+
+This is a single page seo scanner that receives commands from RabbitMQ.
+
 ## Installation
 
 1. Install Node
