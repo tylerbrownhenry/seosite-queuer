@@ -1,6 +1,8 @@
 ## Overview
 
-This is a single page seo scanner that receives commands from RabbitMQ.
+This is a backend app that recevies commands via RabbitMQ, to scan a website for several SEO compatible features, including Twitter posts, hidden clickable links, being responsive, having inline css, too many links, dead links etc.
+
+The responses sent back including a status of the crawl and a completed report when it is finished.
 
 ## Installation
 
